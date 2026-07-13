@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart
+
+obspy
+numpy
+scipy
+pandas
+matplotlib
+plotly
+
+requests
+SQLAlchemy
