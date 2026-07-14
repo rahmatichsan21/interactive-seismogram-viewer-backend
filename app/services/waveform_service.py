@@ -1,5 +1,6 @@
 from obspy.clients.fdsn import Client
 from obspy import UTCDateTime
+from obspy.clients.fdsn.header import FDSNNoDataException
 
 from app.core.config import (
     BMKG_URL,
@@ -13,6 +14,67 @@ client = Client(
     user=BMKG_USERNAME,
     password=BMKG_PASSWORD,
 )
+
+class WaveformNoDataError(Exception):
+    pass
+
+def check_channel_available(
+    network,
+    station,
+    location,
+    channel,
+    start_time,
+    end_time,
+):
+    starttime = UTCDateTime(start_time)
+    endtime = UTCDateTime(end_time)
+
+    try:
+        inventory = client.get_stations(
+            network=network,
+            station=station,
+            location=location,
+            channel=channel,
+            starttime=starttime,
+            endtime=endtime,
+            level="channel",
+        )
+
+        # Pastikan inventory benar-benar memiliki channel
+        channel_count = sum(
+            1
+            for network_item in inventory
+            for station_item in network_item
+            for _ in station_item
+        )
+
+        return channel_count > 0
+
+    except FDSNNoDataException:
+        return False
+
+def get_available_channels(
+    network,
+    station,
+    start_time,
+    end_time,
+):
+    inventory = client.get_stations(
+        network=network,
+        station=station,
+        location="*",
+        channel="*",
+        starttime=UTCDateTime(start_time),
+        endtime=UTCDateTime(end_time),
+        level="channel",
+    )
+
+    return sorted({
+        channel.code
+        for network_item in inventory
+        for station_item in network_item
+        for channel in station_item
+    })
 
 def download_waveform(
     network,
@@ -29,15 +91,35 @@ def download_waveform(
         raise ValueError(
             "End time must be greater than start time."
         )
-
-    stream = client.get_waveforms(
+    channel_available = check_channel_available(
         network=network,
         station=station,
         location=location,
         channel=channel,
-        starttime=starttime,
-        endtime=endtime,
+        start_time=start_time,
+        end_time=end_time,
     )
+
+    if not channel_available:
+        raise WaveformNoDataError(
+            f"No waveform data found for "
+            f"{network}.{station}.{location}.{channel}"
+        )
+    try:
+        stream = client.get_waveforms(
+            network=network,
+            station=station,
+            location=location,
+            channel=channel,
+            starttime=starttime,
+            endtime=endtime,
+        )
+
+    except FDSNNoDataException:
+        raise WaveformNoDataError(
+            f"No waveform data found for "
+            f"{network}.{station}.{location}.{channel}"
+        )
 
     return stream
 

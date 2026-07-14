@@ -1,13 +1,13 @@
-from fastapi import APIRouter
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, HTTPException
 from obspy.clients.fdsn.header import FDSNNoDataException
-from obspy import UTCDateTime
 
 from app.services.waveform_service import (
-    client,
     download_waveform,
     stream_to_json,
-)
+    WaveformNoDataError,
+    get_available_channels,
+) 
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -35,6 +35,7 @@ def get_waveform(
     db: Session = Depends(get_db),
 ):
     try:
+        # 1. Cek cache
         cached_stream = get_cached_waveform(
             db=db,
             network=network,
@@ -57,11 +58,14 @@ def get_waveform(
                 station,
             )
 
+        # 2. Cache tidak ditemukan
         print(
             f"[CACHE MISS] {network}.{station} "
             f"{location}.{channel} "
             f"{start_time} -> {end_time}"
         )
+
+        # 3. Download waveform
         stream = download_waveform(
             network=network,
             station=station,
@@ -71,6 +75,7 @@ def get_waveform(
             end_time=end_time,
         )
 
+        # 4. Simpan hasil download ke cache/database
         save_waveform_stream(
             stream=stream,
             db=db,
@@ -78,18 +83,23 @@ def get_waveform(
             requested_end_time=end_time,
         )
 
-    except FDSNNoDataException:
-        return JSONResponse(
-            status_code=404,
-            content={
-                "message": "No waveform available."
-            },
+        # 5. Kirim ke frontend
+        return stream_to_json(
+            stream=stream,
+            station=station,
         )
 
-    return stream_to_json(
-        stream=stream,
-        station=station,
-    )
+    except WaveformNoDataError as error:
+        raise HTTPException(
+            status_code=404,
+            detail=str(error),
+        )
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        )
 
 @router.get("/channels")
 def get_channels(
@@ -99,22 +109,12 @@ def get_channels(
     end_time: str,
 ):
     try:
-        inventory = client.get_stations(
+        channels = get_available_channels(
             network=network,
             station=station,
-            location="*",
-            channel="*",
-            starttime=UTCDateTime(start_time),
-            endtime=UTCDateTime(end_time),
-            level="channel",
+            start_time=start_time,
+            end_time=end_time,
         )
-
-        channels = sorted({
-            channel.code
-            for network_item in inventory
-            for station_item in network_item
-            for channel in station_item
-        })
 
         return {
             "channels": channels
