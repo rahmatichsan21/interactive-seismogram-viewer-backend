@@ -1,568 +1,1353 @@
-stasiun_id,net,kode_stasiun,lintang,bujur,elevasi,lokasi,provinsi,provinsi_id,upt_penanggung_jawab,upt_id,status,tahun_instalasi,jaringan,jaringan_id,prioritas,keterangan,accelerometer,digitizer_komunikasi,tipe_shelter,lokasi_shelter,penjaga_shelter,kondisi_shelter,assets_shelter,access_shelter,photo_shelter,penggantian_terakhir_alat,updated_at,quality_percentage,result,site_quality,summary_kualitas,persentase_kualitas
-1,"IA","AAFM","-8.2734000","124.7230000",830,"Station Type MR, Alor Selatan, Alor, NTT","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:02.000Z",83.92,"Cukup Baik","Very Good","Cukup Baik","83.9%"
-2,"IA","AAI","-3.6871580","128.1943130",100,"Station Ambon, Indonesia","Maluku",2,"Stageof-Ambon",2,"aktif",2005,"LIBRA",2,"P1",,"installed","Guralp-Minimus-2021-VSAT-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:03.000Z",50.12,"Buruk","Fair","Buruk","50.1%"
-3,"IA","AAII","-3.6871580","128.1943310",100,"Station Ambon China","Maluku",2,"Stageof-Ambon",2,"aktif",2006,"China",3,"P2",,"not_installed","Nanometrics-Centaur-2024-GSM","surface","inside_BMKG_office","tidak_ada","baik","",,,,"2026-07-06T04:00:04.000Z",98.7,"Baik","Fair","Baik","98.7%"
-4,"IA","ABJI","-7.7957000","114.2342000",144.36,"Station Asem Bagus, Java","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:04.000Z",99.31,"Baik","Fair","Baik","99.3%"
-5,"IA","ABSM","-3.4254000","102.2629500",380,"Type MR, Argamakmur,Bengkulu Utara,Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",84.58,"Cukup Baik","Fair","Cukup Baik","84.6%"
-6,"IA","ACBM","-7.0297540","107.6828330",766,"Type MR,Ayu Ciparay,Bandung,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2022,,,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",82.1,"Cukup Baik","Fair","Cukup Baik","82.1%"
-7,"IA","ACJM","-6.8032300","108.6151240",646,"Type MR, Astanajapura,Cirebon,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",1,"Buruk","Poor","Buruk","1.0%"
-8,"IA","ALKI","-8.1445000","124.5903000",720,"Station Alor, Indonesia (BMKG)","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2012,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2017-GSM","bunker","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:05.000Z",78.11,"Cukup Baik","Good","Cukup Baik","78.1%"
-9,"IA","ALTI","-8.2906900","125.1251700",13,"Station Type A, Alor Timur,Alor,Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",95.64,"Baik","Fair","Baik","95.6%"
-10,"IA","AMPM","-1.2674000","132.4910000",517,"Station Type MR, Aifat, Maybrat, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",39.18,"Buruk","Good","Buruk","39.2%"
-11,"IA","ANAPI","-1.3230000","133.9120000",2013,"Anggi, Pegunungan Arfak, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",99.13,"Baik","Good","Baik","99.1%"
-12,"IA","APSI","-0.9108000","121.6487000",143.5,"Station Ampana, Sulawesi","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2007,"LIBRA",2,"P1",,"installed","Guralp-Minimus-2021-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",89.73,"Cukup Baik","Very Good","Cukup Baik","89.7%"
-13,"IA","APSSI","-3.9320000","102.4650000",226,"Air Periukan, Seluma, Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",99.67,"Baik","Good","Baik","99.7%"
-14,"IA","ARKPI","-2.7830000","140.5920000",75,"Arso 4, Keerom, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",92.09,"Baik","Good","Baik","92.1%"
-15,"IA","ARMI","-5.7749000","134.2189000",73,"Station Type A, Aru,Kepulauan Aru,Maluku","Maluku",2,"Stageof-Maluku-Tenggara-Barat",9,"aktif",2019,"INA Type-A",5,"P1",,"installed","Guralp-Minimus+2024-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",43.4,"Buruk","Poor","Buruk","43.4%"
-16,"IA","ARPI","-2.8996100","140.7476500",38,"Station Type A, Arso ,Keerom,Papua","Papua Barat",6,"Stageof-Jayapura",8,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",90.63,"Baik","Poor","Baik","90.6%"
-17,"IA","ARSKI","-6.8584300","115.2861900",43,"Arjasa, Sumenep, Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",50.35,"Buruk","Very Good","Buruk","50.4%"
-18,"IA","ASTTI","-10.0680000","124.2990000",180,"Amanuban Selatan, Timor Tengah Selatan, Nusa Tenggara","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",99.38,"Baik","Very Good","Baik","99.4%"
-19,"IA","ATKTI","-9.4250000","124.0900000",168,"Amfoang Timur, Kupang, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",96.14,"Baik","Very Good","Baik","96.1%"
-20,"IA","ATNI","-9.0835000","124.8644000",404.62,"Station Atambua, BMG, Indonesia","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2012,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",98.93,"Baik","Good","Baik","98.9%"
-21,"IA","BAJI","-7.0905700","112.7085300",76,"Station Type B Bangkalan,Jawa Timur,Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",89,"Cukup Baik","Good","Cukup Baik","89.0%"
-22,"IA","BAKI","-1.1914500","136.1070200",89,"Station Biak, Indonesia","Papua",8,"Stageof-Nabire",11,"aktif",2006,"REIS",8,"P1",,"not_installed","Kinemetrics-Q330S+2025-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",1,"Buruk","-","Buruk","1.0%"
-23,"IA","BAPJI","-7.9120000","111.3050000",244,"Badegan, Ponorogo, Jawa Timur","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",98.86,"Baik","Very Good","Baik","98.9%"
-24,"IA","BASAI","2.3070000","97.4070000",15,"Pulau Banyak Barat, Aceh Singkil, Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",0,"Mati","Fair","Mati","0.0%"
-25,"IA","BASI","-10.2189000","120.5777000",80.84,"Station Baing, Sumba, Indonesia (BMKG)","Nusa Tenggara Timur",1,"Stageof-Sumba-Timur",14,"aktif",2008,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2024-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:05.000Z",0,"Mati","Very Good","Mati","0.0%"
-26,"IA","BATI","-10.2065000","123.6633000",356.11,"Station Kupang, Timor","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2006,"CTBTO",10,"P1","","not_installed","Nanometrics-Centaur-2026-GSM-CTBTO","bunker","outside_BMKG_office","tidak_ada","baik","","","",,"2026-07-06T04:00:05.000Z",98.57,"Baik","Good","Baik","98.6%"
-27,"IA","BATPI","-2.5427000","133.4455000",17,"Babo, Teluk Bintuni, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",1,"Buruk","Fair","Buruk","1.0%"
-28,"IA","BBBCM","-5.5771417","120.4480000",150,"Station Type MR, Sulawesi Bonto Bahari, Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2019-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",89.37,"Cukup Baik","Good","Cukup Baik","89.4%"
-29,"IA","BBCI","1.1580270","121.4362320",8,"Station Type A,Biau,Buol,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",59,"Buruk","Fair","Buruk","59.0%"
-30,"IA","BBCM","-5.0392000","120.0580000",546,"Type MR, Bontocani,Bone,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",99.66,"Baik","Good","Baik","99.7%"
-31,"IA","BBJI","-7.4626030","107.6500000",615,"BMG-Net, Indonesia (IA-Net)","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2016,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",99.82,"Baik","Very Good","Baik","99.8%"
-32,"IA","BBJM","-7.3260000","111.8099000",175,"Type MR, Bubulan,Bojonegoro,Jawa Timur","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",90.79,"Baik","Good","Baik","90.8%"
-33,"IA","BBLSI","-1.6375390","123.5216800",142,"Type A, Banggai Tengah, Banggai Laut, Sulawesi","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",99.6,"Baik","Good","Baik","99.6%"
-34,"IA","BBSI","-5.4885000","122.5600000",95,"Station Bau Bau, Buton","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2006,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2015-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:06.000Z",99.91,"Baik","Good","Baik","99.9%"
-35,"IA","BDBI","-8.5200000","115.2088000",186,"Badung, Bali, Indonesia","Bali",12,"Stageof-Denpasar",17,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus-2021-GSM","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",89.46,"Cukup Baik","Fair","Cukup Baik","89.5%"
-36,"IA","BDCM","-0.8726360","119.5867570",18,"Type MR, Banawa Selatan ,Donggala,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",95.15,"Baik","Good","Baik","95.2%"
-37,"IA","BDMUI","1.3220000","126.3620000",12,"Pulau Batang Dua, Ternate, Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",83.22,"Cukup Baik","Fair","Cukup Baik","83.2%"
-38,"IA","BESI","4.7199330","96.8654600",1372,"Station Type A, Bukit,Bener Meriah,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",1,"Buruk","Fair","Buruk","1.0%"
-39,"IA","BESM","4.1516150","96.3253440",646,"Type MR, Beutong,Nagan Raya,Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",91.93,"Baik","Fair","Baik","91.9%"
-40,"IA","BGASI","3.9830000","97.3150000",1078,"Blang Kejeren, Gayo Lues, Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",92.82,"Baik","Fair","Baik","92.8%"
-41,"IA","BGCI","-0.8816000","123.3911000",11,"Station Type A, Balantak,Banggai,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",89.76,"Cukup Baik","Fair","Cukup Baik","89.8%"
-42,"IA","BGCM","-0.0496440","119.8800750",18,"Type MR, Balaesang,Donggala,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",82.4,"Cukup Baik","Poor","Cukup Baik","82.4%"
-43,"IA","BHCM","-2.7965000","122.1259000",11,"Type MR, Bahodopi,Morowali,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",90.23,"Baik","Fair","Baik","90.2%"
-44,"IA","BKASI","-0.2020000","100.3180000",853,"Gaw Bukit Koto, Agam, Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:06.000Z",0,"Mati","Fair","Mati","0.0%"
-45,"IA","BKB","-1.1073000","116.9048000",110,"GEOFON Station Balikpapan, Kalimantan, Indonesia","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2008,"GFZ",11,"P1",,"installed","Kinemetrics-Q330S+-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:06.000Z",89.34,"Cukup Baik","Fair","Cukup Baik","89.3%"
-46,"IA","BKJI","-7.3633000","108.5322000",84,"Station Type B Banjar,Kota Banjar,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2020-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",0,"Mati","Poor","Mati","0.0%"
-47,"IA","BKNI","0.3262000","101.0396000",65,"GEOFON Station Bangkinang, Sumatra, Indonesia","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2008,"GFZ",11,"P2",,"not_installed","Kinemetrics-Q330-2016-GSM","bunker","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",96.48,"Baik","Fair","Baik","96.5%"
-48,"IA","BKSI","-5.3219000","120.1224000",606,"Station Bulukumba, Sulawesi","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",99.59,"Baik","Good","Baik","99.6%"
-49,"IA","BLCM","-0.1229340","119.6870710",11,"Type MR, Balaesang Tanjung ,Donggala,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",93.52,"Baik","Good","Baik","93.5%"
-50,"IA","BLJI","-7.7450000","113.5950000",80.85,"Station Banyuglugur, Java","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",99.35,"Baik","Good","Baik","99.3%"
-51,"IA","BLSM","-3.1402180","102.8072000",67,"Type MR, Batukuning Lakitan Ulu,Musi Rawas,Sumatera Selatan","Sumatera Selatan",17,"Stageof-Tangerang",22,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",84.67,"Cukup Baik","Fair","Cukup Baik","84.7%"
-52,"IA","BMBNG","-6.6634700","110.8839000",1029,"Station Type B Ternadi, Dawe, Kudus, Jawa","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2022,,,"P1",,"installed","Kinemetrics-Q330S+2022-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",98.64,"Baik","Very Good","Baik","98.6%"
-53,"IA","BMSI","-2.0664100","102.3154400",135,"Station Type B Bangko,Merangin,Jambi","Jambi",19,"Stageof-Kepahiang",4,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",41.04,"Buruk","Fair","Buruk","41.0%"
-54,"IA","BNDI","-4.5224000","129.9045000",16,"GEOFON Station Bandaneira, Indonesia","Maluku",2,"Stageof-Ambon",2,"aktif",2008,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2008-Idirect","bunker","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:07.000Z",59,"Buruk","Good","Buruk","59.0%"
-55,"IA","BNSI","-4.4006000","120.1065000",261,"Station Bone, Sulawesi","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2007,"LIBRA",2,"P1",,"installed","Guralp-Minimus-2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",1,"Buruk","Good","Buruk","1.0%"
-56,"IA","BNTI","-8.7881000","120.9768000",1186,"Station Type A, Bajawa,Ngada,Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Sumba-Timur",14,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",90.28,"Baik","Good","Baik","90.3%"
-57,"IA","BOJI","-7.5681500","110.6893600",196,"Station Type B Sawit,Boyolali,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",91.64,"Baik","Good","Baik","91.6%"
-58,"IA","BOSM","-4.8591830","104.0207360",640,"Type MR, Banding Agung,Oku Selatan,Sumatera Selatan","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",97.56,"Baik","Fair","Baik","97.6%"
-59,"IA","BPMJM","-6.9505233","113.4922383",270.5,"Station Type MR, Batumarmar, Pamekasan, Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",96.18,"Baik","Good","Baik","96.2%"
-60,"IA","BPSM","-1.1924000","100.5899800",110,"Type MR, Bayang,Pesisir Selatan,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",99.5,"Baik","Very Good","Baik","99.5%"
-61,"IA","BSI","5.4964000","95.2961000",192,"Station Banda Aceh, Indonesia","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2005,"REIS",8,"P2",,"installed","Meisei-G1019-2018-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:07.000Z",40.5,"Buruk","Fair","Buruk","40.5%"
-62,"IA","BSMI","-3.1076220","130.4938100",45,"Station Bula, Maluku, Indonesia (BMKG)","Maluku",2,"Stageof-Ambon",2,"aktif",2017,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",50.33,"Buruk","Fair","Buruk","50.3%"
-63,"IA","BSSI","-6.1428000","120.4904000",114.3,"Station Benteng, P.Selayar, Indonesia (BMKG)","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2008,"LIBRA",2,"P2",,"installed","GuralpMinimus+2022-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",98.42,"Baik","Very Good","Baik","98.4%"
-64,"IA","BTCM","-2.4768000","121.9241000",21,"Type MR, Bungku Tengah,Morowali,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",1,"Buruk","Fair","Buruk","1.0%"
-65,"IA","BTJI","-7.1972000","109.1641000",942,"Station Type B Bumi Jawa,Tegal,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",69.63,"Cukup Baik","Fair","Cukup Baik","69.6%"
-66,"IA","BTSPI","-2.3779000","139.7042000",32,"Bonggo Timur, Sarmi, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",95.16,"Baik","Very Good","Baik","95.2%"
-67,"IA","BUBSI","-0.8550000","122.2070000",39,"Bunta, Banggai, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",97.52,"Baik","Fair","Baik","97.5%"
-68,"IA","BUJI","-7.7560300","109.4613300",57,"Station Type B Buayan,Kebumen,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",92.17,"Baik","Good","Baik","92.2%"
-69,"IA","BUKI","1.2520000","118.7090000",13,"Berau, Kalimantan Timur, Indonesia","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2021,"BB2021",13,"P1",,"installed","GuralpMinimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",0,"Mati","Good","Mati","0.0%"
-70,"IA","BUMSI","-1.9778070","121.3346290",121,"Station Type A, Bungku Utara, Morowali, Sulawesi","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",92.91,"Baik","Very Good","Baik","92.9%"
-71,"IA","BUSI","5.2445125","96.2430380",6,"Station Type A, Bandar Baru,Pidie Jaya,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",92.87,"Baik","Poor","Baik","92.9%"
-72,"IA","BWJI","-5.8511000","112.6578000",57.56,"Station Bawean, BMG","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2006,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-VSAT-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:08.000Z",78.18,"Cukup Baik","Poor","Cukup Baik","78.2%"
-73,"IA","BYJI","-8.2140000","114.3557000",99.5,"Station Banyu Wangi, Java","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2007,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-VSAT-M2M","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:08.000Z",87.07,"Cukup Baik","Fair","Cukup Baik","87.1%"
-74,"IA","BYLI","-8.2273000","116.4201000",25,"Station Type A, Bayan,Lombok Utara ,Nusa Tenggara","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",93.93,"Baik","Very Good","Baik","93.9%"
-75,"IA","CASI","4.6287900","95.5766800",11,"Calang, Sumatra, Indonesia","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2018,"REIS",8,"P1",,"installed","Meisei-G210P-2018-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",99.29,"Baik","-","Baik","99.3%"
-76,"IA","CBJI","-6.6981000","106.9349000",1006.39,"Station Citeko, Indonesia","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2005,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:08.000Z",89.28,"Cukup Baik","Poor","Cukup Baik","89.3%"
-77,"IA","CBJM","-6.9308500","107.3562400",679,"Type MR, Cipongkor,Bandung Barat,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",59,"Buruk","Good","Buruk","59.0%"
-78,"IA","CCJM","-7.0169200","107.1401900",48,"Type MR, Campaka,Cianjur,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:08.000Z",97.29,"Baik","Good","Baik","97.3%"
-79,"IA","CGJI","-6.6134000","105.6900000",182,"Station Cigeulis, Java","Banten",21,"Stageof-Tangerang",22,"aktif",2007,"LIBRA",2,"P1",,"installed","GuralpMinimus+2025-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",45.56,"Buruk","Very Good","Buruk","45.6%"
-80,"IA","CIJI","-7.3174100","108.1958900",418,"Station Type B Cipedes,Kota Tasikmalaya,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",59,"Buruk","Good","Buruk","59.0%"
-81,"IA","CIJM","-6.4924530","108.1852430",43,"Type MR, Cikedung,Indramayu,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",1,"Buruk","Fair","Buruk","1.0%"
-82,"IA","CIKJI","-6.0419240","107.3473740",18.4,"Cibuaya, Karawang, Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2025-10-23T07:13:45.000Z",73.32,"Cukup Baik","Poor","Cukup Baik","73.3%"
-83,"IA","CILJI","-6.8220000","106.3160000",332,"Cibeber, Lebak, Banten","Banten",21,"Stageof-Tangerang",22,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",92.45,"Baik","Very Good","Baik","92.5%"
-84,"IA","CMJI","-7.7840000","108.4490000",78,"Station Cimerak, Java","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2007-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",25.37,"Buruk","Very Good","Buruk","25.4%"
-85,"IA","CNJI","-7.3090000","107.1296000",589,"Station Cibinong, Java","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur2023-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",91.52,"Baik","Good","Baik","91.5%"
-86,"IA","CSBJI","-6.4046870","107.8817370",50.6,"Compreng, Subang, Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",93.59,"Baik","Fair","Baik","93.6%"
-87,"IA","CSJI","-7.3302000","106.5210000",153,"Station Type B Ciracap,Sukabumi,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Type-B",7,"P1",,"installed","GuralpMinimus+2025-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",84.41,"Cukup Baik","Fair","Cukup Baik","84.4%"
-88,"IA","CSJM","-6.7405200","108.0099000",361,"Type MR, Congeang,Sumedang,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",86.18,"Cukup Baik","Fair","Cukup Baik","86.2%"
-89,"IA","CTJI","-7.0075400","109.1835600",104,"Station Waduk Cacaban, Java, BMG, Indonesia","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2006,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2022-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",96.37,"Baik","Very Good","Baik","96.4%"
-90,"IA","CWJM","-6.7423600","107.4448600",649,"Type MR, Cikalong Wetan,Bandung Barat,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",89.54,"Cukup Baik","Fair","Cukup Baik","89.5%"
-91,"IA","DBJI","-6.5538000","106.7497000",210.84,"Station Dramaga, Java","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2006,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2024-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:09.000Z",88.18,"Cukup Baik","Good","Cukup Baik","88.2%"
-92,"IA","DBKI","-1.6792000","114.9079000",32,"Station Type A, Dusun Selatan,Barito Selatan,Kalimantan Tengah","Kalimantan Tengah",22,"Stageof-Balikpapan",21,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:09.000Z",82.07,"Cukup Baik","Fair","Cukup Baik","82.1%"
-93,"IA","DBNFM","-8.4240840","118.5948210",696,"Station Type MR, Donggo, Nusa Tenggara Barat","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",89.38,"Cukup Baik","Good","Cukup Baik","89.4%"
-94,"IA","DDSI","1.6675000","101.4602000",76,"Station Type A, Dumai Timur Riau","Riau",16,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",1,"Buruk","Poor","Buruk","1.0%"
-95,"IA","DNP","-8.6774000","115.2097000",63.88,"Station Denpasar, Indonesia","Bali",12,"Stageof-Denpasar",17,"nonaktif",2005,"LIBRA",2,"P2",,"not_installed","Nanometrics-Centaur-2024-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:10.000Z",0,"Mati","Poor","Mati","0.0%"
-96,"IA","DOCM","-0.6758680","119.7487300",50,"Type MR, Donggala,Donggala,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",99.03,"Baik","Good","Baik","99.0%"
-97,"IA","DYPI","-4.8521000","139.4991000",87,"Station Type A, Dekai,Yakuhimo,Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",0,"Mati","Fair","Mati","0.0%"
-98,"IA","EDFI","-8.7497000","121.6903000",914.34,"Station Ende, Flores, Indonesia (BMKG)","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2008,"LIBRA",2,"P1",,"not_installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",0,"Mati","Very Good","Mati","0.0%"
-99,"IA","EDMPI","-7.1750000","139.5850000",15,"Edera, Mappi, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",94.71,"Baik","Good","Baik","94.7%"
-100,"IA","EGSI","-5.3526000","102.2767000",35.73,"Station Enggano, Bengkulu, Indonesia (BMKG)","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2008,"LIBRA",2,"P1",,"installed","GuralpMinimus+2024-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",87.56,"Cukup Baik","Fair","Cukup Baik","87.6%"
-101,"IA","ELMPI","-7.4890000","140.7890000",51,"Eligobel, Merauke, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",99.61,"Baik","Fair","Baik","99.6%"
-102,"IA","ERPI","-3.9268670","136.3809470",1675,"Enarotali, East Paniai, Papua","Papua",8,"Stageof-Nabire",11,"nonaktif",2017,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2017-Libra","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:10.000Z",0,"Mati","-","Mati","0.0%"
-103,"IA","ESNI","-8.7875320","117.9658430",25,"Empang, Sumbawa, Nusat Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","GuralpMinimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",0,"Mati","Good","Mati","0.0%"
-104,"IA","FAKI","-2.9192000","132.2650000",0,"GEOFON Station Fakfak, Indonesia","Papua Barat",6,"Stageof-Sorong",6,"aktif",2008,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2014-VSAT-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:10.000Z",97.4,"Baik","Very Good","Baik","97.4%"
-105,"IA","FKMPM","-8.2515000","140.2666000",95,"Station Type MR, Kurik, Merauke, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",97.7,"Baik","-","Baik","97.7%"
-106,"IA","FKSPI","-1.1594000","132.0160000",139,"Fkour, Sorong Selatan, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",34.19,"Buruk","Good","Buruk","34.2%"
-107,"IA","GARPI","-0.4346500","129.9000000",49,"Pulau Gag, Raja Ampat, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",88.07,"Cukup Baik","Good","Cukup Baik","88.1%"
-108,"IA","GBJI","-6.9485000","109.9660000",102,"Station Type B Gringsing,Batang,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",1,"Buruk","Good","Buruk","1.0%"
-109,"IA","GEBBI","-8.1640000","114.7140000",33,"Gerokgak, Buleleng, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",91.05,"Baik","Very Good","Baik","91.0%"
-110,"IA","GEJI","-8.4101900","112.6450700",80,"Station Type B Gedangan,Malang,Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",78.95,"Cukup Baik","Fair","Cukup Baik","79.0%"
-111,"IA","GENI","-2.5926800","140.1677570",58,"GEOFON Station Genyem, Indonesia","Papua",8,"Stageof-Jayapura",8,"aktif",2009,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2009-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:10.000Z",99.36,"Baik","Very Good","Baik","99.4%"
-112,"IA","GESM","4.8421000","96.1278000",1034,"Type MR, Geumpang,Pidie,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",89.84,"Cukup Baik","Good","Cukup Baik","89.8%"
-113,"IA","GGJM","-7.1717000","111.2037000",81,"Type MR, Gabus,Grobogan,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:10.000Z",78.1,"Cukup Baik","Poor","Cukup Baik","78.1%"
-114,"IA","GHMI","-0.3562900","127.8797000",37,"Station Type A, Gane Barat,Halmahera Selatan,Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",98.4,"Baik","Very Good","Baik","98.4%"
-115,"IA","GKJM","-7.8411000","110.5922000",211,"Type MR, Gedangsari,Gunung Kidul,D.I Yogyakarta","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",99.81,"Baik","Good","Baik","99.8%"
-116,"IA","GMJI","-8.2732000","113.4441000",80.13,"Station Gumukmas, Java","Jawa Timur",3,"Stageof-Malang",28,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",95.4,"Baik","Good","Baik","95.4%"
-117,"IA","GPSM","4.8693430","96.0904480",417,"Type MR, Geumpang,Pidie,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",93.4,"Baik","Good","Baik","93.4%"
-118,"IA","GRJI","-6.9145000","112.4793000",97.14,"Station Gresik, Java","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2017-GSM","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",97.27,"Baik","Good","Baik","97.3%"
-119,"IA","GSI","1.3039000","97.5755000",107,"GEOFON Station Gunungsitoli, Nias","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2005,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330S+2025-VSAT-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:11.000Z",94.87,"Baik","Very Good","Baik","94.9%"
-120,"IA","GTJI","-7.1638450","110.1837450",749,"Station Type B, Gemawang Temanggung","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2022,,,"P1",,"installed","Kinemetrics-Q330S+2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",90.82,"Baik","Very Good","Baik","90.8%"
-121,"IA","GTOI","0.7628000","122.8700000",313.3,"Station Gorontalo China","Gorontalo",26,"Stageof-Gorontalo",31,"aktif",2006,"China",3,"P1",,"not_installed","GuralpMinimus+2022-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",1,"Buruk","Very Good","Buruk","1.0%"
-122,"IA","GTSI","-0.5981000","101.4888000",9,"Station Type A, Gunung Toar,Kuantan Singingi,Riau","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-03-03T03:01:37.000Z",43.87,"Buruk","Poor","Buruk","43.9%"
-123,"IA","GUJM","-7.0544000","110.6660000",85,"Type MR, Gubug,Grobogan,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",77.21,"Cukup Baik","Poor","Cukup Baik","77.2%"
-124,"IA","HINSI","-0.5400000","98.4990000",35,"Hibala, Nias Selatan, Sumatera Utara","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2023,"IDRIP83",6,"P2",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",0,"Mati","Fair","Mati","0.0%"
-125,"IA","IATSM","4.9240500","97.7845450",28,"Station Type MR, Idi, Aceh Timur, Sumatera","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",92.23,"Baik","Fair","Baik","92.2%"
-126,"IA","IBTI","-8.3894000","123.2645000",154,"Station Type A, Ile Boleng,Flores Timur,Nusa Tenggara","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",88.1,"Cukup Baik","Good","Cukup Baik","88.1%"
-127,"IA","IGBI","-8.8180000","115.1460000",248,"Station Ingas Bali China","Bali",12,"Stageof-Denpasar",17,"aktif",2006,"China",3,"P1",,"installed","Guralp-Minimus-2024-VSAT-M2M","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:11.000Z",99.28,"Baik","Very Good","Baik","99.3%"
-128,"IA","IHMI","1.5082130","127.5556250",130,"Station Type A, Ibu,Halmahera Barat,Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",69.01,"Cukup Baik","Poor","Cukup Baik","69.0%"
-129,"IA","IHRSI","-0.9650000","102.7645000",49,"Indragiri Hilir, Riau, Sumatera Indonesia","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2021,"BB2021",13,"P1",,"installed","GuralpMinimus+2021-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",88.48,"Cukup Baik","Fair","Cukup Baik","88.5%"
-130,"IA","IWPI","-2.7581000","134.5162000",36,"Station Type A, Rasiei,Teluk Wondama,Papua Barat","Papua Barat",6,"Stageof-Nabire",11,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",97.14,"Baik","Very Good","Baik","97.1%"
-131,"IA","JAASI","3.7660000","96.8200000",12,"Jeumpa, Aceh Barat Daya, Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",1,"Buruk","Fair","Buruk","1.0%"
-132,"IA","JAGI","-8.4703000","114.1520000",171,"GEOFON Station Jajag, Java, Indonesia","Jawa Timur",3,"Stageof-Malang",28,"aktif",2009,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2008-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",99.58,"Baik","Good","Baik","99.6%"
-133,"IA","JASI","-1.4145300","101.4583800",253,"Station Type B Sangir Balai Janggo,Solok Selatan,Sumatera","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",85.4,"Cukup Baik","Good","Cukup Baik","85.4%"
-134,"IA","JAY","-2.5145000","140.7043000",461.46,"Station Jayapura, Indonesia","Papua",8,"Stageof-Jayapura",8,"aktif",2010,"CTBTO",10,"P1",,"not_installed","Nanometrics-Centaur-2025-GSM-CTBTO","surface","inside_BMKG_office","tidak_ada","baik",,,"/uploads/site_JAY_1765806964403.jpg,/uploads/site_JAY_1765807089381.jpg,/uploads/site_JAY_1765807163326.jpg,/uploads/site_JAY_1765807185995.jpg",,"2026-07-06T04:00:12.000Z",99.2,"Baik","-","Baik","99.2%"
-135,"IA","JBJI","-6.4837400","106.4698600",146,"Station Type B Jasinga,Bogor,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",92.15,"Baik","Good","Baik","92.2%"
-136,"IA","JBJM","-6.9729000","111.4587000",98,"Type MR, Jepon,Blora,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",82.88,"Cukup Baik","Poor","Cukup Baik","82.9%"
-137,"IA","JCJI","-6.7344000","108.2631000",85.57,"Station Jatiwangi, Indonesia","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2005,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2020-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:12.000Z",90.96,"Baik","Fair","Baik","91.0%"
-138,"IA","JHMI","1.0820670","127.4782800",36,"Station Type A, Jailolo,Halmahera Barat,Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur6-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",86.45,"Cukup Baik","Poor","Cukup Baik","86.5%"
-139,"IA","JMSI","-2.6371500","101.8874500",1275,"Station Type B Jangkat,Merangin,Jambi","Jambi",19,"Stageof-Kepahiang",4,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",89,"Cukup Baik","Fair","Cukup Baik","89.0%"
-140,"IA","JPJI","-6.5307000","107.4175000",150,"Station Type B Jatiluhur,Purwakarta,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",93.91,"Baik","Fair","Baik","93.9%"
-141,"IA","JPSI","-1.3416400","100.5864500",38,"Station Type B Jurai,Pesisir Selatan,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",43.75,"Buruk","Very Good","Buruk","43.8%"
-142,"IA","JSBFM","-8.8716567","116.8164717",79,"Station Type MR, Jereweh, Nusa Tenggara Barat","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",94.27,"Baik","Good","Baik","94.3%"
-143,"IA","JTJM","-7.0573000","106.8015000",528,"Type MR, Jampang Tengah,Sukabumi,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",92.52,"Baik","Fair","Baik","92.5%"
-144,"IA","JWJM","-7.2062450","110.7314580",74,"Type MR, Juwangi ,Boyolali,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",91.07,"Baik","Good","Baik","91.1%"
-145,"IA","KABKI","-0.7506840","116.2418980",51.8,"Bongan, Kutai Barat, Kalimantan Timur","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2023,"ALOPTAMA 2023",9,"P2",,"installed","Guralp-Minimus+2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",89.06,"Cukup Baik","Good","Cukup Baik","89.1%"
-146,"IA","KAKKI","1.3668870","117.7500310",27.6,"Karangan, Kutai Timur","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2023,"ALOPTAMA 2023",9,"P2",,"installed","Guralp-Minimus+2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",0,"Mati","Fair","Mati","0.0%"
-147,"IA","KARPI","-0.0610000","130.9910000",21,"Kabare, Raja Ampat, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",86.52,"Cukup Baik","Good","Cukup Baik","86.5%"
-148,"IA","KASAI","2.4918930","97.8582390",4,"Station Type A, Kota Baharu, Aceh Singkil,","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",0,"Mati","Fair","Mati","0.0%"
-149,"IA","KBBI","-8.2860000","115.2547000",1053,"Station Type B Kintamani,Bangli,Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:12.000Z",76.17,"Cukup Baik","Fair","Cukup Baik","76.2%"
-150,"IA","KBJM","-7.0505000","111.2329000",62,"Type MR, Kunduran,Blora,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",78.28,"Cukup Baik","Poor","Cukup Baik","78.3%"
-151,"IA","KBKI","-3.2995000","116.1668000",65,"Station Kotabaru, Kalimantan","Kalimantan Selatan",27,"Stageof-Balikpapan",21,"aktif",2007,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:13.000Z",1,"Buruk","Poor","Buruk","1.0%"
-152,"IA","KBSSI","-9.5930000","118.9930000",22,"Kodi Bangedo, Sumba Barat Daya, Nusa Tenggara","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",98.68,"Baik","Good","Baik","98.7%"
-153,"IA","KDI","-3.9574300","122.6192600",55,"Station Kendari, Sulawesi","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2006,"REIS",8,"P2",,"not_installed","Meisei-G1019-2018-VSAT-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:13.000Z",48.5,"Buruk","Good","Buruk","48.5%"
-154,"IA","KGCM","0.6397020","122.8516480",32,"Type MR, Kwandang,Gorontalo,Gorontalo","Gorontalo",26,"Stageof-Gorontalo",31,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",80.52,"Cukup Baik","Poor","Cukup Baik","80.5%"
-155,"IA","KHK","-8.3640400","115.6096400",220,"Station Kahang-Kahang, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2007,"REIS",8,"P1",,"installed","Meisei-G1019-2018-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:13.000Z",99.76,"Baik","-","Baik","99.8%"
-156,"IA","KHSSI","-9.8010000","119.9450000",608,"Katala Hamu Lingu, Sumba Timur, Nusa Tenggara","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",99.63,"Baik","Very Good","Baik","99.6%"
-157,"IA","KIMPI","-7.9790000","138.8520000",8,"Kimaam, Merauke, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",0,"Mati","Fair","Mati","0.0%"
-158,"IA","KJCM","-5.5646000","119.8026000",199,"Station Type MR, Kelara, Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",92.73,"Baik","Good","Baik","92.7%"
-159,"IA","KKJM","-7.8433840","110.0572480",115,"Type MR, Kokap, Kulon Progo, D.I Yogyakarta","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2023,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2023-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",99.9,"Baik","Very Good","Baik","99.9%"
-160,"IA","KKKI","-2.5137000","110.1951000",39,"Station Type A, Kendawangan,Ketapang,Kalimantan Barat","Kalimantan Barat",28,"Stageof-Sleman",29,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur6-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",43.25,"Buruk","Poor","Buruk","43.3%"
-161,"IA","KKKKI","-1.8711430","113.4198010",79,"Station Type A, Katingan Kuala, Katingan, Kalimantan","Kalimantan Tengah",22,"Stageof-Balikpapan",21,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",94.68,"Baik","Good","Baik","94.7%"
-162,"IA","KKMI","-5.6923000","132.7180000",72,"Station Type A, Kei Kecil,Maluku Tenggara,Maluku","Maluku",2,"Stageof-Maluku-Tenggara-Barat",9,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur6-2019-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",0,"Mati","Fair","Mati","0.0%"
-163,"IA","KKSI","-4.1718000","121.6513000",89.03,"Station Kolaka, Sulawesi, Indonesia (BMKG)","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2008,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2024-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:13.000Z",45.87,"Buruk","Fair","Buruk","45.9%"
-164,"IA","KKTKI","1.1860940","116.9493170",113,"Station Type A, Kombeng, Kutai Timur, Kalimantan","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:13.000Z",98.17,"Baik","Good","Baik","98.2%"
-165,"IA","KLI","-4.8363000","104.8705200",64,"Station Kotabumi, Indonesia","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2005,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:14.000Z",91.35,"Baik","Fair","Baik","91.3%"
-166,"IA","KLJI","-7.9960700","113.2517500",240,"Station Type B Klakah,Lumajang,Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",78.67,"Cukup Baik","Fair","Cukup Baik","78.7%"
-167,"IA","KLNI","-8.4218800","116.0949200",99,"Station Mataram, Plombok, BMG, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2006,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",99.67,"Baik","Good","Baik","99.7%"
-168,"IA","KLSI","-4.6871000","104.7317000",80.7,"Station Kotabumi China","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2007,"China",3,"P2",,"not_installed","Rsensor-NDAS-8426-2025-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",40.9,"Buruk","Poor","Buruk","40.9%"
-169,"IA","KLSM","3.0863000","97.3298000",18,"Type MR, Kluet Utara,Aceh Selatan,Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",1,"Buruk","Fair","Buruk","1.0%"
-170,"IA","KMBFM","-8.5654217","120.3131100",1217,"Station Type MR, Kuwus, Manggarai Barat, Nusa","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",87.74,"Cukup Baik","Good","Cukup Baik","87.7%"
-171,"IA","KMMI","-7.0412000","113.9157000",49.14,"Station Kalianget, Indonesia","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2005,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:14.000Z",85.37,"Cukup Baik","Good","Cukup Baik","85.4%"
-172,"IA","KMNI","-8.6210000","116.0892000",19,"Kota Mataram Nusa Tenggara Barat Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus-2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",77.08,"Cukup Baik","Poor","Cukup Baik","77.1%"
-173,"IA","KMPI","-3.6616000","133.7044000",90.04,"Station Kaimana, Papua, Indonesia (BMKG)","Papua Barat",6,"Stageof-Sorong",6,"aktif",2008,"LIBRA",2,"P1",,"not_installed","Guralp-Minimus+2021-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",1,"Buruk","Fair","Buruk","1.0%"
-174,"IA","KMSI","0.5745000","123.9800000",218,"Station Kotamubagu, Sulawesi","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2007,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",92.71,"Baik","Good","Baik","92.7%"
-175,"IA","KOMFI","-8.5360000","119.5470000",16,"Komodo, Manggarai Barat, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",91.58,"Baik","Good","Baik","91.6%"
-176,"IA","KORPI","-1.1580000","129.8450000",11,"Kofiau, Raja Ampat, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",83.1,"Cukup Baik","Good","Cukup Baik","83.1%"
-177,"IA","KPJI","-7.3333000","108.9310000",111,"Station Karang Pucung, Java","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",0,"Mati","Very Good","Mati","0.0%"
-178,"IA","KPJM","-7.1883000","111.9281000",23,"Type MR, Kapas,Bojonegoro,Jawa Timur","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",70.9,"Cukup Baik","Poor","Cukup Baik","70.9%"
-179,"IA","KRAI","-3.3183650","128.3947450",61,"Station Kairatu, Seram Bagian Barat, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2009,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:14.000Z",93.42,"Baik","Good","Baik","93.4%"
-180,"IA","KRJI","-2.0912000","101.4619000",810.88,"Station Kerinci, Sumatra","Jambi",19,"Stageof-Kepahiang",4,"aktif",2006,"LIBRA",2,"P1",,"not_installed","Guralp-Minimus+2021-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:15.000Z",88.14,"Cukup Baik","Poor","Cukup Baik","88.1%"
-181,"IA","KRSI","-1.8200000","119.4200000",60.3,"Station Karosa China","Sulawesi Barat",31,"Stageof-Palu",7,"aktif",2019,"China",3,"P1",,"not_installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",0,"Mati","Good","Mati","0.0%"
-182,"IA","KSI","-3.6517000","102.5929000",539,"Station Kepahiang, Indonesia","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2005,"REIS",8,"P2",,"installed","Meisei-G1019-2018-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:15.000Z",92.31,"Baik","Fair","Baik","92.3%"
-183,"IA","KTMI","-7.6690660","131.5792050",59,"Station Type A, Kormomolin,Kepulauan Tanimbar,Maluku","Maluku",2,"Stageof-Maluku-Tenggara-Barat",9,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur6-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",82.26,"Cukup Baik","Fair","Cukup Baik","82.3%"
-184,"IA","KTTI","-10.0135600","124.5339000",87,"Station Type A, Kolbano,Timor Tengah Selatan,Nusa Tenggara","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur6-2019-Libra","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",99.83,"Baik","Good","Baik","99.8%"
-185,"IA","KUBSI","-4.7812100","123.1868400",59,"Kulisusu, Buton Utara, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",95.71,"Baik","Good","Baik","95.7%"
-186,"IA","KUKI","-0.0850000","115.6625000",110,"Kutai Barat, Kalimantan Timur, Indonesia","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus-2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",1,"Buruk","Poor","Buruk","1.0%"
-187,"IA","KUSI","3.1964000","97.3706000",29,"Station Type A, Kluet Utara,Aceh Selatan,Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur6-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",98.97,"Baik","Good","Baik","99.0%"
-188,"IA","KWJI","-7.3837000","109.9691000",868,"Station Type B Kertek,Wonosobo,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2025-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",93.03,"Baik","Good","Baik","93.0%"
-189,"IA","LASI","4.4572000","97.9704000",4.34,"Station Langsa, Aceh, Sumatra, Indonesia (BMKG)","Aceh",9,"Stageof-Deli-Serdang",27,"aktif",2009,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",1,"Buruk","Poor","Buruk","1.0%"
-190,"IA","LBFI","-8.4800000","119.8921000",75,"Station Labuhan Bajo China","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2006,"China",3,"P1",,"not_installed","Guralp-Minimus+2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:15.000Z",94.74,"Baik","Good","Baik","94.7%"
-191,"IA","LBNFM","-8.6017000","119.0124000",75,"Station Type MR, Lambu, Nusa Tenggara Barat","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:16.000Z",83.52,"Cukup Baik","Fair","Cukup Baik","83.5%"
-192,"IA","LBTSI","-0.4750000","100.6250000",417,"Lintau Buo Utara, Tanah Datar, Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2025-10-23T07:13:45.000Z",97.92,"Baik","Good","Baik","97.9%"
-193,"IA","LDSI","2.8860000","98.1570000",819,"Sukandebi, Sumatra Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:16.000Z",96.36,"Baik","Good","Baik","96.4%"
-194,"IA","LEM","-6.8232500","107.6143000",1200,"Station Lembang, Indonesia","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2006,"CTBTO",10,"P1",,"not_installed","Streckeisen-Centaur-2025-GSM-CTBTO",,"inside_BMKG_office","tidak_ada","baik",,,"/uploads/site_LEM_1765806860015.jpeg,/uploads/site_LEM_1765806871964.jpeg,/uploads/site_LEM_1765806881762.jpeg,/uploads/site_LEM_1765806901873.jpeg",,"2026-07-06T04:00:16.000Z",97.78,"Baik","Good","Baik","97.8%"
-195,"IA","LEMFI","-8.7070000","120.1720000",187,"Lembor, Manggarai Barat, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:16.000Z",99.79,"Baik","Very Good","Baik","99.8%"
-196,"IA","LESM","-4.9614700","103.7125600",39,"Type MR, Lemong,Pesisir Barat,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:16.000Z",85.77,"Cukup Baik","Fair","Cukup Baik","85.8%"
-197,"IA","LHMI","5.2288000","96.9472000",3,"GEOFON Station Lhokseumave, Sumatra, Indonesia","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2007,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2007-GSM","bunker","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:16.000Z",99.59,"Baik","Fair","Baik","99.6%"
-198,"IA","LHSM","-4.1779734","103.5742079",1494,"Type MR, Semendo,Lahat,Sumatera Selatan","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:16.000Z",88.44,"Cukup Baik","Good","Cukup Baik","88.4%"
-199,"IA","LISM","4.4785000","96.7874600",1374,"Type MR, Lingge Isaq,Aceh Tengah,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",96.19,"Baik","Fair","Baik","96.2%"
-200,"IA","LJPI","-3.1271000","139.9450000",405,"Station Type A, Lereh,Jayapura,Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",0,"Mati","Fair","Mati","0.0%"
-201,"IA","LKCI","-3.4921000","120.8858000",75,"Station Type A, Lasusua, Lasusua, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-Libra","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",79.72,"Cukup Baik","Fair","Cukup Baik","79.7%"
-202,"IA","LKSM","-0.1845000","100.6007000",186,"Type MR, Suliki,Limapuluh Koto,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",77.96,"Cukup Baik","Fair","Cukup Baik","78.0%"
-203,"IA","LKUCM","-3.2924000","122.2332000",107,"Station Type MR, Langgikima, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",83.33,"Cukup Baik","Fair","Cukup Baik","83.3%"
-204,"IA","LLSI","-3.2784300","102.9139000",129,"Station Type B Lubuk Linggau Barat,Kota Lubuk","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",90.95,"Baik","Good","Baik","91.0%"
-205,"IA","LLSM","-5.6003900","104.8094300",37,"Type MR, Limau,Tanggamus,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",93.98,"Baik","Good","Baik","94.0%"
-206,"IA","LMNI","-8.2338600","123.7157000",74,"Station Lembata China","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2019,"China",3,"P2",,"not_installed","Quantera-Q8-2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",95.05,"Baik","Good","Baik","95.0%"
-207,"IA","LMTI","-8.6011000","120.4771000",1145,"Station Type A, Langke Rembong,Manggarai,Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Sumba-Timur",14,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:17.000Z",88.98,"Cukup Baik","Good","Cukup Baik","89.0%"
-208,"IA","LOCM","-1.6502000","120.1825000",1370,"Type MR, Lore Tengah,Poso,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P2",,"installed","Quantera-Q8-2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",91.15,"Baik","Fair","Baik","91.2%"
-209,"IA","LOMSI","-4.9109500","122.7415700",58,"Lohia, Muna, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",43.11,"Buruk","Good","Buruk","43.1%"
-210,"IA","LPCM","-3.5012000","119.5378000",29,"Type MR, Lembang,Pinrang,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",90.95,"Baik","Good","Baik","91.0%"
-211,"IA","LPSM","-1.7082000","100.7196000",110,"Type MR, Lengayang,Pesisir Selatan,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",71.17,"Cukup Baik","Poor","Cukup Baik","71.2%"
-212,"IA","LRTI","-8.2752000","123.0000000",53,"Station LRTI","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2012,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:17.000Z",0,"Mati","Fair","Mati","0.0%"
-213,"IA","LSCM","-4.3650000","119.8987000",109,"Type MR, Lalabati Rilau,Soppeng,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",99.32,"Baik","Good","Baik","99.3%"
-214,"IA","LSNI","-8.9666400","117.2183000",24,"Lunyuk, Sumbawa, Nusat Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",84.64,"Cukup Baik","Fair","Cukup Baik","84.6%"
-215,"IA","LTNI","-8.7687050","116.4847490",75,"Lombok Timur, Nusa Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",98.48,"Baik","Good","Baik","98.5%"
-216,"IA","LTNSI","1.3360000","97.3200000",52,"Lahewa Timur, Nias Utara, Sumatera Utara","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",99.36,"Baik","Good","Baik","99.4%"
-217,"IA","LTSM","1.5293600","98.9305000",5,"Type MR, Lumut,Tapanuli Tengah,Sumatera Utara","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",98.92,"Baik","Good","Baik","98.9%"
-218,"IA","LUCM","-1.4262000","120.3225000",1102,"Type MR, Lore Utara,Poso,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",85.34,"Cukup Baik","Poor","Cukup Baik","85.3%"
-219,"IA","LUJI","-7.8260000","113.0107000",665,"Station Type B Lumbang,Pasuruan,Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",94.65,"Baik","Good","Baik","94.7%"
-220,"IA","LUWI","-1.0418000","122.7717000",6,"GEOFON Station Luwuk, Sulawesi, Indonesia","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2009,"GFZ",11,"P2",,"not_installed","Kinemetrics-Q330-2008-VSAT-M2M","bunker","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:17.000Z",0,"Mati","Good","Mati","0.0%"
-221,"IA","MABKI","2.2433000","118.5676000",20,"Maratua, Berau, Kalimantan Timur","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",96.57,"Baik","Fair","Baik","96.6%"
-222,"IA","MAKBI","-8.4870000","115.5050000",86,"Manggis, Karangasem, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",99.33,"Baik","Very Good","Baik","99.3%"
-223,"IA","MAKKI","-1.5822980","108.7969820",39.2,"Kep. Karimata, Kayong Utara, Kalimantan Barat","Kalimantan Barat",28,"Stageof-Sleman",29,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",97.24,"Baik","-","Baik","97.2%"
-224,"IA","MASFI","-8.5370000","122.0320000",13,"Magepanda, Sikka, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",0,"Mati","Good","Mati","0.0%"
-225,"IA","MASM","5.2984700","95.5966700",82,"Type MR, Masjid Raya,Aceh Besar,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",99.46,"Baik","Fair","Baik","99.5%"
-226,"IA","MASSI","4.7330000","125.4790000",105,"Marore, Kepulauan Sangihe, Sulawesi Utara","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",1,"Buruk","Fair","Buruk","1.0%"
-227,"IA","MBBI","-1.5406000","102.0984000",113,"Station Type B Muara Bungo,Bungo,Jambi","Jambi",19,"Stageof-Kepahiang",4,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",0,"Mati","Fair","Mati","0.0%"
-228,"IA","MBJI","-7.4489200","109.6324300",352,"Station Majalengka Banjarnegara Jawa Indonesia","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2018,"REIS",8,"P1",,"installed","Meisei-G1019-2018-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",89,"Cukup Baik","Good","Cukup Baik","89.0%"
-229,"IA","MBPI","-2.0350000","133.7322000",57,"Station Type A, Manimeri,Teluk Bintuni,Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",43.99,"Buruk","Good","Buruk","44.0%"
-230,"IA","MBRPI","-1.7710000","130.4070000",2,"Misool Barat, Raja Ampat, Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",99.76,"Baik","Good","Baik","99.8%"
-231,"IA","MBSM","-3.1451000","101.8374000",37,"Type MR, Marga Sakti Seblat ,Bengkulu Utara,Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",98.88,"Baik","Good","Baik","98.9%"
-232,"IA","MDSI","-4.4861000","104.1783000",111,"Station Muara Dua, Sumatra","Sumatera Selatan",17,"Stageof-Tangerang",22,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2018-GSM",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",87.4,"Cukup Baik","Good","Cukup Baik","87.4%"
-233,"IA","MGAI","4.0079000","126.6700000",91,"Station MGAI","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2012,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2021-GSM","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",91.09,"Baik","Fair","Baik","91.1%"
-234,"IA","MIBPI","-5.8790000","140.7090000",51,"Mindiptana, Boven Digoel, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",0,"Mati","Fair","Mati","0.0%"
-235,"IA","MIPI","-4.5301000","136.8935000",30,"Station Type A, Mimika Baru,Mimika,Papua","Papua",8,"Stageof-Nabire",11,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-Idirect","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:18.000Z",97.28,"Baik","Good","Baik","97.3%"
-236,"IA","MISSI","5.5526120","126.5814700",11,"Miangas, Kepulauan Talaud, Sulawesi Utara","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",89.5,"Cukup Baik","Good","Cukup Baik","89.5%"
-237,"IA","MKBI","-2.4474000","101.2396000",48.21,"Station Muko-Muko, Bengkulu, Indonesia (BMKG)","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2009,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",0,"Mati","Fair","Mati","0.0%"
-238,"IA","MKJM","-7.6629000","110.4834000",410,"Type MR, Manisrenggo,Klaten,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",96.78,"Baik","Good","Baik","96.8%"
-239,"IA","MKSM","-4.5288000","103.3600000",300,"Type MR, Muara Sahung,Kaur,Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",97.73,"Baik","Good","Baik","97.7%"
-240,"IA","MLJI","-8.1574730","112.4466990",275,"Malang Jawa Indonesia","Jawa Timur",3,"Stageof-Malang",28,"aktif",2017,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",95.37,"Baik","Good","Baik","95.4%"
-241,"IA","MLJM","-7.2483000","112.3379000",55,"Type MR, Mantup,Lamongan,Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",89.01,"Cukup Baik","Good","Cukup Baik","89.0%"
-242,"IA","MLMMI","-8.1480000","127.7920000",8,"Moa Lakor, Maluku Barat Daya, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",99.86,"Baik","Good","Baik","99.9%"
-243,"IA","MMCI","-2.9559700","119.3631000",1167,"Station Type A, Mamasa,Mamasa,Sulawesi Barat","Sulawesi Barat",31,"Stageof-Gowa",15,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",98.15,"Baik","Very Good","Baik","98.2%"
-244,"IA","MMRI","-8.6357000","122.2376000",137,"GEOFON Station Maumere, Flores, Indonesia","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2006,"GFZ",11,"P2",,"not_installed","Kinemetrics-Q330-2006-GSM","bunker","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:19.000Z",99.26,"Baik","Very Good","Baik","99.3%"
-245,"IA","MMSI","-2.6892000","118.9090000",221.3,"Station Mamuju China","Sulawesi Barat",31,"Stageof-Gowa",15,"aktif",2008,"China",3,"P1",,"installed","GuralpMinimus+2022-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",47.86,"Buruk","Good","Buruk","47.9%"
-246,"IA","MNAI","-4.3605000","102.9557000",154,"GEOFON Station Manna, Sumatra, Indonesia","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2006,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2006-VSAT-M2M","bunker","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",94.43,"Baik","Good","Baik","94.4%"
-247,"IA","MNI","1.4439700","124.8399800",191,"Station Manado, Sulawesi","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2006,"REIS",8,"P2",,"installed","Meisei-G1019-2018-VSAT-M2M","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:19.000Z",84.15,"Cukup Baik","Fair","Cukup Baik","84.2%"
-248,"IA","MNSI","0.7955000","99.5796000",294.4,"Station Mandailing Natal, Sumatra","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2007,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",98.63,"Baik","Good","Baik","98.6%"
-249,"IA","MPSI","0.3374000","119.8980000",174,"Station Mapaga, Sulawesi","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2021-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",1,"Buruk","Good","Buruk","1.0%"
-250,"IA","MPSM","0.5891000","100.1383000",195,"Type MR, Mapat Tunggul,Pasaman,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",95.22,"Baik","Very Good","Baik","95.2%"
-251,"IA","MRSI","0.4771000","121.9406000",99,"Station Marisa, Sulawesi","Gorontalo",26,"Stageof-Gorontalo",31,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:19.000Z",1,"Buruk","Good","Buruk","1.0%"
-252,"IA","MSAI","-3.3462110","128.9284360",8.9,"Station Amahai, Masohi, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2006,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:20.000Z",81.78,"Cukup Baik","Poor","Cukup Baik","81.8%"
-253,"IA","MSCM","-2.5358000","120.2813000",108,"Type MR, Masamba,Luwu Utara,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",97.99,"Baik","Fair","Baik","98.0%"
-254,"IA","MSHHI","0.6290000","128.4250000",29,"Maba Selatan, Halmahera Timur, Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",99.8,"Baik","Good","Baik","99.8%"
-255,"IA","MTAI","2.1980200","128.2758500",24,"Station Morotai, North Maluku, Indonesia","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2018,"REIS",8,"P1",,"not_installed","Nanometrics-Centaur-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",99.84,"Baik","Good","Baik","99.8%"
-256,"IA","MTCM","-2.5738830","121.0544640",21,"Type MR, Malili,Luwu Timur,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Kendari",16,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",95.52,"Baik","Very Good","Baik","95.5%"
-257,"IA","MTJPI","-2.6270000","140.8640000",6,"Muara Tami, Jayapura, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",90.53,"Baik","Fair","Baik","90.5%"
-258,"IA","MTKI","-0.9418000","114.8959000",100.11,"Station Muara Teweh, Kalimantan, Indonesia (BMKG)","Kalimantan Tengah",22,"Stageof-Balikpapan",21,"aktif",2008,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:20.000Z",90.18,"Baik","Poor","Baik","90.2%"
-259,"IA","MTMPI","-2.3050000","138.0370000",67,"Mamberamo Tengah, Mamberamo Raya, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",0,"Mati","Good","Mati","0.0%"
-260,"IA","MTMTI","-9.5800000","124.8800000",25,"Malaka Tengah, Malaka, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",97.89,"Baik","Fair","Baik","97.9%"
-261,"IA","MTSI","2.1524000","98.2524000",8,"Station Type A, Manduamas,Tapanuli Tengah,Sumatera Utara","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",1,"Buruk","Poor","Buruk","1.0%"
-262,"IA","MTSM","-4.4793000","103.5062000",803,"Type MR, Muara Dua,Oku Selatan,Sumatera Selatan","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",93.56,"Baik","Good","Baik","93.6%"
-263,"IA","MUMUI","-1.7850000","125.4810000",11,"Mangoli Utara, Kepulauan Sula, Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",45,"Buruk","Fair","Buruk","45.0%"
-264,"IA","MUTSI","2.3000000","98.9650000",1571,"Muara, Tapanuli Utara, Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",38.97,"Buruk","Fair","Buruk","39.0%"
-265,"IA","MWPI","-0.9258000","134.0431000",30,"Station Manokwari China","Papua Barat",6,"Stageof-Sorong",6,"aktif",2009,"China",3,"P1",,"not_installed","Guralp-Minimus+2022-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",99.56,"Baik","Good","Baik","99.6%"
-266,"IA","NANFI","-8.7610000","121.3020000",644,"Nangaroro, Nagekeo, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",91.3,"Baik","Very Good","Baik","91.3%"
-267,"IA","NBMI","-3.8509300","126.6995800",71,"Station Type A, Namrole,Buru Selatan,Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",98.86,"Baik","Good","Baik","98.9%"
-268,"IA","NBPI","-3.3656000","135.4972000",98.81,"Station NBPI (ex-JAY1)","Papua",8,"Stageof-Nabire",11,"nonaktif",2006,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-GSM","bunker","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:20.000Z",0,"Mati","Fair","Mati","0.0%"
-269,"IA","NGJI","-7.3676000","111.4612000",149,"Station Ngawi, Java","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2007,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",44.45,"Buruk","Fair","Buruk","44.5%"
-270,"IA","NJBM","-8.3098400","114.6171250",199,"Station Type MR, Negara, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",94.31,"Baik","Good","Baik","94.3%"
-271,"IA","NKBI","-8.7261150","115.5259633",452,"Station Type B Nusa Penida,Klungkung,Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",99.73,"Baik","Very Good","Baik","99.7%"
-272,"IA","NKKI","-1.5605000","110.5671000",69,"Station Type A, Nangan Tayap, Ketapang, Kalimantan","Kalimantan Barat",28,"Stageof-Sleman",29,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",99.39,"Baik","Good","Baik","99.4%"
-273,"IA","NSBMM","-3.0829080","128.2095440",65,"Station Type MR, Seram Barat, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",0,"Mati","Fair","Mati","0.0%"
-274,"IA","OBMI","-1.3413000","127.6444000",110.89,"Station Pulau, BMG, Indonesia","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2011,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2022-GSM","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",0,"Mati","Good","Mati","0.0%"
-275,"IA","OBMPI","-6.5550000","139.3000000",21,"Obaa, Mappi, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",94.54,"Baik","Fair","Baik","94.5%"
-276,"IA","OMBFM","-8.6911917","119.8248167",102,"Station Type MR, Komodo, Manggarai Barat, NTT","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",59,"Buruk","Good","Buruk","59.0%"
-277,"IA","ONSM","2.1599000","98.6301000",1158,"Type MR, Onan Ganjang,Humbang Hasundutan,Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2020-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",86.13,"Cukup Baik","Fair","Cukup Baik","86.1%"
-278,"IA","PAASI","5.6710000","95.1290000",9,"Pulo Aceh, Aceh Besar, Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",81.72,"Cukup Baik","Fair","Cukup Baik","81.7%"
-279,"IA","PABI","0.1236000","99.8719000",155,"Station Type A, Pasaman,Pasaman Barat,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",90.89,"Baik","Good","Baik","90.9%"
-280,"IA","PABKI","-3.1121720","115.3642200",110.1,"Paramasan, Kalimantan Selatan","Kalimantan Selatan",27,"Stageof-Balikpapan",21,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",91.37,"Baik","Fair","Baik","91.4%"
-281,"IA","PAFM","-8.3832000","124.1280000",77,"Station Type MR, Pantar Tengah, Alor, NTT","Nusa Tenggara Timur",1,"Stageof-Alor",1,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",86.75,"Cukup Baik","Fair","Cukup Baik","86.8%"
-282,"IA","PAKI","-1.9092180","116.1914100",17,"Paser, Kalimantan Timur, Indonesia","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2021,"BB2021",13,"P2",,"installed","Guralp-Minimus+2021-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",36.15,"Buruk","Poor","Buruk","36.1%"
-283,"IA","PASJI","-6.2120000","105.9835000",248,"Padarincang, Serang, Banten","Banten",21,"Stageof-Tangerang",22,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",89.89,"Cukup Baik","Good","Cukup Baik","89.9%"
-284,"IA","PASMI","-2.9646000","100.2028000",39,"Pagai Selatan, Kepulauan Mentawai, Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",98.92,"Baik","Very Good","Baik","98.9%"
-285,"IA","PBCI","0.3830100","124.0396000",33,"Station Type A, Poigar,Bolaang Mongondow,Sulawesi Utara","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-Idirect","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",1,"Buruk","Fair","Buruk","1.0%"
-286,"IA","PBJI","-7.0874000","107.4757000",1090,"Station Type B, Pasir Jambu","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",99.66,"Baik","Good","Baik","99.7%"
-287,"IA","PBKI","-2.7047000","111.6697000",74.44,"Station Pangkalan Bun, Kalimantan","Kalimantan Tengah",22,"Stageof-Balikpapan",21,"aktif",2006,"LIBRA",2,"P1",,"not_installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:21.000Z",94.42,"Baik","Fair","Baik","94.4%"
-288,"IA","PBLI","-8.8218000","116.2778000",106,"Station Type A, Pujut,Lombok Tengah ,Nusa Tenggara","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",45.88,"Buruk","Good","Buruk","45.9%"
-289,"IA","PBMMI","-7.8600000","129.5970000",7,"Pulau-Pulau Babar, Maluku Barat Daya, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",0,"Mati","Good","Mati","0.0%"
-290,"IA","PBMSI","0.9952980","124.2822770",88,"Station Type A, Poigar, Bolaang Mongondow, Sulawesi","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",73.95,"Cukup Baik","Poor","Cukup Baik","74.0%"
-291,"IA","PBNI","-8.7560000","118.5680000",242,"Parado, Bima, Nusa Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:21.000Z",1,"Buruk","Good","Buruk","1.0%"
-292,"IA","PBSI","-0.0547000","98.2800000",47,"Station Pulau Batu, Sumatra","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",99.83,"Baik","Good","Baik","99.8%"
-293,"IA","PCI","-0.9054000","119.8366000",150,"Station Palu, Indonesia","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2005,"REIS",8,"P2",,"installed","Meisei-G1019-2018-VSAT-M2M","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:22.000Z",99.5,"Baik","Good","Baik","99.5%"
-294,"IA","PCJI","-8.1947000","111.1771000",702.27,"Station Pacitan, Java","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",99.94,"Baik","Very Good","Baik","99.9%"
-295,"IA","PCJM","-6.9129340","108.7191070",646,"Type MR, Pabuaran,Cirebon,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",81.08,"Cukup Baik","Poor","Cukup Baik","81.1%"
-296,"IA","PDLI","-8.1037000","117.8729000",16,"Station Type A,Tambora,Dompu,Nusa Tenggara Barat","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",1,"Buruk","Fair","Buruk","1.0%"
-297,"IA","PDSI","-0.9118000","100.4617000",275.6,"Station Padang, Sumatra","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2006,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",0,"Mati","Fair","Mati","0.0%"
-298,"IA","PGJM","-8.0102000","110.4140000",361,"Station Type MR, Panggang, Gunung Kidul, DIY","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2020,,,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",89.98,"Cukup Baik","Good","Cukup Baik","90.0%"
-299,"IA","PICM","-0.7109970","120.0887570",40,"Type MR, Parigi Utara,Parigi Moutong,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",95.25,"Baik","Good","Baik","95.3%"
-300,"IA","PKCI","-4.3507000","122.3436000",201,"Station Type A, Palangga, Palangga,Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",98.94,"Baik","Good","Baik","98.9%"
-301,"IA","PKJI","-7.1678000","109.5798000",847,"Station Type B Paninggaran,Pekalongan,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",91.74,"Baik","Good","Baik","91.7%"
-302,"IA","PKJM","-6.7957700","108.4398500",290,"Type MR, Pasawahan,Kuningan,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",87.27,"Cukup Baik","Fair","Cukup Baik","87.3%"
-303,"IA","PKSI","-4.0428000","103.2639000",741,"Station Type B Pagar Alam Utara,Kota Pagar","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",96.49,"Baik","Good","Baik","96.5%"
-304,"IA","PLAI","-8.8274543","117.7764528",62,"Plampang, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2010,"GFZ",11,"P2",,"not_installed","Kinemetrics-Q330S+2020-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",0,"Mati","Very Good","Mati","0.0%"
-305,"IA","PLJI","-7.8616000","112.1548000",232.9,"Station Type B Plosoklaten,Kediri,Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2025-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",80.74,"Cukup Baik","Poor","Cukup Baik","80.7%"
-306,"IA","PLSI","0.2372900","100.5539800",133,"Station Type B Pangkalan Koto Baru,Lima Puluh","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",99.71,"Baik","Good","Baik","99.7%"
-307,"IA","PLSM","1.5400000","99.6462000",88,"Type MR, Sosa,Padanglawas,Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2020-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:22.000Z",92.23,"Baik","Fair","Baik","92.2%"
-308,"IA","PMBI","-2.9024000","104.6993000",25,"GEOFON Station Palembang, Sumatra, Indonesia","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2006,"GFZ",11,"P1","","not_installed","Kinemetrics-Q330S+2020-GSM","surface","outside_BMKG_office","ada","baik","","","",,"2026-07-06T04:00:22.000Z",87.41,"Cukup Baik","Fair","Cukup Baik","87.4%"
-309,"IA","PMCI","-1.1728800","119.3477000",83,"Station Type A, Pasangkayu, Mamuju Utara, Sulawesi","Sulawesi Barat",31,"Stageof-Palu",7,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",97.28,"Baik","Fair","Baik","97.3%"
-310,"IA","PMMI","0.3738000","127.4158000",16,"Station Type A, Pulau Makian,Halmahera Selatan,Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",99.54,"Baik","Fair","Baik","99.5%"
-311,"IA","PMSI","-3.5008000","118.9149000",306.8,"Station Majene, Sulawesi, Indonesia (BMKG)","Sulawesi Barat",31,"Stageof-Gowa",15,"aktif",2006,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",90.7,"Baik","Fair","Baik","90.7%"
-312,"IA","POBSI","-4.7398500","122.0021400",126,"Poleang, Bombana, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",98.44,"Baik","Good","Baik","98.4%"
-313,"IA","POCI","-1.4203170","120.6569540",10,"Station Type A, Poso Pesisir,Poso,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",93.43,"Baik","Fair","Baik","93.4%"
-314,"IA","POKJI","-8.0530000","112.8120000",906,"Poncokusumo, Malang, Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",80.99,"Cukup Baik","Fair","Cukup Baik","81.0%"
-315,"IA","PPCM","-3.7270000","119.7269000",48,"Type MR, Patampanua,Pinrang,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",83.97,"Cukup Baik","Fair","Cukup Baik","84.0%"
-316,"IA","PPI","-0.4554760","100.3972170",783.6,"Station Padangpanjang, Indonesia","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2005,"REIS",8,"P1",,"installed","Guralp-Minimus+2023-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:23.000Z",99.38,"Baik","Good","Baik","99.4%"
-317,"IA","PPJI","-7.7044400","112.6352777",885,"Tretes, Jawa, Indonesia","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2018,"REIS",8,"P1",,"installed","Meisei-G1019-2018-Fiberoptic-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",99.79,"Baik","Good","Baik","99.8%"
-318,"IA","PPLI","-5.7410300","105.1448600",63,"Station Type B Punduh Pedada,Pesawaran,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",99.65,"Baik","Very Good","Baik","99.7%"
-319,"IA","PPSI","-2.7660000","100.0100000",6,"Station Pulau Pagai, Sumatra","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2024-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",98.65,"Baik","Fair","Baik","98.7%"
-320,"IA","PPSM","-5.3182000","104.0156000",3,"Type MR, Pesisir Selatan,Pesisir Barat,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",72.67,"Cukup Baik","Poor","Cukup Baik","72.7%"
-321,"IA","PRJI","-8.0721600","110.7917800",337,"Station Type B Pracimantoro,Wonogiri,Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",91.1,"Baik","Fair","Baik","91.1%"
-322,"IA","PRLJI","-8.2322730","113.1140180",159,"Station Type A, Pasiran, Lumajang, Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",90.02,"Baik","Fair","Baik","90.0%"
-323,"IA","PRSI","0.3775000","101.8220000",24,"Pelalawan, Riau, Sumatra, Indonesia","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2021,"BB2021",13,"P2",,"installed","Guralp-Minimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:23.000Z",88.14,"Cukup Baik","Poor","Cukup Baik","88.1%"
-324,"IA","PSI","2.6950000","98.9240000",1051,"Station Rantau Prapat, Sumatra, Indonesia (CTBTO)","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2006,"CTBTO",10,"P1",,"not_installed","Nanometrics-EuropaT-2018-GSM-CTBTO","bunker","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",98.37,"Baik","-","Baik","98.4%"
-325,"IA","PSJCM","-7.0600000","120.6202450",79,"Station Type MR, Pasimassungu, Kep. Selayar, Sulawesi","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",0,"Mati","Good","Mati","0.0%"
-326,"IA","PSJM","-6.9685800","106.5490600",205,"Type MR, Pelabuhan Ratu,Sukabumi,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",99.9,"Baik","Good","Baik","99.9%"
-327,"IA","PSLI","-5.9373200","105.5100400",39,"Station Type B Rajabasa P. Sibesi,Lampung Selatan,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Quanterra-Q330Splus-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",89,"Cukup Baik","Good","Cukup Baik","89.0%"
-328,"IA","PSSI","2.7353200","125.4045000",1253,"Siau, Sulawesi Utara","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2017,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2018-Libra","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",99.3,"Baik","Very Good","Baik","99.3%"
-329,"IA","PSSM","-5.8643800","104.6952800",6,"Type MR, Pematang Sawah,Tanggamus,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",81.81,"Cukup Baik","Fair","Cukup Baik","81.8%"
-330,"IA","PTJI","-6.2655167","106.7488250",76,"Station Type B Pondok Aren,Tangerang Selatan,Banten","Banten",21,"Stageof-Tangerang",22,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Quanterra-Q330Splus-2019-VSAT-M2M",,"inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:24.000Z",45.24,"Buruk","Poor","Buruk","45.2%"
-331,"IA","PTSM","2.0118560","99.1660110",1196,"Type MR, Pangaribuan,Tapanuli Utara,Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",85.4,"Cukup Baik","Fair","Cukup Baik","85.4%"
-332,"IA","PUPSI","-1.7330000","120.6760000",670,"Pamona Utara, Poso, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",0,"Mati","Very Good","Mati","0.0%"
-333,"IA","PWCM","-3.6739000","120.4005000",102,"Station Type MR, Pitumpanua, Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Quanterra-Q330Splus-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",1,"Buruk","Good","Buruk","1.0%"
-334,"IA","PWJI","-8.0218870","111.8041120",205,"Station Pagerwojo, Java","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2021-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",99.97,"Baik","Good","Baik","100.0%"
-335,"IA","RASM","-2.1655000","101.0708000",100,"Type MR, Ranah Ampek Hulu Tapan,Pesisir Selatan,Sumatera","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",0,"Mati","Fair","Mati","0.0%"
-336,"IA","RDCM","-1.2954830","119.5524630",44,"Type MR, Rio Pakava,Donggala,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",88.37,"Cukup Baik","Fair","Cukup Baik","88.4%"
-337,"IA","RGRI","-0.3491000","102.3338000",40.93,"Station Rengat, Sumatra","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2006,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2019-GSM","bunker","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:24.000Z",82.21,"Cukup Baik","Fair","Cukup Baik","82.2%"
-338,"IA","RHRSI","1.5620000","101.0030000",38,"Rokan Hilir, Riau, Sumatra, Indonesia","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2021,"BB2021",13,"P2",,"installed","Guralp-Minimus-2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",47.26,"Buruk","Poor","Buruk","47.3%"
-339,"IA","RKCM","-2.9402467","121.5806317",495,"Station Type MR, Rauta, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Quanterra-Q330Splus-2019-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:24.000Z",93.63,"Baik","Good","Baik","93.6%"
-340,"IA","RKPI","-1.5107000","134.1773000",106.2,"Station Ransiki, Papua, Indonesia (BMKG)","Papua Barat",6,"Stageof-Sorong",6,"aktif",2008,"LIBRA",2,"P1",,"installed","Guralp-Minimus-2021-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:25.000Z",1,"Buruk","Poor","Buruk","1.0%"
-341,"IA","RLSI","2.0687000","99.8455000",29,"Station Type A, Rantau Selatan,Labuhan Batu,Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",1,"Buruk","Fair","Buruk","1.0%"
-342,"IA","RMSM","-2.6232600","102.7617000",56,"Type MR, Rawas Hulu,Musi Rawas,Sumatera Selatan","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",92.3,"Baik","Good","Baik","92.3%"
-343,"IA","RNFM","-8.4293450","121.0261133",84,"Station Type MR, Riung, Ngada, NTT","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Quanterra-Q330Splus-2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",90.2,"Baik","Good","Baik","90.2%"
-344,"IA","RONI","-10.7600000","123.0700000",200.3,"Station Rote China","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2019,"China",3,"P2",,"not_installed","Quantera-Q8-2024-Fiberoptic",,"outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:25.000Z",89.7,"Cukup Baik","Fair","Cukup Baik","89.7%"
-345,"IA","ROTTI","-10.8060000","123.0130000",139,"Rote Barat Daya, Rote Ndao, Nusa Tenggara","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",93.07,"Baik","Fair","Baik","93.1%"
-346,"IA","RRHRI","0.5713740","100.4273970",92,"Station Type A, Rokan IV Kota, Rokan","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",1,"Buruk","Poor","Buruk","1.0%"
-347,"IA","RRSI","0.8409600","100.3461100",78,"Station Type A, Rambah,Rokan Hulu,Riau","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",1,"Buruk","Fair","Buruk","1.0%"
-348,"IA","RSNI","-8.8860000","117.4830000",745,"Ropang, Sumbawa, Nusa Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus-2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",87.78,"Cukup Baik","Good","Cukup Baik","87.8%"
-349,"IA","RSSM","2.5979220","98.7829840",1542,"Type MR, Ronggurnihuta,Samosir,Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",96.6,"Baik","Good","Baik","96.6%"
-350,"IA","RTBI","-8.4597000","114.9420000",300.74,"Station Rangdo, Negare, Bali, Indonesia (BMKG)","Bali",12,"Stageof-Denpasar",17,"aktif",2005,"LIBRA",2,"P2",,"not_installed","Guralp-Minimus-2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",46.31,"Buruk","Good","Buruk","46.3%"
-351,"IA","SAASI","5.5620000","95.5250000",42,"Seulimum, Aceh Besar, Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",47.14,"Buruk","Poor","Buruk","47.1%"
-352,"IA","SADLY","-6.5737000","106.0741300",295,"Station Gunung Kencana, Indonesia","Banten",21,"Stageof-Tangerang",22,"aktif",2021,,,"P2",,"installed","Nanometrics-Centaur-2021-VSAT-M2M",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",85.72,"Cukup Baik","Fair","Cukup Baik","85.7%"
-353,"IA","SAKJI","-7.6860000","110.1550000",706,"Samigaluh, Kulonprogo, DIY","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2023,"IDRIP83",6,"P2",,"installed","Quantera-Q8-2023-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",92.79,"Baik","Very Good","Baik","92.8%"
-354,"IA","SAMKI","-0.1892520","110.3636700",30,"Sanggau, Meliau, Kalimantan Barat","Kalimantan Barat",28,"Stageof-Sleman",29,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",1,"Buruk","Good","Buruk","1.0%"
-355,"IA","SANI","-2.0496950","125.9881040",24,"GEOFON Station Sanana, Indonesia","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2009,"GFZ",11,"P1",,"not_installed","Kinemetrics-QuanterraQ330-2009-Idirect","surface","outside_BMKG_office","ada","baik","",,,,"2026-07-06T04:00:25.000Z",0,"Mati","Good","Mati","0.0%"
-356,"IA","SAPSI","-1.0000000","120.4640000",25,"Sausu, Parigi Moutong, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",92.37,"Baik","Very Good","Baik","92.4%"
-357,"IA","SASI","0.1241100","99.8753700",168,"Simpang Empat, Sumatra, Indonesia","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2018,"REIS",8,"P2",,"installed","Meisei-G1019-2018-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",93.36,"Baik","Good","Baik","93.4%"
-358,"IA","SASM","4.8795000","95.4825000",104,"Type MR, Sampoiniet,Aceh Jaya,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",93.64,"Baik","Good","Baik","93.6%"
-359,"IA","SATPI","-1.9720000","138.8700000",14,"Sarmi Timur, Sarmi, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",88.34,"Cukup Baik","Fair","Cukup Baik","88.3%"
-360,"IA","SAUI","-7.9826000","131.2988000",110,"GEOFON Station Saumlaki, Indonesia","Maluku",2,"Stageof-Maluku-Tenggara-Barat",9,"aktif",2009,"GFZ",11,"P2",,"installed","Kinemetrics-QuanterraQ330-2009-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:25.000Z",79.28,"Cukup Baik","Fair","Cukup Baik","79.3%"
-361,"IA","SBBM","-8.2031000","114.9179000",111,"Station Type MR, Seririt, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Quanterra-Q330Splus-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:25.000Z",96.81,"Baik","Very Good","Baik","96.8%"
-362,"IA","SBJI","-6.1117000","106.1318000",64.48,"Station Serang, Indonesia","Banten",21,"Stageof-Tangerang",22,"aktif",2005,"LIBRA",2,"P1",,"not_installed","GuralpMinimus+2022-GSM","bunker","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:26.000Z",0,"Mati","Fair","Mati","0.0%"
-363,"IA","SBNI","-10.4922790","121.8460040",14.5,"Sabu, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2017,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",99.93,"Baik","Good","Baik","99.9%"
-364,"IA","SBSM","0.1983000","99.3775000",1,"Type MR, Sungai Beremas,Pasaman Barat,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",72.19,"Cukup Baik","Poor","Cukup Baik","72.2%"
-365,"IA","SBSSI","-1.2060000","119.8890000",221,"Sigi Biromaru, Sigi, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",1,"Buruk","Very Good","Buruk","1.0%"
-366,"IA","SCJI","-7.6810000","109.1689200",45,"Station Gunung Srandil, Java, BMG, Indonesia","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2006,"LIBRA",2,"P1",,"installed","Guralp-Minimus-2022-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",1,"Buruk","Good","Buruk","1.0%"
-367,"IA","SCJM","-6.8437000","107.2221000",327,"Type MR, Sukaluyu,Cianjur,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",91.88,"Baik","Fair","Baik","91.9%"
-368,"IA","SDCI","-0.4941550","119.7687220",27,"Station Type A, Sindue,Donggala,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",90.93,"Baik","Fair","Baik","90.9%"
-369,"IA","SDSI","-0.9325000","101.4280000",213.32,"Station Sungai Dareh, Sumatra","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2007,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",0,"Mati","Fair","Mati","0.0%"
-370,"IA","SDSM","2.7537900","98.2867700",1018,"Type MR, Sidikalang,Dairi,Sumatera Utara","Sumatera Utara",25,"Stageof-Aceh-Selatan",13,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",83.78,"Cukup Baik","Fair","Cukup Baik","83.8%"
-371,"IA","SEJI","-7.0051000","111.7288000",120,"Station Type B Senori,Tuban,Jawa Timur","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Quanterra-Q330Splus-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",78.71,"Cukup Baik","Poor","Cukup Baik","78.7%"
-372,"IA","SEMI","-2.9170310","129.8208170",69,"Station Type A, Seram Utara Timur Seti,Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",89.71,"Cukup Baik","Poor","Cukup Baik","89.7%"
-373,"IA","SGKI","0.5302050","117.6043470",182,"Station Sangata, Kalimantan, Indonesia (BMKG)","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2008,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",89.59,"Cukup Baik","Fair","Cukup Baik","89.6%"
-374,"IA","SGSI","3.6860000","125.5286000",100.47,"Station Sangihe, BMG","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2006,"LIBRA",2,"P1",,"not_installed","GuralpMinimus+2022-GSM","bunker","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:26.000Z",90.04,"Baik","Fair","Baik","90.0%"
-375,"IA","SICJI","-7.4720000","108.8080000",68,"Sidareja, Cilacap, Jawa Tengah","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",99.72,"Baik","Good","Baik","99.7%"
-376,"IA","SIJI","-0.8691200","131.2660500",201,"Station Sorong, Indonesia (CTBTO AS042)","Papua Barat",6,"Stageof-Sorong",6,"aktif",2010,"CTBTO",10,"P1",,"not_installed","Nanometrics-Centaur-2026-GSM-CTBTO","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",80.6,"Cukup Baik","-","Cukup Baik","80.6%"
-377,"IA","SIJM","-7.4101100","112.7605040",24,"Type MR, Sidoarjo,Sidoarjo,Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",77.01,"Cukup Baik","Poor","Cukup Baik","77.0%"
-378,"IA","SIRSI","0.8920000","101.2360000",79,"Siak, Riau, Sumatra, Indonesia","Riau",16,"Stageof-Padang-Panjang",20,"aktif",2021,"BB2021",13,"P2",,"installed","Guralp-Minimus-2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",0,"Mati","Poor","Mati","0.0%"
-379,"IA","SISM","4.6082000","96.7288000",1034,"Type MR, Silih Nara,Aceh Tengah,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",1,"Buruk","Good","Buruk","1.0%"
-380,"IA","SISMI","-1.7806000","99.1401800",39,"Siberut Selatan, Kepulauan Mentawai, Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",93.28,"Baik","Good","Baik","93.3%"
-381,"IA","SIUMI","-1.1260000","98.9800000",9,"Siberut Utara, Kepulauan Mentawai, Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",87.89,"Cukup Baik","Poor","Cukup Baik","87.9%"
-382,"IA","SJPM","-2.5698000","140.5020000",192,"Station, Type MR, Sentani, Jayapura","Papua",8,"Stageof-Nabire",11,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-QuanteraQ330s+-2020-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:26.000Z",85.74,"Cukup Baik","Fair","Cukup Baik","85.7%"
-383,"IA","SKJI","-7.0053000","106.5563000",100.35,"Station Sukabumi, Java","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2006,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2024-Fiberoptic-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:27.000Z",91.77,"Baik","Good","Baik","91.8%"
-384,"IA","SKPM","-3.4485000","140.7256000",343,"Station Type MR, Senggi, Keerom, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-QuanteraQ330s+-2020-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",82.11,"Cukup Baik","Fair","Cukup Baik","82.1%"
-385,"IA","SKSI","5.8944720","95.3127100",12,"Station Type A, Sukakarya,Kota Sabang,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",1,"Buruk","Fair","Buruk","1.0%"
-386,"IA","SKSM","-1.9460000","101.3497000",956,"Type MR, Siulak Mukai,Kerinci,Jambi","Jambi",19,"Stageof-Kepahiang",4,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",0,"Mati","Fair","Mati","0.0%"
-387,"IA","SLBFM","-8.7962150","115.9340670",77,"Station Type MR, Sekotong Tengah, Nusa Tenggara","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-QuanteraQ330s+-2020-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",91.42,"Baik","Fair","Baik","91.4%"
-388,"IA","SLSI","-2.3924000","102.5927000",76.83,"Station Sarolangun, Jambi Indonesia (BMKG)","Jambi",19,"Stageof-Kepahiang",4,"aktif",2008,"LIBRA",2,"P1",,"installed","Guralp-Minimus-2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",0,"Mati","Poor","Mati","0.0%"
-389,"IA","SLSM","-0.8313200","100.6534200",389,"Type MR, Sungai Lasi,Solok,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",79.53,"Cukup Baik","Poor","Cukup Baik","79.5%"
-390,"IA","SMKI","-0.4461000","117.2085000",97.28,"Station Samarinda, Kalimantan","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2006,"LIBRA",2,"P2",,"not_installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",1,"Buruk","Fair","Buruk","1.0%"
-391,"IA","SMPI","-1.9811150","138.7107990",111,"Station Sarmi, Irian Jaya","Papua",8,"Stageof-Jayapura",8,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2019-Libra","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",0,"Mati","Good","Mati","0.0%"
-392,"IA","SMRI","-7.0491500","110.4406700",203,"GEOFON Station Semarang, Java, Indonesia","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2008,"GFZ",11,"P2",,"not_installed","Kinemetrics-Q330S+2020-Idirect","bunker","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",91.09,"Baik","Good","Baik","91.1%"
-393,"IA","SMSI","0.9885000","122.3654000",85.39,"Station Sumalata, BMG, Indonesia","Gorontalo",26,"Stageof-Gorontalo",31,"aktif",2011,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2020-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",50.26,"Buruk","Very Good","Buruk","50.3%"
-394,"IA","SMSM","-0.0059230","100.1710300",361,"Type MR, Simpati,Pasaman,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:27.000Z",99.24,"Baik","Good","Baik","99.2%"
-395,"IA","SNBI","0.9632450","97.4295380",4,"Station Type A, Sirombu,Nias Barat,Sumatera Utara","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",43.06,"Buruk","Poor","Buruk","43.1%"
-396,"IA","SNJI","-7.7808000","111.7591000",1341,"Station Sawahan, Indonesia (JISNET)","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2018,"REIS",8,"P1",,"installed","Meisei-G1019-2018-VSAT-M2M","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",99.74,"Baik","-","Baik","99.7%"
-397,"IA","SNSI","2.4089000","96.3267000",14.48,"Station Sinabang, Aceh, Indonesia (BMKG)","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2008,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",44.1,"Buruk","Poor","Buruk","44.1%"
-398,"IA","SOEI","-9.7553000","124.2672000",0,"GEOFON Station Soe, Indonesia","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2008,"GFZ",11,"P1",,"installed","Kinemetrics-Q330-2016-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",99.31,"Baik","Fair","Baik","99.3%"
-399,"IA","SOMPI","-8.4310000","141.0070000",38,"Sota, Merauke, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",99.39,"Baik","-","Baik","99.4%"
-400,"IA","SPSI","-3.9646000","119.7691000",142,"Station Sidrap, Sulawesi","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2007,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2025-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",91.8,"Baik","Good","Baik","91.8%"
-401,"IA","SPSJM","-6.6669333","107.6136017",659,"Station Type MR, Serang Panjang, Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",93.49,"Baik","Fair","Baik","93.5%"
-402,"IA","SPSM","2.5159600","98.3738300",999,"Type MR, Sitellu Tali Urang Julu,Pakpak Bharat,Sumatera","Sumatera Utara",25,"Stageof-Aceh-Selatan",13,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",91.99,"Baik","Fair","Baik","92.0%"
-403,"IA","SRBI","-8.0848000","115.2126000",111.5,"Station Singaraja, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2007,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",1,"Buruk","Fair","Buruk","1.0%"
-404,"IA","SRMI","-2.9414850","129.1818010",6,"Station Type A, Seram Utara,Maluku Tengah,Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",1,"Buruk","Poor","Buruk","1.0%"
-405,"IA","SRPI","-1.8769220","136.2401690",101,"Station Serui, Papua, Indonesia (BMKG)","Papua",8,"Stageof-Nabire",11,"aktif",2008,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2019-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:28.000Z",89.02,"Cukup Baik","Fair","Cukup Baik","89.0%"
-406,"IA","SRSI","-2.5315540","120.8777910",36,"Sorowako, Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Kendari",16,"aktif",2017,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2017-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",97.88,"Baik","Good","Baik","97.9%"
-407,"IA","SSASI","2.8300000","95.9250000",17,"Simeulue Barat, Simeulue, Aceh","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",1,"Buruk","Good","Buruk","1.0%"
-408,"IA","SSJM","-6.8872000","106.9626000",841,"Type MR, Sukaraja,Sukabumi,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",96.47,"Baik","Good","Baik","96.5%"
-409,"IA","SSKI","0.8171730","108.9702550",20,"Singkawang, Kalimanta","Kalimantan Barat",28,"Stageof-Sleman",29,"aktif",2017,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2017-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:28.000Z",84.2,"Cukup Baik","Fair","Cukup Baik","84.2%"
-410,"IA","SSMI","-3.7368070","130.8288080",10,"Station Type A, Siritaun Wida Timur,Seram Bagian","Maluku",2,"Stageof-Ambon",2,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",1,"Buruk","Fair","Buruk","1.0%"
-411,"IA","SSSI","2.6749200","97.9707700",56,"Subulussalam, Sumatra, Indonesia","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2018,"REIS",8,"P1",,"installed","Meisei-G1019-2018-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",90.47,"Baik","Fair","Baik","90.5%"
-412,"IA","SSSM","-1.5640700","101.2374700",563,"Type MR, Sangir,Solok Selatan,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",0,"Mati","Fair","Mati","0.0%"
-413,"IA","STSI","-2.3887400","101.0478300",16,"Station Type B Silaut,Pesisir Selatan,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",82.23,"Cukup Baik","Poor","Cukup Baik","82.2%"
-414,"IA","SUPJI","-6.7960000","105.5150000",51,"Sumur, Pandeglang, Banten","Banten",21,"Stageof-Tangerang",22,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",35.87,"Buruk","Good","Buruk","35.9%"
-415,"IA","SUSM","-5.0212000","104.2945000",1055,"Type MR, Sekincau,Lampung Barat,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",84.8,"Cukup Baik","Fair","Cukup Baik","84.8%"
-416,"IA","SUSPI","-0.7320000","135.7340000",11,"Supiori Timur, Supiori, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",1,"Buruk","Poor","Buruk","1.0%"
-417,"IA","SWCM","-4.2145000","120.0109000",23,"Type MR, Sabbang Paru,Wajo,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",80.61,"Cukup Baik","Fair","Cukup Baik","80.6%"
-418,"IA","SWI","-0.8628000","131.2592000",128.88,"Station Sorong, Indonesia","Papua Barat",6,"Stageof-Sorong",6,"aktif",2005,"LIBRA",2,"P1",,"installed","Guralp-Minimus+2021-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:29.000Z",90.77,"Baik","Fair","Baik","90.8%"
-419,"IA","SWJI","-7.7349000","111.7669000",723.33,"Station Sawahan, Java","Jawa Timur",3,"Stageof-Nganjuk",12,"aktif",2006,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2021-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:29.000Z",45.9,"Buruk","Good","Buruk","45.9%"
-420,"IA","SWPM","-0.8035000","133.5940000",172,"Station Type MR, Sidey, Manokwari, Papua","Papua Barat",6,"Stageof-Nabire",11,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",90.74,"Baik","Good","Baik","90.7%"
-421,"IA","SYJI","-7.8115740","110.4711100",138,"Sleman, Yogyakarta, Jawa, Indonesia","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus+2021-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",99.58,"Baik","Good","Baik","99.6%"
-422,"IA","TAGJI","-8.0770000","110.5850000",243,"Tanjungsari, Gunung Kidul, DIY","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",99.86,"Baik","Very Good","Baik","99.9%"
-423,"IA","TAMI","-3.6759060","128.1108030",174,"Station Type A, Teluk Ambon,Kota Ambon,Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",1,"Buruk","Fair","Buruk","1.0%"
-424,"IA","TAPSI","-3.3320000","119.2490000",56,"Tapango, Polewali Mandar, Sulawesi Barat","Sulawesi Barat",31,"Stageof-Gowa",15,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",88.6,"Cukup Baik","Very Good","Cukup Baik","88.6%"
-425,"IA","TARAI","3.3271200","117.5703700",95,"Station Tarakan, Kalimantan, Indonesia (JISNET)","Kalimantan Utara",32,"Stageof-Balikpapan",21,"aktif",2006,"REIS",8,"P2",,"installed","Meisei-G1019-2018-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:29.000Z",80.44,"Cukup Baik","Poor","Cukup Baik","80.4%"
-426,"IA","TASI","-0.3241000","100.0791000",25,"Station Type A, Tanjung Raya,Agam,Sumatera Barat","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",88.77,"Cukup Baik","Fair","Cukup Baik","88.8%"
-427,"IA","TASSI","2.3470000","125.3860000",46,"Tagulandang, Siau Tagulandang Biaro, Sulawesi Utara","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",88.92,"Cukup Baik","Good","Cukup Baik","88.9%"
-428,"IA","TBCM","-4.9117704","120.2829900",64,"Type MR, Tonra,Bone,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",99.4,"Baik","Fair","Baik","99.4%"
-429,"IA","TBJI","-6.8179000","111.8481000",54.45,"Station Tambak Boyo, Java","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2007,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2017-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",97.33,"Baik","Good","Baik","97.3%"
-430,"IA","TBJKI","-1.8475030","115.6249080",81.6,"Jaro, Tabalong, Kalimantan Selatan","Kalimantan Selatan",27,"Stageof-Balikpapan",21,"aktif",2023,"ALOPTAMA 2023",9,"P2",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",96.59,"Baik","Good","Baik","96.6%"
-431,"IA","TBKI","2.1360000","117.4241000",22,"Station Type A, Teluk Bayur,Berau,Kalimantan Timur","Kalimantan Timur",15,"Stageof-Balikpapan",21,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",92.35,"Baik","Good","Baik","92.3%"
-432,"IA","TBMCM","0.7139000","124.5900000",254,"Station Type MR, Tutuyan, Bolaang Timur, Mongondow,","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2020,"MR2020",1,"P2",,"installed","kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:29.000Z",89.97,"Cukup Baik","Good","Cukup Baik","90.0%"
-433,"IA","TBMUI","-1.9000000","124.3440000",8,"Taliabu Barat, Pulau Taliabu, Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2023,"IDRIP83",6,"P2",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",89.79,"Cukup Baik","Good","Cukup Baik","89.8%"
-434,"IA","TDNI","0.5743820","97.8196170",59,"Teluk Dalam, Pulau Nias","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2017,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2017-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",79.01,"Cukup Baik","Fair","Cukup Baik","79.0%"
-435,"IA","TEBBI","-8.1511830","115.3733440",301.5,"Tejakula, Buleleng, Bali","Bali",12,"Stageof-Denpasar",17,"aktif",2023,"ALOPTAMA 2023",9,"P1",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",84.69,"Cukup Baik","Very Good","Cukup Baik","84.7%"
-436,"IA","TGCM","0.5201000","123.0778000",163,"Type MR, Telaga,Gorontalo,Gorontalo","Gorontalo",26,"Stageof-Gorontalo",31,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",99.77,"Baik","Very Good","Baik","99.8%"
-437,"IA","TIKSI","-3.9770000","121.8660000",137,"Tinondo, Kolaka Timur, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",99.33,"Baik","Good","Baik","99.3%"
-438,"IA","TIPSI","0.4890000","120.4190000",41,"Tinombo / Palasa, Parigi Moutong, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",78.75,"Cukup Baik","Very Good","Cukup Baik","78.8%"
-439,"IA","TKSM","3.1374000","98.3244000",720,"Type MR, Tiganderket,Karo,Sumatera Utara","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",90.71,"Baik","Fair","Baik","90.7%"
-440,"IA","TLCM","-2.5092500","120.7943600",86,"Type MR, Tomoni,Luwu Timur,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Kendari",16,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",98.31,"Baik","Fair","Baik","98.3%"
-441,"IA","TLE2","-5.6994300","132.7395200",34,"Station Tual, Kai, JISNET, Indonesia","Maluku",2,"Stageof-Maluku-Tenggara-Barat",9,"aktif",2009,"REIS",8,"P1",,"installed","Meisei-G1019-2018-VSAT-M2M","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:30.000Z",92.39,"Baik","-","Baik","92.4%"
-442,"IA","TMSI","1.2948120","124.9255710",771,"Station TMSI","Sulawesi Utara",30,"Stageof-Manado",32,"aktif",2012,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:30.000Z",88.85,"Cukup Baik","Good","Cukup Baik","88.8%"
-443,"IA","TMSM","-2.6995400","101.4463300",118,"Type MR, Teramang Jaya,Mukomuko,Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",91.61,"Baik","Good","Baik","91.6%"
-444,"IA","TMTMM","-3.2980200","129.5304400",17,"Station Type MR, Tehoru, Maluku Tengah","Maluku",2,"Stageof-Ambon",2,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",86.37,"Cukup Baik","Good","Cukup Baik","86.4%"
-445,"IA","TNGI","-6.1720000","106.6470000",40,"Station Tangerang China","Banten",21,"Stageof-Tangerang",22,"aktif",2006,"China",3,"P2",,"installed","Guralp-Minimus+2024-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:30.000Z",81,"Cukup Baik","Poor","Cukup Baik","81.0%"
-446,"IA","TNTI","0.7718000","127.3667000",43,"GEOFON Station Ternate, Indonesia","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2008,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2007-GSM","bunker","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:30.000Z",99.02,"Baik","Fair","Baik","99.0%"
-447,"IA","TOBSI","-1.4460000","122.2500000",43,"Toili, Banggai, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2025-10-23T07:13:45.000Z",89,"Cukup Baik","Fair","Cukup Baik","89.0%"
-448,"IA","TOCM","-2.6473980","121.4080320",342,"Type MR, Towuti,Luwu Timur,Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Kendari",16,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",88.04,"Cukup Baik","Very Good","Cukup Baik","88.0%"
-449,"IA","TOJI","-6.7621000","108.1344000",73,"Station Type B Tomo,Sumedang,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",1,"Buruk","Poor","Buruk","1.0%"
-450,"IA","TOLI2","1.1111900","120.7817400",51,"GEOFON Station Tolitoli, Sulawesi, Indonesia","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2008,"GFZ",11,"P1",,"not_installed","Kinemetrics-Q330-2011-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",96.38,"Baik","Fair","Baik","96.4%"
-451,"IA","TOTSI","-1.1529200","121.2841600",24,"Tojo, Tojo Una-Una, Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",0,"Mati","Very Good","Mati","0.0%"
-452,"IA","TPCI","0.4674670","121.0992860",13,"Station Type A, Taopa,Parigi Moutong,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:30.000Z",90.09,"Baik","Fair","Baik","90.1%"
-453,"IA","TPI","-2.7563300","107.6534500",25,"Station Tanjung Pandang, Belitung, Indonesia","Bangka Belitung",33,"Stageof-Tangerang",22,"aktif",2006,"REIS",8,"P2",,"installed","Meisei-G1019-2018-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-03-03T02:26:35.000Z",98.47,"Baik","Fair","Baik","98.5%"
-454,"IA","TPRI","0.9193000","104.5208000",41.46,"Station Tanjung Pinang, Sumatra","Kepulauan Riau",34,"Stageof-Deli-Serdang",27,"aktif",2006,"LIBRA",2,"P2",,"installed","Nanometrics-Centaur-2019-GSM","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:31.000Z",1,"Buruk","Poor","Buruk","1.0%"
-455,"IA","TPSI","4.9231590","96.0170230",54,"Station Type A, Tangse,Pidie,Aceh","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",94.95,"Baik","Very Good","Baik","95.0%"
-456,"IA","TPTI","3.2618000","97.1774000",2.8,"Station Tapaktuan China","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2008,"China",3,"P2",,"not_installed","Rsensor-NDAS-8426-2024-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",0,"Mati","Good","Mati","0.0%"
-457,"IA","TRIYO","-2.0601000","99.5830000",88,"Station Type MR, Sipora Selatan, Kep. Mentawai","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-VSAT-M2M",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",99.09,"Baik","Good","Baik","99.1%"
-458,"IA","TRPI","-6.0989000","140.3000000",99,"Tanah Merah, Papua","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2019,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2020-GSM",,"outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:31.000Z",92.94,"Baik","Poor","Baik","92.9%"
-459,"IA","TSI","3.5012000","98.5645000",89.27,"Station Tuntungan, Indonesia","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2005,"LIBRA",2,"P1",,"not_installed","Nanometrics-Centaur-2021-Idirect","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:31.000Z",1,"Buruk","Poor","Buruk","1.0%"
-460,"IA","TSJM","-6.7319000","107.8109000",420,"Type MR, Tanjungsiang,Subang,Jawa Barat","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",79.76,"Cukup Baik","Poor","Cukup Baik","79.8%"
-461,"IA","TSNI","-8.7151000","118.2500000",140,"Tarano, Nusa Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P2",,"installed","Guralp-Minimus+2021-Idirect","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",44.47,"Buruk","Good","Buruk","44.5%"
-462,"IA","TSPI","-1.4733000","132.0898000",62,"Station Type A, Teminabuan,Sorong Selatan,Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-Libra","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",89.48,"Cukup Baik","Very Good","Cukup Baik","89.5%"
-463,"IA","TTPSI","-4.8183880","119.7617190",365,"Station Type A, Tondong Talasa, Pangkep, Sulawesi","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",90.26,"Baik","Good","Baik","90.3%"
-464,"IA","TTSI","-3.0451000","119.8190000",950.4,"Station Tana Toraja, Sulawesi","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2007,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur6-2020-GSM","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:31.000Z",1,"Buruk","Very Good","Buruk","1.0%"
-465,"IA","TTSM","1.0856000","99.4108000",173,"Type MR, Tano Tombangan Angkola,Tapanuli Selatan,Sumatera Utara","Sumatera Utara",25,"Stageof-Gunung-Sitoli",30,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",95.01,"Baik","Very Good","Baik","95.0%"
-466,"IA","TTSMI","-2.8640000","128.7270000",11,"Taniwel Timur, Seram Bagian Barat, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",90.58,"Baik","Fair","Baik","90.6%"
-467,"IA","TUJI","-8.4018000","113.7322000",79,"Station Type B Tumpakrejo,Jember,Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",45.97,"Buruk","Poor","Buruk","46.0%"
-468,"IA","UGM","-7.9125000","110.5231000",350,"GEOFON Station Wanagama, Indonesia","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2008,"GFZ",11,"P2",,"installed","Kinemetrics-Q330-2006-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",99.1,"Baik","Good","Baik","99.1%"
-469,"IA","UKCM","-3.8570000","122.0431000",122,"Station Type MR, Unaaha, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",88.88,"Cukup Baik","Poor","Cukup Baik","88.9%"
-470,"IA","ULMSI","-3.0522550","118.8745570",476.7,"Ulumanda, Majene, Sulawesi Barat","Sulawesi Barat",31,"Stageof-Gowa",15,"aktif",2023,"ALOPTAMA 2023",9,"P2",,"installed","Guralp-Minimus+2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",90.59,"Baik","Good","Baik","90.6%"
-471,"IA","ULSM","-3.7588000","102.7941000",284,"Type MR, Ulu Musi,Empat Lawang,Sumatera Selatan","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",90.68,"Baik","Good","Baik","90.7%"
-472,"IA","UMKSI","-3.5900000","102.5480000",709,"Ujan Mas, Kepahiang, Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",93.79,"Baik","Good","Baik","93.8%"
-473,"IA","UMSSI","-9.8970000","120.6610000",50,"Umalulu, Sumba Timur, Nusa Tenggara Timur","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:31.000Z",95.79,"Baik","Good","Baik","95.8%"
-474,"IA","USFM","-8.4119800","117.1411100",85,"Station Type MR, Utan, Nusa Tenggara Barat","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-VSAT-M2M","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",97.24,"Baik","Good","Baik","97.2%"
-475,"IA","USTI","-9.6543000","119.7878000",449,"Station Type A, Umbu Ratu Nggay,Sumba Tengah,Nusa","Nusa Tenggara Timur",1,"Stageof-Sumba-Timur",14,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",96.91,"Baik","Very Good","Baik","96.9%"
-476,"IA","UTSI","-5.3125700","104.5509500",882,"Station Type B Ulu Belu,Tanggamus,Lampung","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",95.98,"Baik","Good","Baik","96.0%"
-477,"IA","UTSM","-4.0833900","102.7284900",113,"Type MR, Ulu Talo,Seluma,Bengkulu","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",1,"Buruk","Fair","Buruk","1.0%"
-478,"IA","UTUSI","-0.4273640","121.8605610",76,"Station Type A, Una-Una, Tojo Una-Una, Sulawesi","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2022,"ALOPTAMA 2022",12,"P1",,"installed","Nanometrics-Centaur-2022-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",99.71,"Baik","Good","Baik","99.7%"
-479,"IA","UWJI","-6.4191000","110.9474000",61.52,"Station Ujung Watu, Java","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2006,"LIBRA",2,"P2","","installed","Nanometrics-Centaur6-2020-VSAT-M2M","surface","outside_BMKG_office","ada","baik","","","",,"2026-07-06T04:00:32.000Z",85.83,"Cukup Baik","Good","Cukup Baik","85.8%"
-480,"IA","UWNPI","-3.4790000","135.5870000",117,"Uwapa, Nabire, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",99.17,"Baik","Good","Baik","99.2%"
-481,"IA","WAMI","-4.0959300","138.9500400",1673,"Station Wamena, Irian Jaya","Papua",8,"Stageof-Jayapura",8,"aktif",2008,"REIS",8,"P1",,"installed","Meisei-G1019-2018-Idirect","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:32.000Z",51.7,"Buruk","Fair","Buruk","51.7%"
-482,"IA","WANPI","-3.4210000","135.3760000",12,"Wanggar, Nabire, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",45.25,"Buruk","Good","Buruk","45.3%"
-483,"IA","WBMI","0.3393000","127.8708000",25,"Station Type A, Weda Barat,Halmahera Tengah,Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur6-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",94.44,"Baik","Good","Baik","94.4%"
-484,"IA","WBNI","-8.3044000","118.9137000",61,"Wera, Bima, Nusa Tenggara Barat, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2021,"BB2021",13,"P1",,"installed","Guralp-Minimus+2021-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",91.07,"Baik","Fair","Baik","91.1%"
-485,"IA","WBSI","-9.6411000","119.3911000",456.67,"Station Waikabubak, Sumba, Indonesia (BMKG)","Nusa Tenggara Timur",1,"Stageof-Sumba-Timur",14,"aktif",2008,"LIBRA",2,"P2",,"installed","Guralp-Minimus+2026-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",98.64,"Baik","Very Good","Baik","98.6%"
-486,"IA","WEFM","-8.6069517","121.7178533",114,"Station Type MR, Wewaria, Ende, NTT","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",0,"Mati","Very Good","Mati","0.0%"
-487,"IA","WFTFM","-8.5247000","122.7100000",354,"Staation Type MR, Wulanggitang, Flores Timur, NTT","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",96.02,"Baik","Good","Baik","96.0%"
-488,"IA","WGJM","-7.3833000","112.5098000",35,"Type MR, Wringianom,Gresik,Jawa Timur","Jawa Timur",3,"Stageof-Pasuruan",3,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",83.67,"Cukup Baik","Fair","Cukup Baik","83.7%"
-489,"IA","WHMI","1.0825000","128.1320000",41,"Station Type A, Wasile,Halmahera Timur,Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",1,"Buruk","Poor","Buruk","1.0%"
-490,"IA","WKCM","-3.8259000","121.2993000",116,"Station Type MR, Wolo, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2020,"MR2020",1,"P1",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:32.000Z",97.66,"Baik","Good","Baik","97.7%"
-491,"IA","WLFM","-8.5311000","123.4499000",80,"Station Type MR, Wulandoni, Lembata, NTT","Nusa Tenggara Timur",1,"Stageof-Kupang",10,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",97.06,"Baik","Very Good","Baik","97.1%"
-492,"IA","WLJI","-6.8310983","105.8909467",46,"Station Type B Wonosalam,Lebak,Banten","Banten",21,"Stageof-Tangerang",22,"aktif",2019,"INA Type-B",7,"P1",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",58.28,"Buruk","Poor","Buruk","58.3%"
-493,"IA","WLTFM","-8.5181800","116.5407000",533,"Station Type MR, Wanasaba, Nusa Tenggara Barat","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",98.44,"Baik","Good","Baik","98.4%"
-494,"IA","WMCM","-2.2162000","121.6220000",7,"Type MR, Wita Ponda,Morowali,Sulawesi Tengah","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2019,"INA Minireg",4,"P1",,"installed","Nanometrics-Centaur-2019-Libra",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",76.31,"Cukup Baik","Poor","Cukup Baik","76.3%"
-495,"IA","WOJI","-7.8372000","110.9236000",183.62,"Station Wonogiri, Java, Indonesia (BMKG)","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2008,"LIBRA",2,"P1",,"installed","Nanometrics-Centaur-2023-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",94.92,"Baik","Good","Baik","94.9%"
-496,"IA","WRJI","-7.8112900","113.7456500",491,"Station Type B Curahdami,Bondowoso,Jawa Timur","Jawa Timur",3,"Stageof-Malang",28,"aktif",2019,"INA Type-B",7,"P2",,"installed","Kinemetrics-Q330S+2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",91.78,"Baik","Good","Baik","91.8%"
-497,"IA","WSHHI","0.7640000","127.8130000",24,"Wasile Selatan, Halmahera Timur, Maluku Utara","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",99.72,"Baik","Fair","Baik","99.7%"
-498,"IA","WSI","-9.6689000","120.2976660",48,"Station Waingapu, JISNET Indonesia","Nusa Tenggara Timur",1,"Stageof-Sumba-Timur",14,"aktif",2005,"REIS",8,"P2",,"installed","Meisei-G1019-2006-VSAT-M2M","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",94.02,"Baik","Good","Baik","94.0%"
-499,"IA","WSJM","-6.9747200","106.7247000",310,"Type MR, Warungkiara,Sukabumi,Jawa Barat","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2019,"INA Minireg",4,"P2",,"installed","Nanometrics-Centaur-2019-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",89.63,"Cukup Baik","Fair","Cukup Baik","89.6%"
-500,"IA","WSTMM","-3.4530180","129.9950000",18,"Station Type MR, Werinama, Maluku","Maluku",2,"Stageof-Ambon",2,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",97.49,"Baik","-","Baik","97.5%"
-501,"IA","WTKSI","-4.0300000","123.2200000",21,"Wawonii Timur Laut, Konawe Kepulauan, Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2023,"IDRIP83",6,"P2",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",99.83,"Baik","Fair","Baik","99.8%"
-502,"IA","WUPCM","-3.0063000","120.1927000",94,"Station Type MR, Wara Utara, Sulawesi Selatan","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",2020,"MR2020",1,"P2",,"installed","Kinemetrics-Q330S+2020-GSM",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",96.92,"Baik","Fair","Baik","96.9%"
-503,"IA","WWCI","-5.2724000","123.5251000",26,"Station Type A, Wangi-wangi,Wakatobi,Sulawesi Tenggara","Sulawesi Tenggara",11,"Stageof-Kendari",16,"aktif",2019,"INA Type-A",5,"P2",,"installed","Nanometrics-Centaur-2019-GSM","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",98.32,"Baik","Good","Baik","98.3%"
-504,"IA","WWPI","-2.3130000","136.3773000",16,"Station Type A, Waropen Bawah,Waropen,Papua","Papua",8,"Stageof-Nabire",11,"aktif",2019,"INA Type-A",5,"P1",,"installed","Nanometrics-Centaur-2019-GSM","posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",0,"Mati","Fair","Mati","0.0%"
-505,"IA","YBYPI","-1.8310000","136.0630000",32,"Yapen Barat, Kepulauan Yapen, Papua","Papua",8,"Stageof-Jayapura",8,"aktif",2023,"IDRIP83",6,"P1",,"installed","Quantera-Q8-2023-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",90.61,"Baik","Fair","Baik","90.6%"
-506,"IA","YOGI","-7.8166000","110.2950000",176,"Station Yogyakarta China","Yogyakarta",24,"Stageof-Sleman",29,"aktif",2007,"China",3,"P1",,"not_installed","Nanometrics-Centaur-2024-GSM",,"outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:33.000Z",99.85,"Baik","Good","Baik","99.8%"
-507,"II","KAPI","-5.0142002","119.7517014",300,"Kappang, Sulawesi, Indonesia","Sulawesi Selatan",10,"Stageof-Gowa",15,"aktif",1999,"CTBTO",10,"P2",,"not_installed","Kinemetrics-Q330HR-2010-Internet-CTBTO",,"outside_BMKG_office","ada","baik",,,"/uploads/site_KAPI_1763780100024.jpeg,/uploads/site_KAPI_1763780131044.jpeg,/uploads/site_KAPI_1763780164837.jpeg",,"2026-02-14T14:44:40.000Z",1,"Buruk","-","Buruk","1.0%"
-508,"IA","JMBI","-1.6764000","103.5760000",76.1,"Station Jambi China","Jambi",19,"Stageof-Kepahiang",4,"nonaktif",2006,"China",3,"P2",,"not_installed",,"surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",,"No Data","-","No Data","N/A"
-509,"IA","STPI","-0.4683500","132.1256000",24,"Sausapor,Tambrauw,Papua Barat","Papua Barat",6,"Stageof-Sorong",6,"nonaktif",2019,"INA Type-A",5,"P2",,"installed",,"posthole","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:33.000Z",,"No Data","-","No Data","N/A"
-510,"IA","BBKI","-3.4625000","114.8411000",109.88,"Station Banjar Baru, Kalimantan","Kalimantan Selatan",27,"Stageof-Balikpapan",21,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:34.000Z",91.83,"Baik","Fair","Baik","91.8%"
-511,"IA","BLSI","-5.3676000","105.2452000",146.79,"Station Bandar Lampung, Sumatra","Lampung",29,"Stageof-Lampung-Utara",24,"nonaktif",2007,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:34.000Z",0,"Mati","Fair","Mati","0.0%"
-512,"IA","DBNI","-8.5018460","118.3121490",157.7,"Station Kabupaten Dompu, Sumbawa, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:34.000Z",0,"Mati","Good","Mati","0.0%"
-513,"IA","DSRI","-0.4793440","104.5778270",51.6,"Station Dabo, Singkep","Kepulauan Riau",34,"Stageof-Padang-Panjang",20,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:35.000Z",99.33,"Baik","Good","Baik","99.3%"
-514,"IA","GLMI","1.8381000","127.7879000",130.21,"Station Galela, Maluku, Indonesia","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2008,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:35.000Z",99.92,"Baik","Fair","Baik","99.9%"
-515,"IA","KASI","-5.5236000","104.4967000",50,"Station Kota Agung, Sumatra","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2007,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:36.000Z",99.56,"Baik","Good","Baik","99.6%"
-516,"IA","KCSI","3.5220000","97.7715000",204.749,"Station Kotacane, Aceh, Indonesia (BMKG)","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2008,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:36.000Z",97.06,"Baik","Good","Baik","97.1%"
-517,"IA","LBMI","-0.6379000","127.5008000",113.91,"Station Labuha, Bacan, Indonesia","Maluku Utara",13,"Stageof-Ternate",18,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:36.000Z",87.35,"Cukup Baik","Good","Cukup Baik","87.3%"
-518,"IA","LHSI","-3.8267000","103.5233000",183.68,"Station Lahat, Sumatra","Sumatera Selatan",17,"Stageof-Lampung-Utara",24,"nonaktif",2007,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:36.000Z",1,"Buruk","Fair","Buruk","1.0%"
-519,"IA","LWLI","-5.0174500","104.0589000",923.3,"Station Liwa, Sumatra","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:36.000Z",89.26,"Cukup Baik","Fair","Cukup Baik","89.3%"
-520,"IA","MASI","-3.1415000","102.2396000",384.5,"Station Muara Aman, Bengkulu, Indonesia","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2008,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:36.000Z",98.67,"Baik","Good","Baik","98.7%"
-521,"IA","MKS","-5.2178000","119.4696000",80.32,"Station Gowa, Sulawesi, Indonesia","Sulawesi Selatan",10,"Stageof-Gowa",15,"nonaktif",2013,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:37.000Z",0,"Mati","Fair","Mati","0.0%"
-522,"IA","MLSI","4.2668000","96.4040000",96.94,"Station Meulaboh, Aceh, Indonesia","Aceh",9,"Stageof-Aceh-Selatan",13,"aktif",2008,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:37.000Z",92.96,"Baik","Fair","Baik","93.0%"
-523,"IA","MMPI","-8.5181000","140.4141000",98.57,"Station Merauke, Indonesia","Papua Selatan",23,"Stageof-Jayapura",8,"aktif",2005,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:37.000Z",81.89,"Cukup Baik","Poor","Cukup Baik","81.9%"
-524,"IA","NLAI","-3.2389580","127.0998380",23.2,"Station Namlea, Ambon","Maluku",2,"Stageof-Ambon",2,"aktif",2007,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","outside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:37.000Z",99.28,"Baik","Good","Baik","99.3%"
-525,"IA","PKKI","-2.2411000","113.9722000",65,"Station Palangkaraya, Kalimantan, Indonesia","Kalimantan Tengah",22,"Stageof-Balikpapan",21,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:38.000Z",94.08,"Baik","Fair","Baik","94.1%"
-526,"IA","PPBI","-2.1616000","106.1364000",63.55,"Station Pangkal Pinang, Bangka","Bangka Belitung",33,"Stageof-Padang-Panjang",20,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:38.000Z",98.25,"Baik","Fair","Baik","98.3%"
-527,"IA","RAPI","-0.4102000","130.8211000",108.6,"Station Raja Ampat, Papua","Papua Barat",6,"Stageof-Sorong",6,"nonaktif",2009,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:38.000Z",1,"Buruk","Very Good","Buruk","1.0%"
-528,"IA","SBSI","1.3987690","99.4308850",308.6,"Station Sibolga, Sumatra","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"nonaktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:39.000Z",1,"Buruk","Good","Buruk","1.0%"
-529,"IA","SISI","-1.3265000","99.0895000",47.2,"Station Saibi, Sumatra","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2007,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:40.000Z",99.81,"Baik","Good","Baik","99.8%"
-530,"IA","STKI","0.0655860","111.4771880",43.9,"Station Sintang, Kalimantan","Kalimantan Barat",28,"Stageof-Balikpapan",21,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect","surface","inside_BMKG_office","tidak_ada","baik",,,,,"2026-07-06T04:00:40.000Z",90.02,"Baik","Fair","Baik","90.0%"
-531,"IA","TRSI","2.0256000","98.9594000",978.5,"Station Tarutung, Sumatra","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2006,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:40.000Z",85.39,"Cukup Baik","-","Cukup Baik","85.4%"
-532,"IA","TWSI","-8.7382200","116.8821000",53,"Station Taliwang, Sumbawa, Indonesia","Nusa Tenggara Barat",20,"Stageof-Mataram",25,"aktif",2008,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:40.000Z",90.31,"Baik","Very Good","Baik","90.3%"
-533,"IA","UBSI","-3.7611000","102.2714000",28.05,"Station Bengkulu, Sumatra, Indonesia (BMKG)","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2009,"REPLACEMENT 2024",14,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",86.1,"Cukup Baik","Fair","Cukup Baik","86.1%"
-534,"IA","BMASI","4.9022560","96.7446520",823.3,"Kantor Camat Pintu Rime Gayo, Pintu Rime Gayo, Bener Meriah","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",95.94,"Baik","Fair","Baik","95.9%"
-535,"IA","LMJSI","-2.3786450","101.9033510",812,"Desa Sungai Lalang, Lembah Masurai, Merangin","Jambi",19,"Stageof-Kepahiang",4,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",95.95,"Baik","Good","Baik","96.0%"
-536,"IA","JSRJI","-7.3363750","111.1176300",97.2,"Kantor Kecamatan Jenar, Jenar, Sragen","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2024,"IDRIP Phase II",15,"P2","","installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,"",,,"2026-07-06T04:00:41.000Z",99.04,"Baik","Fair","Baik","99.0%"
-537,"IA","KRMJI","-5.8685620","110.4340900",34.1,"Karimunjawa, Karimunjawa, Jepara","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",95.34,"Baik","Good","Baik","95.3%"
-538,"IA","KSPJI","-7.2933630","109.2656330",802.3,"Desa Cendana, Kutasari, Purbalingga","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",98.92,"Baik","Good","Baik","98.9%"
-539,"IA","LAPSI","-1.8705370","120.2358320",779.4,"Kantor Camat Lore Barat, Lore Barat, Poso","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",98.02,"Baik","Good","Baik","98.0%"
-540,"IA","LBDSI","-0.6203200","119.8596000",261.2,"Lahan Milik BMKG, Labuan, Donggala","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",95.25,"Baik","Poor","Baik","95.3%"
-541,"IA","NJLSI","-5.1949450","104.2796480",418.7,"Balai Pekon Negeri Jaya, Bandar Negeri Suoh, Lampung Barat","Lampung",29,"Stageof-Lampung-Utara",24,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",98.09,"Baik","Good","Baik","98.1%"
-542,"IA","NKLSI","-1.3854280","119.9736630",682.4,"Desa Salua, Kulawi, Sigi","Sulawesi Tengah",7,"Stageof-Palu",7,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",0,"Mati","Good","Mati","0.0%"
-543,"IA","PASSI","-0.8720300","100.7515490",768.6,"Kantor Camat Payung Sekaki, Payung Sekaki, Solok","Sumatera Barat",14,"Stageof-Padang-Panjang",20,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",98.13,"Baik","Good","Baik","98.1%"
-544,"IA","PGASI","4.1084450","97.5888440",408.3,"Desa Pining, Pining, Gayu Lues","Aceh",9,"Stageof-Aceh-Selatan",13,"nonaktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",1,"Buruk","Good","Buruk","1.0%"
-545,"IA","PMTSI","2.5230620","99.2618180",955.6,"Kantor Camat Pintu Pohan Meranti, Pintu Pohan Meranti, Toba","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",99.95,"Baik","-","Baik","100.0%"
-546,"IA","PSASI","5.1357650","96.7721790",54.1,"Janggot Seungko, Peusangan Selatan, Bireuen","Aceh",9,"Stageof-Aceh-Besar",19,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",89.89,"Cukup Baik","Poor","Cukup Baik","89.9%"
-547,"IA","PWTMI","-7.9272570","126.4175030",31.5,"Ilwaki, Arnau, Maluku Barat Daya","Maluku",2,"Stageof-Ambon",2,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",95.21,"Baik","Good","Baik","95.2%"
-548,"IA","RLBSI","-3.4512870","102.5867540",901.8,"Kantor BPBD Rejang Lebong, Selupu Rejang, Rejang Lebong","Bengkulu",4,"Stageof-Kepahiang",4,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",92.47,"Baik","Very Good","Baik","92.5%"
-549,"IA","RSMSI","2.9589760","98.8607860",1004.3,"Kantor BPBD Simalungun, Raya, Simalungun","Sumatera Utara",25,"Stageof-Deli-Serdang",27,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:41.000Z",96.15,"Baik","Fair","Baik","96.2%"
-550,"IA","SGRJI","-7.0101280","108.0187300",579,"Area Lahan Camat Selaawi, Selaawi, Garut","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:42.000Z",96.19,"Baik","Fair","Baik","96.2%"
-551,"IA","TNSJI","-7.2982440","110.4665370",504.4,"Museum Pandaran, Tuntang, Semarang","Jawa Tengah",18,"Stageof-Banjarnegara",23,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:42.000Z",96.53,"Baik","Poor","Baik","96.5%"
-552,"IA","TSBJI","-6.6053720","107.1491850",175,"Kantor Kecamatan Tanjungsari, Tanjungsari, Bogor","Jawa Barat",5,"Stageof-Sukabumi",26,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:42.000Z",0,"Mati","-","Mati","0.0%"
-553,"IA","TUBJI","-6.1881360","107.0502930",37.5,"Kantor Camat Tambun Utara, Tambun Utara, Bekasi","Jawa Barat",5,"Stageof-Bandung",5,"aktif",2024,"IDRIP Phase II",15,"P2",,"installed","Guralp-Minimus+2024-Idirect",,"outside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:42.000Z",80.89,"Cukup Baik","Poor","Cukup Baik","80.9%"
-554,"IA","KJPJI","-6.1559710","106.8422660",50,"BMKG Pusat, Kemayoran, Jakarta Pusat (JICA)","Jakarta",35,"DGT",33,"dismantled",2024,"JICA",16,,,"installed","Nanometrics-Centaur-2024-GSM","surface","inside_BMKG_office","ada","baik",,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-555,"IA","KRK","-8.1521000","112.4506000",330.26,"Karangkates, Malang, Jawa Timur, Indonesia","Jawa Timur",3,,,"dismantled",2005,"LIBRA",2,,"Freq: 6155.25 MHz Cygnus SN: 653","installed","Trident (BB), Trident (Acc)",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-556,"IA","TNG","-6.1719000","106.6469000",51.25,"Tangerang, Banten, Indonesia","Banten",21,,,"dismantled",2005,"LIBRA",2,,"Freq: 6155.75 MHz Cygnus SN: 668","installed","Trident 305 (BB), Trident 305 (Acc)",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-557,"IA","BJI","-7.3329000","109.7096000",629,"Banjarnegara, Jawa Tengah, Indonesia","Jawa Tengah",18,,,"dismantled",2005,"JISNET",17,,,"not_installed","LS-7000",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-558,"IA","PTKI","-0.1419500","109.4029600",36,"Pontianak, Kalimantan Barat, Indonesia","Kalimantan Barat",28,,,"dismantled",2006,"JISNET",17,,,"not_installed","LS-7000",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-559,"IA","RPSI","2.0723000","99.8325000",78,"Rantau Parapat, Sumatra Utara, Indonesia","Sumatera Utara",25,,,"dismantled",2008,"LIBRA",2,,,"installed","Trident (BB), Trident (Acc)",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-560,"IA","BPJI","-7.8105000","109.9971000",64,"Bagelen","Jawa Tengah",18,,,"dismantled",2019,"BABUN",18,,,"installed","centaur",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-561,"IA","GGJI","-7.0302200","110.9209700",82,"Grobogan","Jawa Tengah",18,,,"dismantled",2019,"BABUN",18,,,"installed","centaur",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-562,"IA","SBJM","-7.9679950","110.2661190",17,"Sanden",,,,,"dismantled",2019,"BABUN",18,,,"installed","centaur",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-563,"IA","SEJM","-6.8726000","108.5852000",342,"Sedong",,,,,"dismantled",2019,"BABUN",18,,,"installed","centaur",,,,,,,,,"2026-07-06T04:00:42.000Z",,"No Data","-","No Data","N/A"
-564,"IA","PSLIB","-5.9374700","105.5101090",-60,"P.Sibesi; Lampung-Selatan","Lampung",29,"DST-Borehole",34,"aktif",2025,"BMKG",19,"P2","DST Station","installed","Guralp-Minimus+2025-VSAT-M2M","borehole","","","","","","",,"2026-07-06T04:00:42.000Z",90.19,"Baik","-","Baik","90.2%"
-565,"IA","PUSIB","-6.1549600","106.8410720",-250,"Kemayoran; Jakarta-Pusat","Jakarta",35,"DST-Borehole",34,"aktif",2025,"BMKG",19,"P2","DST Station","installed","Guralp-Minimus+2025-VSAT-M2M","borehole","","","","","","",,"2026-07-06T04:00:42.000Z",92.74,"Baik","-","Baik","92.7%"
-566,"IA","BALEB","-6.8367500","107.5606230",-71,"Lembang","Jawa Barat",5,"DST-Borehole",34,"aktif",2025,"BMKG",19,"P2","DST Station","installed","Guralp-Minimus+2025-VSAT-M2M","borehole","","","","","","",,"2026-07-06T04:00:42.000Z",50.41,"Buruk","-","Buruk","50.4%"
-567,"IA","SKJIB","-7.0056700","106.5637000",-78,"Pelabuhan-Ratu; Sukabumi","Jawa Barat",5,"DST-Borehole",34,"aktif",2025,"BMKG",19,"P2","DST Station","installed","Guralp-Minimus+2025-VSAT-M2M","borehole","","","","","","",,"2026-07-06T04:00:42.000Z",96.73,"Baik","-","Baik","96.7%"
+net,kode_stasiun
+IA,AAFM
+IA,AAI
+IA,AAII
+IA,ABJI
+IA,ABSM
+IA,ACBM
+IA,ACJM
+IA,ALKI
+IA,ALTI
+IA,AMGI
+IA,AMGS
+IA,AMPM
+IA,ANAN
+IA,ANAPI
+IA,APSI
+IA,APSR
+IA,APSSI
+IA,ARKPI
+IA,ARMI
+IA,ARPI
+IA,ARSKI
+IA,ASJR
+IA,ASSR
+IA,ASTTI
+IA,ATJN
+IA,ATKTI
+IA,ATNI
+IA,AUSN
+IA,BACE
+IA,BAHA
+IA,BAJI
+IA,BAKI
+IA,BAL00
+IA,BAL01
+IA,BAL02
+IA,BALB
+IA,BALE
+IA,BALEB
+IA,BAPJI
+IA,BASAI
+IA,BASI
+IA,BASN
+IA,BASO
+IA,BATI
+IA,BATPI
+IA,BB01
+IA,BB02
+IA,BB03
+IA,BB04
+IA,BB05
+IA,BB06
+IA,BB07
+IA,BB08
+IA,BB09
+IA,BB10
+IA,BBA01
+IA,BBA02
+IA,BBBCM
+IA,BBBR
+IA,BBCI
+IA,BBCM
+IA,BBJI
+IA,BBJM
+IA,BBJN
+IA,BBJR
+IA,BBKI
+IA,BBLSI
+IA,BBSI
+IA,BBSN
+IA,BBSR
+IA,BCJN
+IA,BCSN
+IA,BDBI
+IA,BDCM
+IA,BDMI
+IA,BDMUI
+IA,BEFA
+IA,BEKI
+IA,BEPA
+IA,BESI
+IA,BESM
+IA,BGASI
+IA,BGCI
+IA,BGCM
+IA,BGKI
+IA,BHCM
+IA,BJI
+IA,BJK00
+IA,BJK02
+IA,BJK03
+IA,BJK05
+IA,BJK07
+IA,BJK08
+IA,BJK10
+IA,BJK11
+IA,BJK12
+IA,BJMI
+IA,BKASI
+IA,BKB
+IA,BKJI
+IA,BKNI
+IA,BKSI
+IA,BLCM
+IA,BLJI
+IA,BLJR
+IA,BLSI
+IA,BLSM
+IA,BLSN
+IA,BMASI
+IA,BMBNG
+IA,BMJR
+IA,BMNI
+IA,BMPI
+IA,BMSI
+IA,BNDI
+IA,BNSI
+IA,BNSN
+IA,BNTI
+IA,BOJI
+IA,BOSM
+IA,BPJI
+IA,BPMJM
+IA,BPSM
+IA,BPSR
+IA,BRSN
+IA,BSI
+IA,BSJN
+IA,BSJR
+IA,BSMI
+IA,BSSI
+IA,BTCM
+IA,BTJI
+IA,BTJN
+IA,BTSI
+IA,BTSN
+IA,BTSPI
+IA,BTSR
+IA,BUBSI
+IA,BUJI
+IA,BUKI
+IA,BUMSI
+IA,BUSI
+IA,BUSN
+IA,BWJI
+IA,BYJI
+IA,BYJR
+IA,BYLI
+IA,CASI
+IA,CBJI
+IA,CBJM
+IA,CBJN
+IA,CBJR
+IA,CCJM
+IA,CCJR
+IA,CCSR
+IA,CEBI
+IA,CEMA
+IA,CERI
+IA,CESA
+IA,CGJI
+IA,CGJR
+IA,CIJI
+IA,CIJM
+IA,CIKJI
+IA,CILA
+IA,CILJI
+IA,CISI
+IA,CLJI
+IA,CLJO
+IA,CLJR
+IA,CMJI
+IA,CMJN
+IA,CNJI
+IA,CNLN
+IA,CPJR
+IA,CPPU
+IA,CSBJI
+IA,CSJI
+IA,CSJM
+IA,CSJR
+IA,CTJI
+IA,CWJM
+IA,DASN
+IA,DBJI
+IA,DBKI
+IA,DBNFM
+IA,DBNI
+IA,DCJN
+IA,DDSI
+IA,DEBI
+IA,DEMO
+IA,DJA
+IA,DNP
+IA,DNPB
+IA,DOCM
+IA,DSJR
+IA,DSRI
+IA,DTJN
+IA,DWIKO
+IA,DYPI
+IA,ECJN
+IA,EDFI
+IA,EDMPI
+IA,EGSI
+IA,ELMPI
+IA,ERPI
+IA,ERPN
+IA,ESJR
+IA,ESNI
+IA,ESSN
+IA,FAKI
+IA,FKMPM
+IA,FKSPI
+IA,GARPI
+IA,GBJI
+IA,GBJO
+IA,GBJR
+IA,GCJR
+IA,GEBBI
+IA,GEJI
+IA,GENI
+IA,GESM
+IA,GGJI
+IA,GGJM
+IA,GGSN
+IA,GHMI
+IA,GKJM
+IA,GLMI
+IA,GMCI
+IA,GMJI
+IA,GPSM
+IA,GRJI
+IA,GSI
+IA,GSNI
+IA,GTJI
+IA,GTJN
+IA,GTOI
+IA,GTSI
+IA,GUJM
+IA,HINSI
+IA,HMHN
+IA,HSSR
+IA,IATSM
+IA,IBJN
+IA,IBTI
+IA,IGBI
+IA,IHMI
+IA,IHRSI
+IA,ILSN
+IA,IMSR
+IA,ISSR
+IA,ITSU
+IA,IWPI
+IA,JAASI
+IA,JABI
+IA,JACE
+IA,JAGI
+IA,JAKO
+IA,JAPE
+IA,JARU
+IA,JASE
+IA,JASI
+IA,JASN
+IA,JATA
+IA,JAUI
+IA,JAY
+IA,JBJI
+IA,JBJM
+IA,JBJN
+IA,JBPI
+IA,JCJI
+IA,JCJN
+IA,JGJSI
+IA,JGPI
+IA,JHMI
+IA,JKE01
+IA,JKE02
+IA,JKE03
+IA,JKE04
+IA,JKE05
+IA,JKE06
+IA,JKT00
+IA,JKT02
+IA,JKT03
+IA,JKT05
+IA,JKT07
+IA,JKT08
+IA,JKT10
+IA,JKT11
+IA,JKT12
+IA,JMBI
+IA,JMPI
+IA,JMSI
+IA,JPJI
+IA,JPSI
+IA,JPSR
+IA,JSBFM
+IA,JSJN
+IA,JSJR
+IA,JSRJI
+IA,JTJM
+IA,JTJN
+IA,JTPU
+IA,JUII
+IA,JWJM
+IA,KABKI
+IA,KAKKI
+IA,KARPI
+IA,KASAI
+IA,KASI
+IA,KBBI
+IA,KBJM
+IA,KBJN
+IA,KBKI
+IA,KBKN
+IA,KBSR
+IA,KBSSI
+IA,KCJN
+IA,KCJR
+IA,KCSI
+IA,KDI
+IA,KDRI
+IA,KGCM
+IA,KHBO
+IA,KHK
+IA,KHSSI
+IA,KIMPI
+IA,KJCM
+IA,KJJR
+IA,KJPJI
+IA,KKJM
+IA,KKJN
+IA,KKJR
+IA,KKKI
+IA,KKKKI
+IA,KKMI
+IA,KKSI
+IA,KKTKI
+IA,KLI
+IA,KLJI
+IA,KLKI
+IA,KLNI
+IA,KLSI
+IA,KLSM
+IA,KMBFM
+IA,KMJR
+IA,KMMI
+IA,KMNI
+IA,KMPI
+IA,KMRS
+IA,KMSI
+IA,KNSN
+IA,KOMFI
+IA,KORPI
+IA,KPJI
+IA,KPJM
+IA,KPSR
+IA,KRAI
+IA,KRJI
+IA,KRK
+IA,KRMJI
+IA,KRSI
+IA,KRSN
+IA,KSI
+IA,KSJR
+IA,KSPJI
+IA,KTKN
+IA,KTMI
+IA,KTSR
+IA,KTTI
+IA,KUBSI
+IA,KUEL
+IA,KUGE
+IA,KUKI
+IA,KULA
+IA,KUMA
+IA,KUSI
+IA,KUSN
+IA,KWJI
+IA,KWSI
+IA,KYJR
+IA,LABA
+IA,LAPSI
+IA,LASI
+IA,LATA
+IA,LBDSI
+IA,LBFI
+IA,LBJN
+IA,LBMI
+IA,LBNFM
+IA,LBTSI
+IA,LCJN
+IA,LCJR
+IA,LDSI
+IA,LEM
+IA,LEMFI
+IA,LESM
+IA,LFTI
+IA,LHMI
+IA,LHSI
+IA,LHSM
+IA,LISM
+IA,LJPI
+IA,LKCI
+IA,LKSM
+IA,LKUCM
+IA,LLSI
+IA,LLSM
+IA,LMJSI
+IA,LMNI
+IA,LMTI
+IA,LOCM
+IA,LOMSI
+IA,LPCM
+IA,LPJR
+IA,LPSM
+IA,LPSR
+IA,LRTI
+IA,LSCM
+IA,LSJR
+IA,LSNI
+IA,LSSN
+IA,LTJN
+IA,LTNI
+IA,LTNSI
+IA,LTSM
+IA,LUCM
+IA,LUJI
+IA,LUWI
+IA,LWLI
+IA,MABKI
+IA,MAKBI
+IA,MAKKI
+IA,MAKO
+IA,MAPI
+IA,MASFI
+IA,MASI
+IA,MASM
+IA,MASSI
+IA,MBBI
+IA,MBJI
+IA,MBJN
+IA,MBPI
+IA,MBRPI
+IA,MBSI
+IA,MBSM
+IA,MBSN
+IA,MBSR
+IA,MCJN
+IA,MDSI
+IA,MEBA
+IA,MEBW
+IA,MEPA
+IA,MESA
+IA,MGAI
+IA,MGJR
+IA,MIBPI
+IA,MIPI
+IA,MISSI
+IA,MJNE
+IA,MJSI
+IA,MKBI
+IA,MKJM
+IA,MKS
+IA,MKSM
+IA,MKSR
+IA,MLJI
+IA,MLJM
+IA,MLJN
+IA,MLJR
+IA,MLMMI
+IA,MLSI
+IA,MLSN
+IA,MMCI
+IA,MMPI
+IA,MMRI
+IA,MMSI
+IA,MMSN
+IA,MMTN
+IA,MNAI
+IA,MNI
+IA,MNSI
+IA,MPSI
+IA,MPSM
+IA,MRSI
+IA,MSAI
+IA,MSBA
+IA,MSCM
+IA,MSHHI
+IA,MSSI
+IA,MTAI
+IA,MTCM
+IA,MTJN
+IA,MTJPI
+IA,MTKI
+IA,MTLN
+IA,MTMPI
+IA,MTMTI
+IA,MTNI
+IA,MTSI
+IA,MTSM
+IA,MTSN
+IA,MUMUI
+IA,MUNJI
+IA,MUSN
+IA,MUTSI
+IA,MWPI
+IA,N1PJJ
+IA,N2PJJ
+IA,N3PJJ
+IA,NANFI
+IA,NATBJ
+IA,NBBBS
+IA,NBBI
+IA,NBBSS
+IA,NBCBJ
+IA,NBD01
+IA,NBD02
+IA,NBD03
+IA,NBD04
+IA,NBD05
+IA,NBD06
+IA,NBD07
+IA,NBD08
+IA,NBD09
+IA,NBD10
+IA,NBD11
+IA,NBD12
+IA,NBD13
+IA,NBD14
+IA,NBD15
+IA,NBD16
+IA,NBD17
+IA,NBD18
+IA,NBD19
+IA,NBD20
+IA,NBD21
+IA,NBD98
+IA,NBD99
+IA,NBDBB
+IA,NBE01
+IA,NBE02
+IA,NBE03
+IA,NBE04
+IA,NBE05
+IA,NBE06
+IA,NBE07
+IA,NBE08
+IA,NBE09
+IA,NBE10
+IA,NBE11
+IA,NBE12
+IA,NBG01
+IA,NBG02
+IA,NBG03
+IA,NBG04
+IA,NBG05
+IA,NBG06
+IA,NBG07
+IA,NBG08
+IA,NBG09
+IA,NBG10
+IA,NBG11
+IA,NBG12
+IA,NBG13
+IA,NBG14
+IA,NBG15
+IA,NBG16
+IA,NBG98
+IA,NBG99
+IA,NBI01
+IA,NBI02
+IA,NBI03
+IA,NBI04
+IA,NBJR
+IA,NBK01
+IA,NBK02
+IA,NBK03
+IA,NBK04
+IA,NBK05
+IA,NBK06
+IA,NBK07
+IA,NBK08
+IA,NBL01
+IA,NBL02
+IA,NBL03
+IA,NBL04
+IA,NBL05
+IA,NBL06
+IA,NBL07
+IA,NBL08
+IA,NBL09
+IA,NBL10
+IA,NBL11
+IA,NBL12
+IA,NBL13
+IA,NBL14
+IA,NBL15
+IA,NBMBS
+IA,NBMI
+IA,NBMUS
+IA,NBPI
+IA,NBRBS
+IA,NBSBS
+IA,NBSR
+IA,NBSTS
+IA,NBU01
+IA,NBU02
+IA,NBU03
+IA,NBU04
+IA,NBU05
+IA,NBU06
+IA,NBU07
+IA,NBUBS
+IA,NBYTJ
+IA,NCDTS
+IA,NCJ01
+IA,NCJ02
+IA,NCJ03
+IA,NCJ04
+IA,NCJ05
+IA,NCJ06
+IA,NCJ07
+IA,NCJ08
+IA,NCJ09
+IA,NCJ10
+IA,NCJ11
+IA,NCJ12
+IA,NCJ13
+IA,NCJ14
+IA,NCJ15
+IA,NCJ16
+IA,NCL01
+IA,NCL02
+IA,NCL03
+IA,NCL04
+IA,NDN01
+IA,NDN02
+IA,NDN03
+IA,NDN04
+IA,NDN05
+IA,NDN06
+IA,NDN07
+IA,NDN08
+IA,NDN09
+IA,NDN10
+IA,NDN11
+IA,NDP01
+IA,NDP02
+IA,NDP03
+IA,NDP04
+IA,NDP05
+IA,NEKI
+IA,NGBAS
+IA,NGBBJ
+IA,NGBBS
+IA,NGBTJ
+IA,NGGSS
+IA,NGGUN
+IA,NGI01
+IA,NGI02
+IA,NGI03
+IA,NGI04
+IA,NGI05
+IA,NGJI
+IA,NGKNT
+IA,NGKTJ
+IA,NGLLS
+IA,NGPBS
+IA,NGPTS
+IA,NGSBB
+IA,NGTAS
+IA,NGTBJ
+IA,NGTTJ
+IA,NGYTJ
+IA,NIBI
+IA,NJB01
+IA,NJB02
+IA,NJB03
+IA,NJB04
+IA,NJBM
+IA,NJLSI
+IA,NJM01
+IA,NJM02
+IA,NJM03
+IA,NJM04
+IA,NJM05
+IA,NJP01
+IA,NJP02
+IA,NJP03
+IA,NJP04
+IA,NJP05
+IA,NJP06
+IA,NJP07
+IA,NJP99
+IA,NJS01
+IA,NJS02
+IA,NJS03
+IA,NJS04
+IA,NJS05
+IA,NJS06
+IA,NJS07
+IA,NJS08
+IA,NJS09
+IA,NJS10
+IA,NJS11
+IA,NJT01
+IA,NJT02
+IA,NJT03
+IA,NJT04
+IA,NJT05
+IA,NJT06
+IA,NJT07
+IA,NJT08
+IA,NJT09
+IA,NJT10
+IA,NJT11
+IA,NJU01
+IA,NJU02
+IA,NJU03
+IA,NJU04
+IA,NJU05
+IA,NJU06
+IA,NJU07
+IA,NKA01
+IA,NKA02
+IA,NKA03
+IA,NKA04
+IA,NKA05
+IA,NKA06
+IA,NKBBJ
+IA,NKBI
+IA,NKKI
+IA,NKKNL
+IA,NKL01
+IA,NKL02
+IA,NKL03
+IA,NKLLS
+IA,NKLSI
+IA,NKP01
+IA,NKP02
+IA,NKP03
+IA,NKP04
+IA,NKP05
+IA,NKP06
+IA,NKP07
+IA,NKP08
+IA,NKP09
+IA,NKP10
+IA,NKPBS
+IA,NKPTK
+IA,NKPTS
+IA,NKR01
+IA,NKR02
+IA,NKR03
+IA,NKR04
+IA,NKR05
+IA,NKR06
+IA,NKR07
+IA,NKR08
+IA,NKR09
+IA,NKSTJ
+IA,NKSUS
+IA,NLAI
+IA,NLB01
+IA,NLB02
+IA,NLB03
+IA,NLB04
+IA,NLB05
+IA,NLB06
+IA,NLB07
+IA,NLB08
+IA,NLB09
+IA,NLB10
+IA,NLB11
+IA,NLB12
+IA,NLB13
+IA,NLB14
+IA,NLB15
+IA,NMBBJ
+IA,NMBTJ
+IA,NMCTJ
+IA,NMD01
+IA,NMD02
+IA,NMD03
+IA,NMD04
+IA,NMD05
+IA,NMD06
+IA,NMD07
+IA,NMD08
+IA,NMD09
+IA,NMD10
+IA,NMD11
+IA,NMD12
+IA,NMD13
+IA,NMD14
+IA,NMD15
+IA,NMJTJ
+IA,NMPBS
+IA,NMPTS
+IA,NMSBJ
+IA,NMSTJ
+IA,NMT01
+IA,NMT02
+IA,NMT03
+IA,NMT04
+IA,NMT05
+IA,NMT06
+IA,NMT07
+IA,NMT08
+IA,NMT09
+IA,NMT10
+IA,NMTBJ
+IA,NNKI
+IA,NOBBJ
+IA,NOKBB
+IA,NOLLS
+IA,NOPBJ
+IA,NPD01
+IA,NPD02
+IA,NPD03
+IA,NPD04
+IA,NPD05
+IA,NPD06
+IA,NPD07
+IA,NPD08
+IA,NPD09
+IA,NPD10
+IA,NPD11
+IA,NPD12
+IA,NPD13
+IA,NPD14
+IA,NPD15
+IA,NPG01
+IA,NPG02
+IA,NPG03
+IA,NPG04
+IA,NPG05
+IA,NPG06
+IA,NPG07
+IA,NPG08
+IA,NPL01
+IA,NPL02
+IA,NPL03
+IA,NPL04
+IA,NPL05
+IA,NPL06
+IA,NPL07
+IA,NPL08
+IA,NPL09
+IA,NPL10
+IA,NPSTS
+IA,NPW01
+IA,NPW02
+IA,NPW03
+IA,NSB01
+IA,NSB02
+IA,NSB03
+IA,NSB04
+IA,NSB05
+IA,NSB06
+IA,NSB07
+IA,NSB08
+IA,NSB09
+IA,NSB10
+IA,NSB11
+IA,NSB12
+IA,NSB13
+IA,NSB14
+IA,NSB15
+IA,NSBMM
+IA,NSK01
+IA,NSK02
+IA,NSK03
+IA,NSK04
+IA,NSK05
+IA,NSK06
+IA,NSK07
+IA,NSK08
+IA,NSK09
+IA,NSK10
+IA,NSK11
+IA,NSK12
+IA,NSK13
+IA,NSK99
+IA,NSM01
+IA,NSM02
+IA,NSM03
+IA,NSM04
+IA,NSM05
+IA,NSM06
+IA,NSM07
+IA,NSM08
+IA,NSM09
+IA,NSM10
+IA,NSR01
+IA,NSR02
+IA,NSR03
+IA,NSR04
+IA,NSR05
+IA,NSR06
+IA,NSR99
+IA,NSU01
+IA,NSU02
+IA,NSU03
+IA,NSU04
+IA,NSU05
+IA,NSU06
+IA,NTB01
+IA,NTB02
+IA,NTB03
+IA,NTB04
+IA,NTB05
+IA,NTB06
+IA,NTB07
+IA,NTG01
+IA,NTG02
+IA,NTG03
+IA,NTG04
+IA,NTG05
+IA,NTG06
+IA,NTG07
+IA,NTG08
+IA,NTG09
+IA,NTG10
+IA,NTG99
+IA,NTJN
+IA,NTS01
+IA,NTS02
+IA,NTS03
+IA,NTS04
+IA,NTS05
+IA,NTS06
+IA,NTS99
+IA,NTYTJ
+IA,NUBBS
+IA,NYO01
+IA,NYO02
+IA,NYO03
+IA,NYO04
+IA,NYO05
+IA,NYO06
+IA,NYO07
+IA,NYO08
+IA,NYO09
+IA,NYO10
+IA,NYO99
+IA,OBMI
+IA,OBMPI
+IA,OMBFM
+IA,ONSM
+IA,OSSN
+IA,OTJN
+IA,OUSN
+IA,PAASI
+IA,PABA
+IA,PABI
+IA,PABKI
+IA,PACJI
+IA,PAFM
+IA,PAGA
+IA,PAKE
+IA,PAKI
+IA,PAMI
+IA,PANJI
+IA,PAPA
+IA,PASC
+IA,PASI
+IA,PASJI
+IA,PASMI
+IA,PASN
+IA,PASSI
+IA,PATU
+IA,PBCI
+IA,PBJI
+IA,PBJR
+IA,PBKI
+IA,PBKN
+IA,PBLI
+IA,PBMMI
+IA,PBMSI
+IA,PBNI
+IA,PBSI
+IA,PBSN
+IA,PCI
+IA,PCJI
+IA,PCJM
+IA,PCJN
+IA,PCJR
+IA,PDGB
+IA,PDLI
+IA,PDSI
+IA,PESI
+IA,PGASI
+IA,PGJM
+IA,PGJR
+IA,PICM
+IA,PJJR
+IA,PKCI
+IA,PKJI
+IA,PKJM
+IA,PKKI
+IA,PKSI
+IA,PKYI
+IA,PLAI
+IA,PLJI
+IA,PLKI
+IA,PLSI
+IA,PLSM
+IA,PMBI
+IA,PMCI
+IA,PMMI
+IA,PMSI
+IA,PMTSI
+IA,POBSI
+IA,POCI
+IA,POJN
+IA,POKJI
+IA,POPJI
+IA,PPBI
+IA,PPCM
+IA,PPI
+IA,PPJI
+IA,PPJR
+IA,PPLI
+IA,PPSI
+IA,PPSM
+IA,PPSN
+IA,PRJI
+IA,PRLJI
+IA,PRSI
+IA,PRSN
+IA,PSASI
+IA,PSI
+IA,PSJCM
+IA,PSJM
+IA,PSLI
+IA,PSLIB
+IA,PSSI
+IA,PSSM
+IA,PSSN
+IA,PSSR
+IA,PTJI
+IA,PTJN
+IA,PTKI
+IA,PTSM
+IA,PTSN
+IA,PTSR
+IA,PUPSI
+IA,PUSI
+IA,PUSIB
+IA,PUSN
+IA,PWCM
+IA,PWJI
+IA,PWTMI
+IA,RAPI
+IA,RASM
+IA,RBSI
+IA,RDCM
+IA,RGRI
+IA,RHRSI
+IA,RITA
+IA,RKCM
+IA,RKPI
+IA,RLBSI
+IA,RLSI
+IA,RLSR
+IA,RMNI
+IA,RMNN
+IA,RMSM
+IA,RNFM
+IA,RONI
+IA,ROTTI
+IA,RPSI
+IA,RPSR
+IA,RRHRI
+IA,RRSI
+IA,RSJR
+IA,RSMSI
+IA,RSNI
+IA,RSSM
+IA,RTBI
+IA,RTJN
+IA,SAASI
+IA,SADLY
+IA,SAKJI
+IA,SAMI
+IA,SAMKI
+IA,SANI
+IA,SAPSI
+IA,SASI
+IA,SASM
+IA,SASN
+IA,SASR
+IA,SATPI
+IA,SAUI
+IA,SBBM
+IA,SBJI
+IA,SBJM
+IA,SBNI
+IA,SBSI
+IA,SBSM
+IA,SBSSI
+IA,SCJI
+IA,SCJM
+IA,SCJN
+IA,SCJR
+IA,SDCI
+IA,SDSI
+IA,SDSM
+IA,SEJI
+IA,SEJM
+IA,SEKI
+IA,SEMA
+IA,SEME
+IA,SEMI
+IA,SGKI
+IA,SGRJI
+IA,SGSI
+IA,SI002
+IA,SI044
+IA,SICJI
+IA,SIJI
+IA,SIJM
+IA,SIRSI
+IA,SISI
+IA,SISM
+IA,SISMI
+IA,SIUMI
+IA,SJPM
+IA,SKJI
+IA,SKJIB
+IA,SKJR
+IA,SKKN
+IA,SKPM
+IA,SKSI
+IA,SKSM
+IA,SKSN
+IA,SLBFM
+IA,SLMI
+IA,SLPI
+IA,SLSI
+IA,SLSM
+IA,SLSN
+IA,SMKI
+IA,SMPI
+IA,SMRI
+IA,SMSI
+IA,SMSM
+IA,SMSR
+IA,SNBI
+IA,SNFN
+IA,SNJI
+IA,SNSI
+IA,SOEI
+IA,SOMPI
+IA,SP01
+IA,SP02
+IA,SP03
+IA,SP04
+IA,SP05
+IA,SP06
+IA,SP07
+IA,SP08
+IA,SP09
+IA,SP10
+IA,SP11
+IA,SP12
+IA,SP13
+IA,SP14
+IA,SP15
+IA,SP16
+IA,SP17
+IA,SP18
+IA,SP19
+IA,SP20
+IA,SP21
+IA,SP22
+IA,SP23
+IA,SP24
+IA,SP25
+IA,SPJN
+IA,SPJR
+IA,SPSI
+IA,SPSJM
+IA,SPSM
+IA,SRBI
+IA,SRMI
+IA,SRPI
+IA,SRSI
+IA,SSASI
+IA,SSJM
+IA,SSJR
+IA,SSKI
+IA,SSMI
+IA,SSSI
+IA,SSSM
+IA,SSSN
+IA,SSSR
+IA,STJN
+IA,STKI
+IA,STPI
+IA,STSI
+IA,STSR
+IA,SUBA
+IA,SUBE
+IA,SUGO
+IA,SUHA
+IA,SUJU
+IA,SUPA
+IA,SUPJI
+IA,SUSM
+IA,SUSN
+IA,SUSPI
+IA,SUUN
+IA,SWCM
+IA,SWI
+IA,SWJI
+IA,SWPM
+IA,SYJI
+IA,TAGJI
+IA,TAJN
+IA,TAMI
+IA,TAPSI
+IA,TARAI
+IA,TASE
+IA,TASI
+IA,TASN
+IA,TASSI
+IA,TBCM
+IA,TBJI
+IA,TBJKI
+IA,TBKI
+IA,TBMCM
+IA,TBMUI
+IA,TCSN
+IA,TDNI
+IA,TDSR
+IA,TEBBI
+IA,TGCM
+IA,TGJI
+IA,TIKSI
+IA,TIPSI
+IA,TJTI
+IA,TKJN
+IA,TKMN
+IA,TKSM
+IA,TKSN
+IA,TKUN
+IA,TLCM
+IA,TLE
+IA,TLE2
+IA,TMPI
+IA,TMSI
+IA,TMSM
+IA,TMTMM
+IA,TMTN
+IA,TMUN
+IA,TNG
+IA,TNGI
+IA,TNLN
+IA,TNSJI
+IA,TNSR
+IA,TNTI
+IA,TNTN
+IA,TOBSI
+IA,TOCM
+IA,TOJI
+IA,TOLI2
+IA,TOTSI
+IA,TPCI
+IA,TPI
+IA,TPJR
+IA,TPRI
+IA,TPSI
+IA,TPTI
+IA,TRES
+IA,TRIYO
+IA,TRPI
+IA,TRSI
+IA,TSBJI
+IA,TSI
+IA,TSJM
+IA,TSJN
+IA,TSJR
+IA,TSNI
+IA,TSPI
+IA,TTBR
+IA,TTJN
+IA,TTPSI
+IA,TTSI
+IA,TTSM
+IA,TTSMI
+IA,TUBJI
+IA,TUJI
+IA,TUKN
+IA,TWSI
+IA,UASN
+IA,UBSI
+IA,UCJN
+IA,UGM
+IA,UGMN
+IA,UIDB
+IA,UIDS
+IA,UKCM
+IA,ULMSI
+IA,ULSM
+IA,UMKSI
+IA,UMSR
+IA,UMSSI
+IA,UNSO
+IA,UPBT1
+IA,UPBT2
+IA,USFM
+IA,USTI
+IA,UTSI
+IA,UTSM
+IA,UTUSI
+IA,UWJI
+IA,UWNPI
+IA,WAMI
+IA,WANPI
+IA,WBMI
+IA,WBNI
+IA,WBSI
+IA,WEFM
+IA,WFTFM
+IA,WGJM
+IA,WGJR
+IA,WGNI
+IA,WHMI
+IA,WKCM
+IA,WLFM
+IA,WLJI
+IA,WLPU
+IA,WLTFM
+IA,WMCM
+IA,WOJI
+IA,WRJI
+IA,WSHHI
+IA,WSI
+IA,WSJM
+IA,WSTMM
+IA,WTKSI
+IA,WUPCM
+IA,WWCI
+IA,WWPI
+IA,YBYPI
+IA,YLJR
+IA,YOGI
+IA,YOGI2
+IA,ZALN

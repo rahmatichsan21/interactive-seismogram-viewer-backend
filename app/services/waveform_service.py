@@ -1,6 +1,9 @@
 from obspy.clients.fdsn import Client
 from obspy import UTCDateTime
-from obspy.clients.fdsn.header import FDSNNoDataException
+from obspy.clients.fdsn.header import (
+    FDSNNoDataException,
+    FDSNTimeoutException,
+)
 
 from app.core.config import (
     BMKG_URL,
@@ -91,20 +94,7 @@ def download_waveform(
         raise ValueError(
             "End time must be greater than start time."
         )
-    channel_available = check_channel_available(
-        network=network,
-        station=station,
-        location=location,
-        channel=channel,
-        start_time=start_time,
-        end_time=end_time,
-    )
-
-    if not channel_available:
-        raise WaveformNoDataError(
-            f"No waveform data found for "
-            f"{network}.{station}.{location}.{channel}"
-        )
+    
     try:
         stream = client.get_waveforms(
             network=network,
@@ -120,6 +110,8 @@ def download_waveform(
             f"No waveform data found for "
             f"{network}.{station}.{location}.{channel}"
         )
+    except FDSNTimeoutException:
+        raise
 
     return stream
 

@@ -13,3 +13,4 @@ STATION_CSV = DATA_DIR / "stations.csv"
 BMKG_URL = os.getenv("BMKG_URL")
 BMKG_USERNAME = os.getenv("BMKG_USERNAME")
 BMKG_PASSWORD = os.getenv("BMKG_PASSWORD")
+DEFAULT_NETWORK = "IA"
