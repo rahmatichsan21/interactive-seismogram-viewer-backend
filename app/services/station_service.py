@@ -3,7 +3,6 @@ import pandas as pd
 from obspy.clients.fdsn import Client
 
 import pandas as pd
-from pathlib import Path
 
 from obspy.clients.fdsn import Client
 
@@ -20,28 +19,9 @@ client = Client(
     password=BMKG_PASSWORD,
 )
 
-def ensure_station_csv():
-
-    if Path(STATION_CSV).exists():
-        return
-
-    print(
-        "[Station Cache] stations.csv not found."
-    )
-
-    print(
-        "[Station Cache] Downloading IA stations..."
-    )
-
-    download_station_csv()
-
-    print(
-        "[Station Cache] Finished."
-    )
 
 def get_all_stations():
-    ensure_station_csv()
-    
+
     df = pd.read_csv(STATION_CSV)
 
     df = df[["net", "kode_stasiun"]]
@@ -87,10 +67,12 @@ def download_station_csv():
     for network in inventory:
         for station in network:
 
-            rows.append({
-                "net": network.code,
-                "kode_stasiun": station.code,
-            })
+            rows.append(
+                {
+                    "net": network.code,
+                    "kode_stasiun": station.code,
+                }
+            )
 
     dataframe = (
         pd.DataFrame(rows)
