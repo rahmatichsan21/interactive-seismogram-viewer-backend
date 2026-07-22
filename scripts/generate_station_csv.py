@@ -6,7 +6,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from obspy import UTCDateTime
-from obspy.clients.fdsn import Client
 from obspy.clients.fdsn.header import (
     FDSNNoDataException,
     FDSNUnauthorizedException,
@@ -14,19 +13,11 @@ from obspy.clients.fdsn.header import (
 )
 
 from app.core.config import (
-    BMKG_URL,
-    BMKG_USERNAME,
-    BMKG_PASSWORD,
     DEFAULT_NETWORK,
     STATION_CSV,
 )
 
-client = Client(
-    BMKG_URL,
-    user=BMKG_USERNAME,
-    password=BMKG_PASSWORD,
-)
-
+from app.core.fdsn_client import client
 
 def check_station(network, station):
 
@@ -43,6 +34,7 @@ def check_station(network, station):
             starttime=start,
             endtime=end,
         )
+
 
         return True
 
