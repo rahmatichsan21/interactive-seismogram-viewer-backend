@@ -5,8 +5,11 @@ from app.services.waveform_service import (
     download_waveform,
     stream_to_json,
     WaveformNoDataError,
+)
+
+from app.services.inventory_service import (
     get_available_channels,
-) 
+)
 
 from fastapi import Depends
 from sqlalchemy.orm import Session

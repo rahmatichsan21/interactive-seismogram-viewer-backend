@@ -1,11 +1,7 @@
 import pandas as pd
 
 from obspy.clients.fdsn import Client
-
-import pandas as pd
-
-from obspy.clients.fdsn import Client
-
+from app.services.inventory_service import get_inventory
 from app.core.config import (
     BMKG_URL,
     BMKG_USERNAME,
@@ -35,7 +31,7 @@ def get_all_stations():
 
 def get_station_info(network, station):
 
-    inventory = client.get_stations(
+    inventory = get_inventory(
         network=network,
         station=station,
         level="channel",

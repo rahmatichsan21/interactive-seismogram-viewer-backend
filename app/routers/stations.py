@@ -20,6 +20,7 @@ def station_info(
     network: str,
     station: str,
 ):
+    print(">>> station-info called")
     return get_station_info(
         network,
         station,
