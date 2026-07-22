@@ -1,5 +1,5 @@
 from app.services.waveform_service import download_waveform
-from app.services.processing_service import process_stream
+from app.services.processing_service import apply_pipeline
 
 stream = download_waveform(
     network="IA",
@@ -12,13 +12,19 @@ stream = download_waveform(
 
 operations = [
     {
-        "type": "trim"
+        "type": "trim",
+        "start_time": "2025-07-01T00:02:00",
+        "end_time": "2025-07-01T00:04:00",
     }
 ]
 
-processed = process_stream(
+print("Before Trim")
+print(stream)
+processed = apply_pipeline(
     stream,
     operations,
 )
+print()
 
+print("After Trim")
 print(processed)
