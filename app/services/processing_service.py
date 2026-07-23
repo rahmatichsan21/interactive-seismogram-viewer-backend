@@ -1,11 +1,12 @@
 from obspy import Stream
 
 from app.processing.pipeline import apply_pipeline
+from app.models.processing import Operation
 
 
 def process_waveform(
     stream: Stream,
-    operations: list,
+    operations: list[Operation],
     context: dict | None = None,
 ) -> Stream:
     """
@@ -16,10 +17,11 @@ def process_waveform(
         context = {}
 
     # Housekeeping
-    stream.merge()
+    working_stream = stream.copy()
+    working_stream.merge()
 
     processed_stream = apply_pipeline(
-        stream=stream,
+        stream=working_stream,
         operations=operations,
         context=context,
     )

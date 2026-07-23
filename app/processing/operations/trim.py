@@ -1,15 +1,18 @@
 from obspy import UTCDateTime
 
+from app.models.processing import TrimOperation
 
-def apply_trim(stream, operation, context):
+
+def apply_trim(
+    stream,
+    operation: TrimOperation,
+    context,
+):
     """
     Trim an ObsPy Stream.
     """
-    try:
-        start_time = UTCDateTime(operation["start_time"])
-        end_time = UTCDateTime(operation["end_time"])
-    except KeyError as exc:
-        raise ValueError("trim butuh start_time dan end_time") from exc
+    start_time = UTCDateTime(operation.start_time)
+    end_time = UTCDateTime(operation.end_time)
 
     if end_time <= start_time:
         raise ValueError("end_time harus lebih besar dari start_time")

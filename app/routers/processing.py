@@ -1,17 +1,28 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.models.processing import ProcessRequest
 from app.services.processing_service import process_waveform
-from app.services.waveform_service import download_waveform, stream_to_json
+from app.services.waveform_service import (
+    stream_to_json,
+)
 
+from app.services.waveform_provider_service import (
+    get_waveform,
+)
 
 router = APIRouter(prefix="/process", tags=["Processing"])
 
 
 @router.post("")
-def process(request: ProcessRequest):
+def process(
+        request: ProcessRequest,
+        db: Session = Depends(get_db),
+    ):
     try:
-        stream = download_waveform(
+        stream = get_waveform(
+            db=db,
             network=request.network,
             station=request.station,
             location=request.location,
@@ -22,7 +33,7 @@ def process(request: ProcessRequest):
 
         processed_stream = process_waveform(
             stream=stream,
-            operations=[op.model_dump() for op in request.operations],
+            operations=request.operations,
         )
 
         return stream_to_json(

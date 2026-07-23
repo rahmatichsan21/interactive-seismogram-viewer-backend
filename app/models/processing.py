@@ -1,12 +1,20 @@
-from typing import Literal
+from typing import Annotated, Literal, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class TrimOperation(BaseModel):
     type: Literal["trim"]
     start_time: str
     end_time: str
+
+
+Operation = Annotated[
+    Union[
+        TrimOperation,
+    ],
+    Field(discriminator="type"),
+]
 
 
 class ProcessRequest(BaseModel):
@@ -17,4 +25,4 @@ class ProcessRequest(BaseModel):
     start_time: str
     end_time: str
 
-    operations: list[TrimOperation] = []
+    operations: list[Operation] = []
