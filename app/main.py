@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers.stations import router as station_router
 from app.routers.waveform import router as waveform_router
 from app.routers.processing import router as processing_router
@@ -6,6 +7,17 @@ from app.routers.processing import router as processing_router
 app = FastAPI(
     title="Interactive Seismogram Viewer API",
     version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(station_router)

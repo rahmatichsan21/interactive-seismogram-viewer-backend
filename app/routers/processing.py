@@ -6,6 +6,7 @@ from app.models.processing import ProcessRequest
 from app.services.processing_service import process_waveform
 from app.services.waveform_service import (
     stream_to_json,
+    WaveformNoDataError,
 )
 
 from app.services.waveform_provider_service import (
@@ -39,6 +40,12 @@ def process(
         return stream_to_json(
             processed_stream,
             request.station,
+        )
+
+    except WaveformNoDataError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail=str(exc),
         )
 
     except ValueError as exc:
