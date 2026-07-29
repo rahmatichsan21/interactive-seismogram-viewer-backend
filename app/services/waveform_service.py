@@ -53,6 +53,14 @@ def stream_to_json(stream, station):
 
     for trace in stream:
 
+        stats = None
+
+        if len(trace.data) > 0:
+            stats = {
+                "min": float(trace.data.min()),
+                "max": float(trace.data.max()),
+            }
+
         traces.append({
             "location": trace.stats.location,
             "channel": trace.stats.channel,
@@ -62,8 +70,10 @@ def stream_to_json(stream, station):
                 for t in trace.times()
             ],
 
-            "amplitude": trace.data.tolist()
+            "amplitude": trace.data.tolist(),
+            "stats": stats,
         })
+
     return {
 
         "station": station,

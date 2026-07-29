@@ -8,10 +8,24 @@ class TrimOperation(BaseModel):
     start_time: str
     end_time: str
 
+class FilterOperation(BaseModel):
+    type: Literal["filter"]
+
+    filter_type: Literal[
+        "lowpass",
+        "highpass",
+        "bandpass",
+        "bandstop",
+    ]
+
+    freq: float | None = None
+    freqmin: float | None = None
+    freqmax: float | None = None
 
 Operation = Annotated[
     Union[
         TrimOperation,
+        FilterOperation,
     ],
     Field(discriminator="type"),
 ]
