@@ -15,12 +15,14 @@ class FilterOperation(BaseModel):
         "lowpass",
         "highpass",
         "bandpass",
-        "bandstop",
     ]
 
     freq: float | None = None
     freqmin: float | None = None
     freqmax: float | None = None
+
+    corners: int = 4
+    zerophase: bool = True
 
 Operation = Annotated[
     Union[
