@@ -64,6 +64,7 @@ def stream_to_json(stream, station):
         traces.append({
             "location": trace.stats.location,
             "channel": trace.stats.channel,
+            "sampling_rate": trace.stats.sampling_rate,
 
             "time": [
                 (trace.stats.starttime + t).isoformat()
