@@ -15,20 +15,13 @@ BMKG_USERNAME = os.getenv("BMKG_USERNAME")
 BMKG_PASSWORD = os.getenv("BMKG_PASSWORD")
 DEFAULT_NETWORK = "IA"
 
-# Hard Limit (proteksi RAM) - lihat app/routers/processing.py.
-# Sengaja MAX per-channel, BUKAN total semua channel dijumlah -
-# sejak processing direfaktor jadi Sequential Per-Channel,
-# siklus hidup memori yang mahal (copy berlapis + filtfilt) itu
-# per-channel, jadi limitnya harus merefleksikan channel
-# TERBESAR yang akan diproses, bukan jumlah semuanya.
-MAX_POINTS_PER_CHANNEL_LIMIT = int(
-    os.getenv("MAX_POINTS_PER_CHANNEL_LIMIT", "15000000")
-)
-
-# TTL cache metadata channel (level="channel") di
-# inventory_service.py. Channel list & sampling_rate suatu
-# station nyaris tidak pernah berubah (cuma saat upgrade
-# instrumen), jadi TTL panjang aman.
-INVENTORY_CACHE_TTL_SECONDS = int(
-    os.getenv("INVENTORY_CACHE_TTL_SECONDS", "3600")
+# Durasi (detik) yang menentukan KAPAN Time Bucket (envelope
+# min/max) mulai aktif. Threshold efektif dihitung per trace:
+# DECIMATION_DURATION_SECONDS * trace.stats.sampling_rate.
+# Berbasis durasi (bukan jumlah sampel mentah) supaya pengalaman
+# konsisten lintas channel - semua channel (1/20/50/100 Hz)
+# mulai men-decimate pada durasi yang sama, bukan pada jumlah
+# titik yang berbeda-beda. Default 3600 detik = 1 jam.
+DECIMATION_DURATION_SECONDS = int(
+    os.getenv("DECIMATION_DURATION_SECONDS", "999999")
 )

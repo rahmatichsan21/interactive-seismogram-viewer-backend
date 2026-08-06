@@ -7,13 +7,8 @@ from obspy.clients.fdsn.header import (
     FDSNTimeoutException,
 )
 from app.core.fdsn_client import client
+from app.core.config import DECIMATION_DURATION_SECONDS
 from app.models.processing import TraceResponse
-
-
-MIN_MAX_POINTS = 100
-MAX_MAX_POINTS = 20000
-
-
 
 
 class WaveformNoDataError(Exception):
@@ -55,27 +50,10 @@ def download_waveform(
 
     return stream
 
-def clamp_max_points(max_points):
-    """
-    Sengaja CLAMP, bukan tolak/422 - permintaan eksplisit di
-    kesepakatan API contract. max_points di luar rentang wajar
-    disesuaikan diam-diam ke batas terdekat, bukan bikin request
-    gagal cuma karena angka resolusi layar yang sedikit meleset.
-    """
-    if max_points is None:
-        return None
-
-    return max(
-        MIN_MAX_POINTS,
-        min(MAX_MAX_POINTS, max_points),
-    )
-
-
 def _decimate_min_max(data, decimation_factor, num_buckets):
     """
     Min-Max decimation murni vektorisasi NumPy (pad + reshape +
-    min/max per axis) - TIDAK ada loop Python sama sekali,
-    sesuai permintaan.
+    min/max per axis) - TIDAK ada loop Python sama sekali.
 
     data di-pad di ujung akhir dengan mode="edge" (mengulang
     nilai sampel terakhir) supaya panjangnya pas kelipatan
@@ -101,18 +79,18 @@ def _decimate_min_max(data, decimation_factor, num_buckets):
 
 def trace_to_json(trace, max_points=None):
     """
-    Serialize + decimate SATU trace. Diekstrak dari badan
-    for-loop stream_to_json() di bawah - isinya PERSIS sama,
-    cuma dipisah supaya bisa dipanggil langsung per-channel oleh
-    process_waveform_per_channel() di router (lihat
-    routers/processing.py), tanpa perlu menunggu seluruh Stream
-    multi-channel selesai diproses lebih dulu.
+    Serialize SATU trace ke dict response.
 
-    max_points di sini diasumsikan SUDAH di-clamp oleh
-    pemanggilnya (stream_to_json melakukan ini untuk
-    pemanggilnya sendiri; router juga clamp sekali di awal untuk
-    jalur per-channel) - fungsi ini sendiri tidak clamp ulang,
-    supaya tidak clamp dobel dari dua tempat berbeda.
+    Time Bucket decimation (min/max) hanya diterapkan PALING
+    AKHIR, yaitu di titik serialisasi ini - SETELAH seluruh
+    operasi matematis (filter/trim) berjalan di atas data mentah.
+
+    Keputusan decimate berbasis DURASI, bukan jumlah sampel mentah:
+    threshold efektif = DECIMATION_DURATION_SECONDS × sampling_rate.
+    Jadi semua channel memulai envelope pada durasi yang sama
+    (mis. 5 menit), walau jumlah sampelnya berbeda (20 Hz vs 100 Hz).
+    `max_points` tetap dipakai sebagai TARGET resolusi output -
+    berapa banyak bucket min/max maksimum yang dikembalikan.
     """
     raw_point_count = len(trace.data)
 
@@ -124,9 +102,17 @@ def trace_to_json(trace, max_points=None):
             "max": float(trace.data.max()),
         }
 
+    # threshold per trace = durasi × sampling rate channel ini.
+    # max_points=None = decimation dimatikan (perilaku lama).
+    effective_threshold = (
+        DECIMATION_DURATION_SECONDS * trace.stats.sampling_rate
+        if max_points is not None
+        else None
+    )
+
     should_decimate = (
-        max_points is not None
-        and raw_point_count > max_points
+        effective_threshold is not None
+        and raw_point_count > effective_threshold
     )
 
     trace_fields = {
@@ -192,10 +178,10 @@ def trace_to_json(trace, max_points=None):
             "amplitude": trace.data.tolist(),
         })
 
-    # model_dump(exclude_none=True) yang menegakkan kontrak
-    # Fail Loud: field yang tidak relevan untuk kasus ini
-    # (mis. amplitude_min saat decimated=False) benar-benar
-    # HILANG dari JSON, bukan cuma bernilai null.
+    # model_dump(exclude_none=True) yang menegakkan kontrak:
+    # field yang tidak relevan untuk kasus ini (mis. amplitude
+    # saat decimated=True) benar-benar HILANG dari JSON, bukan
+    # cuma bernilai null.
     return TraceResponse(**trace_fields).model_dump(
         exclude_none=True
     )
@@ -203,14 +189,10 @@ def trace_to_json(trace, max_points=None):
 
 def stream_to_json(stream, station, max_points=None):
     """
-    Dipertahankan untuk pemanggil yang tidak butuh optimasi
-    per-channel (mis. /api/waveform, endpoint load awal yang
-    belum direfaktor - lihat catatan gap di sesi sebelumnya).
-    Perilakunya IDENTIK dengan sebelum trace_to_json() diekstrak
-    - cuma sekarang badan loopnya delegasi ke trace_to_json().
+    Serialize seluruh Stream menjadi response {"station", "traces"}.
+    Decimation (kalau `max_points` diisi) diterapkan per trace di
+    trace_to_json() - yang selalu berjalan setelah operasi apa pun.
     """
-    max_points = clamp_max_points(max_points)
-
     traces = [
         trace_to_json(trace, max_points)
         for trace in stream

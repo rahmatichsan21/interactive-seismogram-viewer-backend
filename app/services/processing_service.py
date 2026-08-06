@@ -42,8 +42,8 @@ def process_waveform_per_channel(
     Alasan pakai `yield` (bukan mengumpulkan semua hasil ke
     dalam list lalu return sekaligus): supaya cuma SATU channel
     yang "in flight" di memori pada satu waktu. Caller (router)
-    WAJIB meng-consume tiap hasil (mis. langsung serialize +
-    decimate lewat trace_to_json) sebelum generator ini lanjut
+    WAJIB meng-consume tiap hasil (mis. langsung serialize lewat
+    trace_to_json) sebelum generator ini lanjut
     ke channel berikutnya - ini bukan konvensi yang bisa
     dilanggar diam-diam, tapi properti struktural dari generator
     itu sendiri.

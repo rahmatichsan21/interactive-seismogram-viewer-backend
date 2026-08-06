@@ -32,6 +32,7 @@ def get_waveform_endpoint(
     channel: str,
     start_time: str,
     end_time: str,
+    max_points: int | None = 2000,
     db: Session = Depends(get_db),
 ):
     try:
@@ -48,6 +49,7 @@ def get_waveform_endpoint(
         return stream_to_json(
             stream=stream,
             station=station,
+            max_points=max_points,
         )
 
     except WaveformNoDataError as error:

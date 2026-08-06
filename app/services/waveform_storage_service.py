@@ -3,12 +3,18 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.models.waveform import WaveformRecord
+from app.core.config import BASE_DIR
 from datetime import datetime
 
 from obspy import Stream, read
 
 
-STORAGE_DIR = Path("storage/waveforms")
+# Absolute path (bukan relatif ke CWD) supaya MiniSEED cache
+# selalu ditulis ke lokasi yang sama terlepas dari direktori
+# kerja saat server/script dijalankan. Relatif ke CWD sebelumnya
+# bisa membuat file tersimpan di tempat yang salah sementara DB
+# tetap mencatat path-nya - korupsi cache yang diam-diam.
+STORAGE_DIR = BASE_DIR / "storage" / "waveforms"
 
 
 def save_waveform_stream(
@@ -51,6 +57,31 @@ def save_waveform_stream(
         )
 
         file_path = STORAGE_DIR / filename
+
+        # Cek-before-insert: kalau record untuk window yang sama
+        # sudah ada (dukungan unique constraint
+        # uq_waveform_records_cache_key), tulis file-nya ulang
+        # TAPI jangan buat baris dobel - langsung lanjut ke
+        # record berikutnya.
+        existing = (
+            db.query(WaveformRecord)
+            .filter(
+                WaveformRecord.network == network,
+                WaveformRecord.station == station,
+                WaveformRecord.location == location,
+                WaveformRecord.channel == channel,
+                WaveformRecord.start_time == request_start,
+                WaveformRecord.end_time == request_end,
+            )
+            .first()
+        )
+
+        if existing is not None:
+            trace.write(
+                str(file_path),
+                format="MSEED",
+            )
+            continue
 
         # Simpan satu trace sebagai MiniSEED
         trace.write(

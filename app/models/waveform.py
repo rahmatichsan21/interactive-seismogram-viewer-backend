@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Integer, String
+from sqlalchemy import DateTime, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -8,6 +8,23 @@ from app.core.database import Base
 
 class WaveformRecord(Base):
     __tablename__ = "waveform_records"
+
+    # Mencegah duplikat: satu (network, station, location,
+    # channel, start_time, end_time) hanya boleh ada SATU record
+    # cache. Sebelumnya request yang sama bisa men-download dua
+    # kali (mis. setelah file di-disk hilang lalu di-fetch ulang)
+    # dan menyisipkan baris dobel untuk window yang sama.
+    __table_args__ = (
+        UniqueConstraint(
+            "network",
+            "station",
+            "location",
+            "channel",
+            "start_time",
+            "end_time",
+            name="uq_waveform_records_cache_key",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(
         Integer,
