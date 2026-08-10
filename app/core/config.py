@@ -15,13 +15,14 @@ BMKG_USERNAME = os.getenv("BMKG_USERNAME")
 BMKG_PASSWORD = os.getenv("BMKG_PASSWORD")
 DEFAULT_NETWORK = "IA"
 
-# Durasi (detik) yang menentukan KAPAN Time Bucket (envelope
-# min/max) mulai aktif. Threshold efektif dihitung per trace:
-# DECIMATION_DURATION_SECONDS * trace.stats.sampling_rate.
-# Berbasis durasi (bukan jumlah sampel mentah) supaya pengalaman
-# konsisten lintas channel - semua channel (1/20/50/100 Hz)
-# mulai men-decimate pada durasi yang sama, bukan pada jumlah
-# titik yang berbeda-beda. Default 3600 detik = 1 jam.
-DECIMATION_DURATION_SECONDS = int(
-    os.getenv("DECIMATION_DURATION_SECONDS", "999999")
+# Batas jumlah raw point per trace SEBELUM Time Bucket
+# (temporal-order min/max decimation) mulai aktif.
+# Trigger: raw_point_count > MAX_DISPLAY_POINTS.
+# Sekaligus menentukan target output: target_buckets =
+# MAX_DISPLAY_POINTS // 2, sehingga output akhir ≈
+# MAX_DISPLAY_POINTS titik (2 per bucket dari temporal-order).
+# Wajib dikonfigurasi di .env; config.py hanya membaca,
+# tidak menyediakan fallback.
+MAX_DISPLAY_POINTS = int(
+    os.getenv("MAX_DISPLAY_POINTS")
 )

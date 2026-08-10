@@ -32,7 +32,7 @@ def get_waveform_endpoint(
     channel: str,
     start_time: str,
     end_time: str,
-    max_points: int | None = 2000,
+    max_points: int | None = None,
     db: Session = Depends(get_db),
 ):
     try:

@@ -7,7 +7,7 @@ from obspy.clients.fdsn.header import (
     FDSNTimeoutException,
 )
 from app.core.fdsn_client import client
-from app.core.config import DECIMATION_DURATION_SECONDS
+from app.core.config import MAX_DISPLAY_POINTS
 from app.models.processing import TraceResponse
 
 
@@ -50,21 +50,21 @@ def download_waveform(
 
     return stream
 
-def _decimate_min_max(data, decimation_factor, num_buckets):
+def _decimate_temporal(data, decimation_factor, num_buckets):
     """
-    Min-Max decimation murni vektorisasi NumPy (pad + reshape +
-    min/max per axis) - TIDAK ada loop Python sama sekali.
+    Temporal-order Min/Max decimation — memilih sampel asli
+    pada posisi argmin & argmax setiap bucket, lalu mengurutkan
+    hasilnya berdasarkan urutan waktu asli (bukan bucket).
 
-    data di-pad di ujung akhir dengan mode="edge" (mengulang
-    nilai sampel terakhir) supaya panjangnya pas kelipatan
-    decimation_factor sebelum di-reshape. Ini cuma memengaruhi
-    bucket PALING TERAKHIR, dan cuma menambah salinan nilai yang
-    memang sudah ada di trace itu sendiri - bukan data fabrikasi,
-    bukan nol/NaN yang bisa mendistorsi min/max bucket terakhir.
+    Tidak mengambil semua sampel; tidak membuat envelope;
+    output adalah subhimpunan yang tersebar di sepanjang trace
+    dengan prioritas pada titik-titik dengan amplitudo ekstrem —
+    baik positif maupun negatif.
+
+    Seluruhnya vektorisasi NumPy (pad + reshape + argmin/argmax
+    + merge-sort) — TIDAK ada loop Python untuk iterasi bucket.
     """
-    pad_length = (
-        num_buckets * decimation_factor - len(data)
-    )
+    pad_length = num_buckets * decimation_factor - len(data)
 
     padded = (
         np.pad(data, (0, pad_length), mode="edge")
@@ -74,23 +74,36 @@ def _decimate_min_max(data, decimation_factor, num_buckets):
 
     buckets = padded.reshape(num_buckets, decimation_factor)
 
-    return buckets.min(axis=1), buckets.max(axis=1)
+    idx_min = buckets.argmin(axis=1)
+    idx_max = buckets.argmax(axis=1)
+
+    offset = np.arange(num_buckets) * decimation_factor
+
+    return np.unique(
+        np.sort(
+            np.concatenate([offset + idx_min, offset + idx_max])
+        )
+    )
 
 
 def trace_to_json(trace, max_points=None):
     """
     Serialize SATU trace ke dict response.
 
-    Time Bucket decimation (min/max) hanya diterapkan PALING
-    AKHIR, yaitu di titik serialisasi ini - SETELAH seluruh
-    operasi matematis (filter/trim) berjalan di atas data mentah.
+    Time Bucket decimation (temporal-order min/max) hanya
+    diterapkan PALING AKHIR, yaitu di titik serialisasi ini —
+    SETELAH seluruh operasi matematis (filter/trim) berjalan
+    di atas data mentah.
 
-    Keputusan decimate berbasis DURASI, bukan jumlah sampel mentah:
-    threshold efektif = DECIMATION_DURATION_SECONDS × sampling_rate.
-    Jadi semua channel memulai envelope pada durasi yang sama
-    (mis. 5 menit), walau jumlah sampelnya berbeda (20 Hz vs 100 Hz).
-    `max_points` tetap dipakai sebagai TARGET resolusi output -
-    berapa banyak bucket min/max maksimum yang dikembalikan.
+    Trigger: raw_point_count > MAX_DISPLAY_POINTS.
+    Target output: `max_points` bucket, masing-masing
+    menghasilkan hingga 2 titik (argmin + argmax), sehingga
+    output akhir ≈ 2 × max_points ≈ MAX_DISPLAY_POINTS.
+
+    Output SELALU menggunakan format `time[]` + `amplitude[]`,
+    baik raw maupun decimated. Decimation adalah
+    detail implementasi internal yang tidak mengubah skema
+    response.
     """
     raw_point_count = len(trace.data)
 
@@ -102,17 +115,11 @@ def trace_to_json(trace, max_points=None):
             "max": float(trace.data.max()),
         }
 
-    # threshold per trace = durasi × sampling rate channel ini.
-    # max_points=None = decimation dimatikan (perilaku lama).
-    effective_threshold = (
-        DECIMATION_DURATION_SECONDS * trace.stats.sampling_rate
-        if max_points is not None
-        else None
-    )
-
+    # Trigger: raw_point_count > MAX_DISPLAY_POINTS.
+    # max_points=None = decimation dimatikan (benchmark).
     should_decimate = (
-        effective_threshold is not None
-        and raw_point_count > effective_threshold
+        max_points is not None
+        and raw_point_count > MAX_DISPLAY_POINTS
     )
 
     trace_fields = {
@@ -128,9 +135,6 @@ def trace_to_json(trace, max_points=None):
     }
 
     if should_decimate:
-        # Titik per bucket, dihitung supaya jumlah bucket
-        # akhir <= max_points (lihat komentar di
-        # _decimate_min_max soal padding).
         decimation_factor = math.ceil(
             raw_point_count / max_points
         )
@@ -138,32 +142,25 @@ def trace_to_json(trace, max_points=None):
             raw_point_count / decimation_factor
         )
 
-        amplitude_min, amplitude_max = _decimate_min_max(
+        selected_indices = _decimate_temporal(
             trace.data,
             decimation_factor,
             num_buckets,
         )
 
-        # Timestamp tiap bucket = AWAL bucket (bukan tengah,
-        # bukan posisi sampel min/max asli di dalam bucket) -
-        # konvensi ini didokumentasikan eksplisit lewat field
-        # bucket_time_reference di response, bukan diam-diam
-        # diasumsikan.
-        bucket_times = trace.times()[::decimation_factor]
+        all_times = trace.times()
+
+        returned_point_count = len(selected_indices)
 
         trace_fields.update({
             "time": [
-                (trace.stats.starttime + t).isoformat()
-                for t in bucket_times
+                (trace.stats.starttime + all_times[i]).isoformat()
+                for i in selected_indices
             ],
 
-            "decimation_method": "minmax",
-            "decimation_factor": decimation_factor,
-            "bucket_time_reference": "start",
-            "returned_point_count": num_buckets,
+            "returned_point_count": returned_point_count,
 
-            "amplitude_min": amplitude_min.tolist(),
-            "amplitude_max": amplitude_max.tolist(),
+            "amplitude": trace.data[selected_indices].tolist(),
         })
 
     else:
@@ -178,10 +175,6 @@ def trace_to_json(trace, max_points=None):
             "amplitude": trace.data.tolist(),
         })
 
-    # model_dump(exclude_none=True) yang menegakkan kontrak:
-    # field yang tidak relevan untuk kasus ini (mis. amplitude
-    # saat decimated=True) benar-benar HILANG dari JSON, bukan
-    # cuma bernilai null.
     return TraceResponse(**trace_fields).model_dump(
         exclude_none=True
     )

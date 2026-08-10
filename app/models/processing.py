@@ -43,20 +43,25 @@ class ProcessRequest(BaseModel):
 
     operations: list[Operation] = []
 
-    # Time Bucket decimation (min/max). Dipakai sebagai langkah
-    # PALING AKHIR setelah seluruh operasi matematis berjalan di
-    # atas data mentah (lihat waveform_service.trace_to_json).
-    # Default 2000 titik per trace; None = tanpa decimation.
-    max_points: int | None = 2000
+    # Time Bucket decimation (temporal-order min/max).
+    # Dipakai sebagai langkah PALING AKHIR setelah seluruh
+    # operasi matematis berjalan di atas data mentah
+    # (lihat waveform_service.trace_to_json).
+    # Nilai = jumlah bucket yang ditargetkan (setiap bucket
+    # menghasilkan hingga 2 titik output). None = tanpa
+    # decimation.
+    max_points: int | None = None
 
 
 class TraceResponse(BaseModel):
     """
-    Kontrak response SATU trace. Decimation (kalau aktif) hanya
-    diterapkan sebagai langkah terakhir: `amplitude_min`/
-    `amplitude_max` muncul kalau `decimated=True`, `amplitude`
-    muncul kalau `decimated=False`. Field yang tidak relevan
-    di-drop lewat exclude_none=True, bukan dijadikan null.
+    Kontrak response SATU trace.
+
+    Time Bucket (temporal-order min/max decimation) diterapkan
+    sebagai langkah terakhir serialisasi. Output SELALU memakai
+    format `time[]` + `amplitude[]` — baik raw maupun decimated.
+    Frontend tidak perlu membedakan mode rendering berdasarkan
+    field `decimated`.
     """
 
     location: str
@@ -70,15 +75,7 @@ class TraceResponse(BaseModel):
     requested_max_points: int | None = None
     returned_point_count: int
 
-    # Hanya ada kalau decimated=False.
-    amplitude: list[float] | None = None
-
-    # Hanya ada kalau decimated=True.
-    amplitude_min: list[float] | None = None
-    amplitude_max: list[float] | None = None
-    decimation_method: str | None = None
-    decimation_factor: int | None = None
-    bucket_time_reference: str | None = None
+    amplitude: list[float]
 
     stats: dict | None = None
 
