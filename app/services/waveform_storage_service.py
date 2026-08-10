@@ -109,6 +109,43 @@ def save_waveform_stream(
 
     return saved_records
 
+def get_cached_channel_set(
+    db: Session,
+    network: str,
+    station: str,
+    location: str,
+    channel: str,
+    start_time: str,
+    end_time: str,
+):
+    """
+    Kembalikan SET channel code yang SUDAH ada di cache
+    untuk request ini (wildcard-aware). Dipakai oleh
+    provider untuk mengecek kelengkapan cache sebelum
+    memutuskan cache hit/miss untuk request wildcard.
+    """
+    start_datetime = datetime.fromisoformat(start_time)
+    end_datetime = datetime.fromisoformat(end_time)
+
+    location_pattern = location.replace("*", "%")
+    channel_pattern = channel.replace("*", "%")
+
+    rows = (
+        db.query(WaveformRecord.channel)
+        .filter(
+            WaveformRecord.network == network,
+            WaveformRecord.station == station,
+            WaveformRecord.location.like(location_pattern),
+            WaveformRecord.channel.like(channel_pattern),
+            WaveformRecord.start_time == start_datetime,
+            WaveformRecord.end_time == end_datetime,
+        )
+        .distinct()
+        .all()
+    )
+
+    return {row[0] for row in rows}
+
 def get_cached_waveform(
     db: Session,
     network: str,
