@@ -1,35 +1,50 @@
 import os
+from datetime import datetime, timedelta
+
 from app.core.database import SessionLocal
-from app.models.waveform import WaveformRecord
+from app.core.config import CACHE_CLEAR_AFTER_DAYS
+from app.services.waveform_storage_service import (
+    get_all_waveform_records_older_than,
+)
+
 
 def run_cleanup():
     db = SessionLocal()
-    
-    # Target spesifik ID 305 berdasarkan hasil diagnostik Anda
-    target_id = 305
-    record = db.query(WaveformRecord).filter(WaveformRecord.id == target_id).first()
-    
-    if record:
-        file_path = record.file_path
-        print(f"[*] Ditemukan record ID {target_id}.")
-        print(f"[*] Target file: {file_path}")
-        
-        # 1. Hapus file fisik di hard disk
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            print("[+] File fisik berhasil dihapus dari storage.")
-        else:
-            print("[-] File fisik tidak ditemukan (mungkin sudah terhapus manual).")
-            
-        # 2. Hapus baris dari database
-        db.delete(record)
-        db.commit()
-        print("[+] Record berhasil dihapus dari database.")
-        
-    else:
-        print(f"[-] Record dengan ID {target_id} tidak ditemukan.")
 
+    cutoff = datetime.now() - timedelta(days=CACHE_CLEAR_AFTER_DAYS)
+    records = get_all_waveform_records_older_than(db, cutoff)
+
+    print(
+        f"[*] Retention: {CACHE_CLEAR_AFTER_DAYS} hari. "
+        f"Cutoff: {cutoff.isoformat()}"
+    )
+    print(f"[*] Menemukan {len(records)} record kadaluarsa.")
+
+    deleted_files = 0
+    deleted_rows = 0
+
+    for record in records:
+        file_path = record.file_path
+
+        if file_path and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                deleted_files += 1
+            except Exception as exc:
+                print(
+                    f"[-] Gagal hapus file {file_path}: {exc}"
+                )
+
+        db.delete(record)
+        deleted_rows += 1
+
+    db.commit()
     db.close()
+
+    print(f"[+] File dihapus : {deleted_files}")
+    print(f"[+] Row dihapus  : {deleted_rows}")
+    print("[*] Cleanup selesai.")
+
 
 if __name__ == "__main__":
     run_cleanup()

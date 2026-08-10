@@ -26,3 +26,18 @@ DEFAULT_NETWORK = "IA"
 MAX_DISPLAY_POINTS = int(
     os.getenv("MAX_DISPLAY_POINTS")
 )
+
+# Ukuran satu jendela cache waveform dalam detik.
+# Waveform disimpan dalam jendela UTC-aligned dengan
+# lebar CACHE_WINDOW_SECONDS, bukan berdasarkan rentang
+# request user. Contoh: 3600 = 1 jam.
+CACHE_WINDOW_SECONDS = int(
+    os.getenv("CACHE_WINDOW_SECONDS")
+)
+
+# Umur maksimum data cache dalam hari. Cache yang
+# created_at-nya lebih tua dari CACHE_CLEAR_AFTER_DAYS
+# akan dihapus oleh cleanup_cache.py.
+CACHE_CLEAR_AFTER_DAYS = int(
+    os.getenv("CACHE_CLEAR_AFTER_DAYS")
+)
