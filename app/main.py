@@ -25,6 +25,25 @@ app.include_router(waveform_router)
 app.include_router(processing_router)
 
 
+@app.on_event("startup")
+async def startup_processing_cache_sweep():
+    import asyncio
+
+    from app.services.processing_cache import processing_cache
+
+    async def sweep_loop():
+        while True:
+            await asyncio.sleep(60)
+            removed = processing_cache.sweep()
+            if removed:
+                print(
+                    f"[CACHE SWEEP] Removed {removed} "
+                    f"expired entries"
+                )
+
+    asyncio.create_task(sweep_loop())
+
+
 @app.get("/")
 def root():
     return {

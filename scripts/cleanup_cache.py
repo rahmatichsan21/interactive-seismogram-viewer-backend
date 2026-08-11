@@ -11,7 +11,10 @@ from app.services.waveform_storage_service import (
 def run_cleanup():
     db = SessionLocal()
 
-    cutoff = datetime.now() - timedelta(days=CACHE_CLEAR_AFTER_DAYS)
+    today_start = datetime.now().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+    cutoff = today_start - timedelta(days=CACHE_CLEAR_AFTER_DAYS)
     records = get_all_waveform_records_older_than(db, cutoff)
 
     print(

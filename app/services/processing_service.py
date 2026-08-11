@@ -8,6 +8,7 @@ def process_waveform(
     stream: Stream,
     operations: list[Operation],
     context: dict | None = None,
+    cache_info: dict | None = None,
 ) -> Stream:
     """
     Process an ObsPy Stream using the processing pipeline.
@@ -24,6 +25,7 @@ def process_waveform(
         stream=working_stream,
         operations=operations,
         context=context,
+        cache_info=cache_info,
     )
 
     return processed_stream
@@ -33,11 +35,16 @@ def process_waveform_per_channel(
     stream: Stream,
     operations: list[Operation],
     context: dict | None = None,
+    cache_info: dict | None = None,
 ):
     """
     Generator - proses satu channel (trace) pada satu waktu,
     lalu langsung yield hasilnya, SEBELUM lanjut ke channel
     berikutnya.
+
+    Sebelum memproses setiap trace, cek ProcessingCache:
+    kalau snapshot untuk pipeline ini sudah ada, pakai
+    langsung tanpa replay dari Original.
 
     Alasan pakai `yield` (bukan mengumpulkan semua hasil ke
     dalam list lalu return sekaligus): supaya cuma SATU channel
@@ -56,14 +63,85 @@ def process_waveform_per_channel(
     matematis dengan memanggilnya sekali untuk seluruh Stream
     multi-channel. Ini murni perubahan orkestrasi, bukan logika.
     """
+    from app.services.processing_cache import processing_cache
+
     for trace in stream:
+        channel = trace.stats.channel or ""
+
+        # Cek ProcessingCache untuk trace ini.
+        # Kalau pipeline SUDAH punya snapshot, langsung pakai.
+        if cache_info is not None and operations:
+            trace_cache_info = {
+                **cache_info,
+                "channel": channel,
+            }
+            key = processing_cache.make_key(
+                network=trace_cache_info["network"],
+                station=trace_cache_info["station"],
+                channel=channel,
+                start_time=trace_cache_info["start_time"],
+                end_time=trace_cache_info["end_time"],
+                operations=operations,
+            )
+
+            cached = processing_cache.get(key)
+            if cached is not None:
+                print(
+                    f"[PROC CACHE HIT] "
+                    f"{trace_cache_info['network']}."
+                    f"{trace_cache_info['station']}."
+                    f"{channel} "
+                    f"ops={[op.type for op in operations]}"
+                )
+                yield cached.traces[0]
+                continue
+
         single_channel_stream = Stream(traces=[trace])
+
+        trace_cache_info_for_pipeline = None
+        if cache_info is not None:
+            trace_cache_info_for_pipeline = {
+                **cache_info,
+                "channel": channel,
+            }
 
         processed = process_waveform(
             stream=single_channel_stream,
             operations=operations,
             context=context,
+            cache_info=trace_cache_info_for_pipeline,
         )
+
+        # Simpan hasil FINAL pipeline ke ProcessingCache.
+        # Ini memungkinkan Undo antar history state
+        # (mis. edit Filter param) langsung HIT tanpa
+        # replay dari Original.
+        if cache_info is not None and operations:
+            final_key = processing_cache.make_key(
+                network=trace_cache_info["network"],
+                station=trace_cache_info["station"],
+                channel=channel,
+                start_time=trace_cache_info["start_time"],
+                end_time=trace_cache_info["end_time"],
+                operations=operations,
+            )
+
+            if not processing_cache.has(final_key):
+                processing_cache.put(
+                    final_key,
+                    Stream.copy(processed),
+                )
+                size_mb = sum(
+                    tr.data.nbytes for tr in processed
+                ) / (1024 * 1024)
+                print(
+                    f"[PROC FINAL] "
+                    f"{trace_cache_info['network']}."
+                    f"{trace_cache_info['station']}."
+                    f"{channel} "
+                    f"ops={[op.type for op in operations]} "
+                    f"size={size_mb:.1f}MB"
+                )
 
         yield processed.traces[0]
 

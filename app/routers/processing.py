@@ -36,6 +36,16 @@ def process(
 
         response_traces = []
 
+        # Cache info untuk ProcessingCache — dipakai oleh
+        # pipeline untuk membuat snapshot SEBELUM operation mahal
+        # dan oleh generator untuk cek cache hit.
+        cache_info = {
+            "network": request.network,
+            "station": request.station,
+            "start_time": request.start_time,
+            "end_time": request.end_time,
+        }
+
         # Sequential Per-Channel: process_waveform_per_channel()
         # adalah generator - tiap iterasi cuma SATU channel yang
         # "in flight" di memori. trace_to_json() (serialize +
@@ -48,6 +58,7 @@ def process(
         for processed_trace in process_waveform_per_channel(
             stream=stream,
             operations=request.operations,
+            cache_info=cache_info,
         ):
             response_traces.append(
                 trace_to_json(
