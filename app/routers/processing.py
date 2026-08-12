@@ -14,6 +14,7 @@ from app.services.waveform_service import (
 from app.services.waveform_provider_service import (
     get_waveform,
 )
+from app.services.upload_storage import get_stream as get_upload_stream
 
 router = APIRouter(prefix="/process", tags=["Processing"])
 
@@ -24,15 +25,28 @@ def process(
         db: Session = Depends(get_db),
     ):
     try:
-        stream = get_waveform(
-            db=db,
-            network=request.network,
-            station=request.station,
-            location=request.location,
-            channel=request.channel,
-            start_time=request.start_time,
-            end_time=request.end_time,
-        )
+        if request.session_id:
+            stream = get_upload_stream(request.session_id)
+            if stream is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail=(
+                        "Upload session not found. "
+                        "The session may have expired or "
+                        "been cleared. Please re-upload "
+                        "the MiniSEED file."
+                    ),
+                )
+        else:
+            stream = get_waveform(
+                db=db,
+                network=request.network,
+                station=request.station,
+                location=request.location,
+                channel=request.channel,
+                start_time=request.start_time,
+                end_time=request.end_time,
+            )
 
         response_traces = []
 

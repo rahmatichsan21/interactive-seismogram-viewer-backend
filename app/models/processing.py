@@ -52,6 +52,11 @@ class ProcessRequest(BaseModel):
     # decimation.
     max_points: int | None = None
 
+    # Optional: session_id untuk data dari Local File Viewer.
+    # Jika diisi, backend mengambil waveform dari
+    # upload_storage[ session_id ] alih-alih dari FDSN cache.
+    session_id: str | None = None
+
 
 class TraceResponse(BaseModel):
     """
