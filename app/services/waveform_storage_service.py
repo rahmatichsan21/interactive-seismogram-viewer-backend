@@ -188,23 +188,34 @@ def get_seen_channels(
     db: Session,
     network: str,
     station: str,
+    location: str = "*",
+    channel: str = "*",
 ):
     """
-    Kembalikan UNION semua channel code yang PERNAH
-    di-cache untuk station ini — lintas jendela waktu,
-    lintas location. Source of truth untuk menentukan
-    channel mana yang benar-benar deliverable oleh FDSN
-    waveform server untuk station ini.
+    Kembalikan UNION channel code yang PERNAH di-cache
+    untuk station ini — lintas jendela waktu.
+
+    `location` dan `channel` menjadi pola filter (wildcard-aware,
+    sama seperti lookup lainnya): hasilnya dibatasi hanya pada
+    channel yang sesuai dengan pola request. Ini penting untuk
+    completeness check wildcard — mis. request `SH*` hanya boleh
+    mengecek kelengkapan SHE/SHN/SHZ, BUKAN seluruh channel yang
+    pernah ada di station.
 
     Kalau kosong, berarti belum pernah ada request untuk
     station ini — provider akan skip cache check dan
     langsung download.
     """
+    location_pattern = location.replace("*", "%")
+    channel_pattern = channel.replace("*", "%")
+
     rows = (
         db.query(WaveformRecord.channel)
         .filter(
             WaveformRecord.network == network,
             WaveformRecord.station == station,
+            WaveformRecord.location.like(location_pattern),
+            WaveformRecord.channel.like(channel_pattern),
         )
         .distinct()
         .all()

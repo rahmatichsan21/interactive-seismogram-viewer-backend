@@ -38,12 +38,18 @@ def get_waveform(
         # untuk station ini, BUKAN inventori FDSN station
         # (yang mencatat semua channel metadata, termasuk
         # channel tanpa waveform data seperti VHE/VHN/VHZ).
+        # Union dibatasi ke pola channel & location request
+        # (mis. `SH*` → hanya SHE/SHN/SHZ), sehingga
+        # completeness check wildcard tidak membandingkan
+        # terhadap seluruh channel station.
         # Union kosong = station ini belum pernah di-request
         # → skip cache check, langsung download.
         expected_channels = get_seen_channels(
             db=db,
             network=network,
             station=station,
+            location=location,
+            channel=channel,
         )
     else:
         expected_channels = {channel}
