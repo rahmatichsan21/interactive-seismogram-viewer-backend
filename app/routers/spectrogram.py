@@ -92,7 +92,17 @@ def get_spectrogram(
         128.0 / trace.stats.sampling_rate,
     )
 
-    fig = obspy_spectrogram(
+    # Figure horizontal agar area data Spectrogram mengikuti
+    # proporsi area plotting Waveform (lebar mendominasi), bukan
+    # kotak kecil. Axes dibuat eksplisit dan diteruskan ke
+    # obspy_spectrogram() — algoritma PSD/spectrogram tidak
+    # berubah, hanya figure/axes layout. Aspect imshow default
+    # ('equal') dipertahankan sehingga sumbu waktu/frekuensi
+    # tidak terdistorsi.
+    fig = plt.figure(figsize=(12, 3))
+    ax = fig.add_subplot(111)
+
+    obspy_spectrogram(
         trace.data,
         samp_rate=trace.stats.sampling_rate,
         per_lap=0.5,
@@ -104,6 +114,18 @@ def get_spectrogram(
             f"{trace.stats.channel}"
         ),
         show=False,
+        axes=ax,
+    )
+
+    # Ketika `axes` diteruskan, obspy_spectrogram() mengembalikan
+    # lebih awal dan TIDAK mengatur label sumbu/title. Set ulang
+    # di sini supaya output identik dengan perilaku sebelumnya
+    # (tanpa `axes`), selain ukuran figure yang kini horizontal.
+    ax.set_xlabel("Time [s]")
+    ax.set_ylabel("Frequency [Hz]")
+    ax.set_title(
+        f"{trace.stats.network}.{trace.stats.station}."
+        f"{trace.stats.channel}"
     )
 
     # 5. Render ke PNG → base64
