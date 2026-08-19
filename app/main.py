@@ -50,6 +50,94 @@ async def startup_processing_cache_sweep():
     asyncio.create_task(sweep_loop())
 
 
+@app.on_event("startup")
+async def startup_hourly_cache_cleanup():
+    import asyncio
+    from datetime import datetime, timedelta
+
+    from app.core.config import HOURLY_CACHE_CLEAR_TIME
+    from app.services.waveform_storage_service import (
+        get_last_cleanup_date,
+        run_waveform_cache_cleanup,
+        set_last_cleanup_date,
+    )
+
+    clear_hour, clear_minute = map(
+        int, HOURLY_CACHE_CLEAR_TIME.split(":")
+    )
+
+    def next_clear_time(from_time):
+        """Waktu scheduled cleanup berikutnya setelah from_time."""
+        candidate = from_time.replace(
+            hour=clear_hour,
+            minute=clear_minute,
+            second=0,
+            microsecond=0,
+        )
+        if candidate <= from_time:
+            candidate += timedelta(days=1)
+        return candidate
+
+    async def cleanup_loop():
+        while True:
+            try:
+                last_cleanup = get_last_cleanup_date()
+                today_start = datetime.now().replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
+
+                if (
+                    last_cleanup is None
+                    or last_cleanup < today_start
+                ):
+                    print(
+                        "[CACHE CLEANUP] "
+                        "Running missed daily cleanup"
+                    )
+                    deleted_files, deleted_rows = (
+                        run_waveform_cache_cleanup()
+                    )
+                    set_last_cleanup_date()
+                    print(
+                        f"[CACHE CLEANUP] Removed "
+                        f"{deleted_files} files"
+                    )
+                    print(
+                        f"[CACHE CLEANUP] Removed "
+                        f"{deleted_rows} database records"
+                    )
+                    print("[CACHE CLEANUP] Completed")
+                else:
+                    print(
+                        "[CACHE CLEANUP] Daily cleanup "
+                        "already done, skipping"
+                    )
+
+                # Hitung waktu menuju scheduled cleanup
+                # berikutnya, bukan polling per detik.
+                now = datetime.now()
+                next_cleanup = next_clear_time(now)
+                wait_seconds = (
+                    next_cleanup - now
+                ).total_seconds()
+
+                print(
+                    f"[CACHE CLEANUP] Next cleanup at "
+                    f"{next_cleanup.strftime('%Y-%m-%d %H:%M')}"
+                )
+                await asyncio.sleep(wait_seconds)
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                print(
+                    f"[CACHE CLEANUP] Error: {exc} — "
+                    "retry in 1 hour"
+                )
+                await asyncio.sleep(3600)
+
+    asyncio.create_task(cleanup_loop())
+
+
 @app.get("/")
 def root():
     return {

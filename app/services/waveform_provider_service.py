@@ -3,7 +3,10 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from obspy import Stream, UTCDateTime
 
-from app.services.waveform_service import download_waveform
+from app.services.waveform_service import (
+    download_waveform,
+    WaveformNoDataError,
+)
 from app.services.waveform_storage_service import (
     compute_hourly_windows,
     save_waveform_window,
@@ -76,12 +79,13 @@ def get_waveform(
             f"{location}.{channel} "
             f"{start_time} -> {end_time}"
         )
-        return _assemble_and_trim(
+        return _assemble_or_raise(
             db, network, station, location, channel,
             windows, start_time, end_time,
         )
 
     # Download jendela yang belum lengkap
+    any_window_failed = False
     for win_start, win_end in windows:
         cached = get_cached_channels_for_window(
             db=db,
@@ -113,9 +117,23 @@ def get_waveform(
                 start_time=win_start.isoformat(),
                 end_time=win_end.isoformat(),
             )
-        except Exception:
-            # Jendela ini tidak punya data — lanjut ke
-            # jendela berikutnya tanpa di-cache.
+        except WaveformNoDataError as exc:
+            any_window_failed = True
+            print(
+                f"[DOWNLOAD WINDOW FAILED] {network}.{station} "
+                f"{location}.{channel} "
+                f"{win_start.isoformat()} -> {win_end.isoformat()} "
+                f"reason=WaveformNoDataError: {exc}"
+            )
+            continue
+        except Exception as exc:
+            any_window_failed = True
+            print(
+                f"[DOWNLOAD WINDOW FAILED] {network}.{station} "
+                f"{location}.{channel} "
+                f"{win_start.isoformat()} -> {win_end.isoformat()} "
+                f"reason={type(exc).__name__}: {exc}"
+            )
             continue
 
         save_waveform_window(
@@ -125,10 +143,50 @@ def get_waveform(
             window_end=win_end,
         )
 
-    return _assemble_and_trim(
+    result = _assemble_or_raise(
         db, network, station, location, channel,
         windows, start_time, end_time,
     )
+
+    if any_window_failed:
+        print(
+            f"[DOWNLOAD PARTIAL] {network}.{station} "
+            f"{location}.{channel} — beberapa window gagal "
+            f"tetapi ada data yang bisa dikembalikan"
+        )
+
+    return result
+
+
+def _assemble_or_raise(
+    db,
+    network,
+    station,
+    location,
+    channel,
+    windows,
+    request_start,
+    request_end,
+):
+    """
+    Gabung semua window yang tersedia. Jika hasil akhir kosong
+    (tidak ada cache yang valid dan tidak ada download yang
+    berhasil), raise WaveformNoDataError agar router dapat
+    menghasilkan 404, BUKAN HTTP 200 dengan traces kosong.
+    """
+    stream = _assemble_and_trim(
+        db, network, station, location, channel,
+        windows, request_start, request_end,
+    )
+
+    if len(stream) == 0:
+        raise WaveformNoDataError(
+            f"No waveform data found for "
+            f"{network}.{station}.{location}.{channel} "
+            f"in {request_start} -> {request_end}"
+        )
+
+    return stream
 
 
 def _assemble_and_trim(

@@ -35,9 +35,46 @@ CACHE_WINDOW_SECONDS = int(
     os.getenv("CACHE_WINDOW_SECONDS")
 )
 
-# Umur maksimum data cache dalam hari. Cache yang
-# created_at-nya lebih tua dari CACHE_CLEAR_AFTER_DAYS
-# akan dihapus oleh cleanup_cache.py.
-CACHE_CLEAR_AFTER_DAYS = int(
-    os.getenv("CACHE_CLEAR_AFTER_DAYS")
+# Waktu harian pembersihan SELURUH Hourly Waveform Cache
+# (format HH:MM, 24-jam). Contoh: "00:00" = tengah malam,
+# "02:30" = jam 02:30. Konsep retention (umur file) sudah
+# dihapus — cache dibersihkan menyeluruh setiap hari pada
+# waktu ini. Wajib dikonfigurasi di .env; config.py membaca
+# dan memvalidasi, tidak menyediakan fallback.
+def _parse_hourly_cache_clear_time(value):
+    if not value:
+        raise ValueError(
+            "HOURLY_CACHE_CLEAR_TIME wajib dikonfigurasi "
+            "di .env dengan format HH:MM (contoh: 00:00)."
+        )
+    parts = value.split(":")
+    if len(parts) != 2:
+        raise ValueError(
+            "HOURLY_CACHE_CLEAR_TIME harus berformat HH:MM, "
+            f"ditemukan: {value!r}"
+        )
+    hour, minute = parts
+    if len(hour) != 2 or len(minute) != 2:
+        raise ValueError(
+            "HOURLY_CACHE_CLEAR_TIME harus berformat HH:MM "
+            f"dengan dua digit (contoh: 00:00), ditemukan: {value!r}"
+        )
+    try:
+        hour = int(hour)
+        minute = int(minute)
+    except ValueError:
+        raise ValueError(
+            "HOURLY_CACHE_CLEAR_TIME harus berisi angka "
+            f"HH:MM, ditemukan: {value!r}"
+        ) from None
+    if not (0 <= hour <= 23) or not (0 <= minute <= 59):
+        raise ValueError(
+            "HOURLY_CACHE_CLEAR_TIME di luar rentang "
+            f"00:00–23:59, ditemukan: {value!r}"
+        )
+    return f"{hour:02d}:{minute:02d}"
+
+
+HOURLY_CACHE_CLEAR_TIME = _parse_hourly_cache_clear_time(
+    os.getenv("HOURLY_CACHE_CLEAR_TIME")
 )

@@ -1,10 +1,14 @@
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from sqlalchemy.orm import Session
 
 from app.models.waveform import WaveformRecord
-from app.core.config import BASE_DIR, CACHE_WINDOW_SECONDS
+from app.core.config import (
+    BASE_DIR,
+    CACHE_WINDOW_SECONDS,
+)
 from obspy import Stream, read
 
 
@@ -224,16 +228,90 @@ def get_seen_channels(
     return {row[0] for row in rows}
 
 
-def get_all_waveform_records_older_than(
-    db: Session,
-    cutoff: datetime,
-):
+def run_waveform_cache_cleanup():
     """
-    Ambil semua record cache yang created_at-nya lebih
-    tua dari `cutoff`. Dipakai oleh cleanup_cache.py.
+    Hapus SELURUH Hourly Waveform Cache: semua file MiniSEED
+    di STORAGE_DIR (kecuali marker .last_cleanup) dan semua
+    baris WaveformRecord, lalu commit DB.
+
+    Tidak ada lagi retention / created_at cutoff — konsep umur
+    file sudah dihapus. Cache dibersihkan menyeluruh setiap hari
+    pada waktu HOURLY_CACHE_CLEAR_TIME.
+
+    Reusable — dipanggil oleh scripts/cleanup_cache.py (manual)
+    dan background task otomatis di app/main.py. Mengelola
+    session DB sendiri.
+
+    Seluruh isi folder STORAGE_DIR adalah Hourly Waveform Cache,
+    jadi orphan file (.mseed tanpa DB record) tetap dihapus.
+    DB record tanpa file fisik juga tetap dihapus — file dan DB
+    dibersihkan sebagai satu lifecycle.
     """
-    return (
-        db.query(WaveformRecord)
-        .filter(WaveformRecord.created_at < cutoff)
-        .all()
-    )
+    from app.core.database import SessionLocal
+
+    db = SessionLocal()
+    deleted_files = 0
+    deleted_rows = 0
+
+    try:
+        # 1. Hapus semua file cache di folder Hourly Waveform.
+        #    Marker .last_cleanup TIDAK dihapus oleh cleanup.
+        if STORAGE_DIR.exists():
+            for entry in STORAGE_DIR.iterdir():
+                if (
+                    entry.is_file()
+                    and entry.name != ".last_cleanup"
+                ):
+                    try:
+                        entry.unlink()
+                        deleted_files += 1
+                    except Exception as exc:
+                        print(
+                            f"[CACHE CLEANUP] Gagal hapus file "
+                            f"{entry}: {exc}"
+                        )
+
+        # 2. Hapus semua DB record (termasuk yang file-nya
+        #    sudah hilang). Commit setelah seluruh record
+        #    dihapus supaya file & DB bersih bersamaan.
+        records = db.query(WaveformRecord).all()
+        for record in records:
+            db.delete(record)
+        db.commit()
+        deleted_rows = len(records)
+
+        return deleted_files, deleted_rows
+    finally:
+        db.close()
+
+
+def get_last_cleanup_date():
+    """
+    Baca tanggal terakhir cleanup sukses dari marker file
+    (storage/waveforms/.last_cleanup). None jika belum pernah.
+    """
+    marker = STORAGE_DIR / ".last_cleanup"
+
+    if not marker.exists():
+        return None
+
+    try:
+        text = marker.read_text().strip()
+        return datetime.strptime(text, "%Y-%m-%d")
+    except Exception:
+        return None
+
+
+def set_last_cleanup_date(date=None):
+    """
+    Tulis tanggal cleanup terakhir ke marker file.
+    Dipanggil SETELAH cleanup berhasil, supaya catch-up
+    tidak berulang pada hari yang sama.
+    """
+    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+    marker = STORAGE_DIR / ".last_cleanup"
+
+    if date is None:
+        date = datetime.now()
+
+    marker.write_text(date.strftime("%Y-%m-%d"))

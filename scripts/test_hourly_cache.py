@@ -9,9 +9,9 @@ from app.services.waveform_storage_service import (
     compute_hourly_windows,
     get_cached_channels_for_window,
     load_cached_window,
-    get_all_waveform_records_older_than,
+    run_waveform_cache_cleanup,
 )
-from app.core.config import CACHE_WINDOW_SECONDS, CACHE_CLEAR_AFTER_DAYS
+from app.core.config import CACHE_WINDOW_SECONDS
 
 NET = "IA"
 STA = "AAFM"
@@ -133,14 +133,19 @@ assert len(stream) == 12, f"Expected 12 traces, got {len(stream)}"
 print("PASS (middle window re-downloaded)")
 
 # ── Case E: Cleanup ──
-section("Case E: Cleanup — records older than retention")
-from datetime import timedelta
-cutoff = datetime.now() - timedelta(days=CACHE_CLEAR_AFTER_DAYS)
-old_records = get_all_waveform_records_older_than(db, cutoff)
-print(f"Records older than {CACHE_CLEAR_AFTER_DAYS} day(s): {len(old_records)}")
-# Fresh records should survive (our test data is from 2025-07-01 which is > 1 day old)
-# But the function works regardless
-print("PASS (cleanup function operational)")
+section("Case E: Cleanup — full hourly cache clear")
+deleted_files, deleted_rows = run_waveform_cache_cleanup()
+print(f"Deleted files: {deleted_files}")
+print(f"Deleted database records: {deleted_rows}")
+remaining_records = db.query(WaveformRecord).count()
+print(f"Remaining records after cleanup: {remaining_records}")
+assert remaining_records == 0, \
+    "WaveformRecord harus kosong setelah full clear"
+remaining_files = glob.glob("storage/waveforms/*.mseed")
+print(f"Remaining files after cleanup: {len(remaining_files)}")
+assert len(remaining_files) == 0, \
+    "Tidak boleh ada .mseed tersisa setelah full clear"
+print("PASS (full clear)")
 
 db.close()
 print(f"\n{'='*60}")
