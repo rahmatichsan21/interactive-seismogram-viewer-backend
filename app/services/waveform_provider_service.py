@@ -2,7 +2,11 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 from obspy import Stream, UTCDateTime
+from obspy.clients.fdsn.header import FDSNNoDataException
 
+from app.services.inventory_service import (
+    get_inventory as get_fdsn_inventory,
+)
 from app.services.waveform_service import (
     download_waveform,
     WaveformNoDataError,
@@ -12,8 +16,73 @@ from app.services.waveform_storage_service import (
     save_waveform_window,
     load_cached_window,
     get_cached_channels_for_window,
-    get_seen_channels,
 )
+
+
+def _expand_channel_wildcard(
+    db,
+    network,
+    station,
+    location,
+    channel,
+    start_time,
+    end_time,
+):
+    """
+    Kembalikan daftar channel KONKRET untuk channel wildcard,
+    berdasarkan inventory station (level="channel"), difilter pola.
+
+    "*"   → semua channel konkret yang tersedia pada station.
+    "SH*" → channel yang berawalan "SH".
+    "S*"  → channel yang berawalan "S".
+
+    Inventory menentukan channel apa yang TERSEDIA; cache hanya
+    menjawab data apa yang sudah kita punya. Wildcard tidak pernah
+    disimpan sebagai channel — hanya daftar channel konkret yang
+    diproses lebih lanjut.
+    """
+    prefix = channel.replace("*", "").replace("?", "")
+
+    try:
+        inventory = get_fdsn_inventory(
+            network=network,
+            station=station,
+            location="*",
+            channel="*",
+            starttime=UTCDateTime(start_time),
+            endtime=UTCDateTime(end_time),
+            level="channel",
+        )
+    except FDSNNoDataException:
+        raise WaveformNoDataError(
+            f"No channel available for {network}.{station}"
+        )
+
+    if not inventory or len(inventory) == 0:
+        raise WaveformNoDataError(
+            f"No channel available for {network}.{station}"
+        )
+
+    channels = []
+
+    for net in inventory:
+        for sta in net:
+            for ch in sta:
+                code = ch.code or ""
+                if prefix and not code.startswith(prefix):
+                    continue
+                if code not in channels:
+                    channels.append(code)
+
+    channels.sort()
+
+    if not channels:
+        raise WaveformNoDataError(
+            f"No channel matches pattern '{channel}' "
+            f"for {network}.{station}"
+        )
+
+    return channels
 
 
 def get_waveform(
@@ -37,25 +106,48 @@ def get_waveform(
     is_wildcard = "*" in channel or "?" in channel
 
     if is_wildcard:
-        # Source of truth: channel yang PERNAH di-cache
-        # untuk station ini, BUKAN inventori FDSN station
-        # (yang mencatat semua channel metadata, termasuk
-        # channel tanpa waveform data seperti VHE/VHN/VHZ).
-        # Union dibatasi ke pola channel & location request
-        # (mis. `SH*` → hanya SHE/SHN/SHZ), sehingga
-        # completeness check wildcard tidak membandingkan
-        # terhadap seluruh channel station.
-        # Union kosong = station ini belum pernah di-request
-        # → skip cache check, langsung download.
-        expected_channels = get_seen_channels(
-            db=db,
-            network=network,
-            station=station,
-            location=location,
-            channel=channel,
+        # Wildcard adalah SYNTAX selection, BUKAN channel nyata.
+        # Expansion berbasis inventory station → daftar channel
+        # konkret yang tersedia. Setiap channel konkret diproses
+        # lewat jalur cache/download existing (rekursif, non-wildcard).
+        # Cache/database hanya menyimpan channel konkret.
+        channels = _expand_channel_wildcard(
+            db, network, station, location, channel,
+            start_time, end_time,
         )
-    else:
-        expected_channels = {channel}
+
+        combined = Stream()
+
+        for concrete_channel in channels:
+            try:
+                combined += get_waveform(
+                    db=db,
+                    network=network,
+                    station=station,
+                    location=location,
+                    channel=concrete_channel,
+                    start_time=start_time,
+                    end_time=end_time,
+                )
+            except WaveformNoDataError:
+                # Partial: channel ini tidak punya data pada rentang
+                # waktu tsb — jangan menggagalkan seluruh request.
+                print(
+                    f"[WILDCARD PARTIAL] {network}.{station} "
+                    f"{location}.{concrete_channel} tidak ada data"
+                )
+                continue
+
+        if len(combined) == 0:
+            raise WaveformNoDataError(
+                f"No waveform data found for "
+                f"{network}.{station}.{location}.{channel} "
+                f"in {start_time} -> {end_time}"
+            )
+
+        return combined
+
+    expected_channels = {channel}
 
     # Cek kelengkapan: setiap jendela punya semua channel?
     all_windows_complete = bool(expected_channels)
