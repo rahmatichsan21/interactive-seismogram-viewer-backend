@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
+from obspy import UTCDateTime
+from obspy.clients.fdsn.header import FDSNNoDataException
 
 from app.core.database import get_db
 from app.models.processing import ProcessRequest
@@ -10,13 +12,61 @@ from app.services.waveform_service import (
     trace_to_json,
     WaveformNoDataError,
 )
+from app.services.inventory_service import get_inventory as get_fdsn_inventory
 
 from app.services.waveform_provider_service import (
     get_waveform,
 )
 from app.services.upload_storage import get_stream as get_upload_stream
+from app.services.upload_storage import get_inventory as get_upload_inventory
 
 router = APIRouter(prefix="/process", tags=["Processing"])
+
+
+def _resolve_inventory(request, db):
+    """
+    Siapkan inventory/response untuk Instrument Correction.
+    Local: dari StationXML yang di-upload pada session.
+    FDSN:  fetch `level="response"` untuk station/channel request.
+    """
+    if not any(
+        op.type == "instrument_correction"
+        for op in request.operations
+    ):
+        return None
+
+    if request.session_id:
+        inventory = get_upload_inventory(request.session_id)
+        if inventory is None:
+            raise ValueError(
+                "StationXML belum di-upload. Upload StationXML "
+                "terlebih dahulu sebelum Instrument Correction."
+            )
+        return inventory
+
+    try:
+        inventory = get_fdsn_inventory(
+            network=request.network,
+            station=request.station,
+            location=request.location or "*",
+            channel=request.channel or "*",
+            starttime=UTCDateTime(request.start_time),
+            endtime=UTCDateTime(request.end_time),
+            level="response",
+        )
+    except FDSNNoDataException:
+        raise ValueError(
+            f"Response FDSN tidak tersedia untuk "
+            f"{request.network}.{request.station}."
+        )
+
+    if not inventory or len(inventory) == 0:
+        raise ValueError(
+            f"Response FDSN tidak tersedia untuk "
+            f"{request.network}.{request.station}."
+        )
+
+    return inventory
 
 
 @router.post("")
@@ -50,6 +100,13 @@ def process(
 
         response_traces = []
 
+        # Context untuk operation handler. Instrument Correction
+        # membutuhkan inventory/response — di-resolve di sini
+        # (Local session StationXML vs FDSN level="response").
+        context = {
+            "inventory": _resolve_inventory(request, db),
+        }
+
         # Cache info untuk ProcessingCache — dipakai oleh
         # pipeline untuk membuat snapshot SEBELUM operation mahal
         # dan oleh generator untuk cek cache hit.
@@ -72,6 +129,7 @@ def process(
         for processed_trace in process_waveform_per_channel(
             stream=stream,
             operations=request.operations,
+            context=context,
             cache_info=cache_info,
         ):
             response_traces.append(

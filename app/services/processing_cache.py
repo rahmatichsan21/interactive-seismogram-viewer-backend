@@ -26,6 +26,17 @@ def _serialize_operation(operation):
             f"zerophase={operation.zerophase}"
         )
         return ":".join(parts)
+    if operation.type == "instrument_correction":
+        pre_filt = (
+            ",".join(str(v) for v in operation.pre_filt)
+            if operation.pre_filt is not None
+            else "none"
+        )
+        return (
+            f"instrument_correction:output={operation.output},"
+            f"pre_filt={pre_filt},"
+            f"water_level={operation.water_level}"
+        )
     return operation.type
 
 

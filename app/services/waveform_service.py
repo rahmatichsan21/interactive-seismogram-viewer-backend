@@ -189,6 +189,8 @@ def trace_to_json(trace, max_points=None):
     )
 
     trace_fields = {
+        "network": trace.stats.network,
+        "station": trace.stats.station,
         "location": trace.stats.location,
         "channel": trace.stats.channel,
         "sampling_rate": trace.stats.sampling_rate,
@@ -199,6 +201,13 @@ def trace_to_json(trace, max_points=None):
 
         "stats": stats,
     }
+
+    # Unit hasil processing (set oleh Instrument Correction pada
+    # trace.stats.units). Frontend bisa menampilkan unit fisik.
+    units = getattr(trace.stats, "units", None)
+    if units is not None:
+        trace_fields["output_unit"] = units.get("output")
+        trace_fields["unit_label"] = units.get("type")
 
     if should_decimate:
         decimation_factor = math.ceil(
