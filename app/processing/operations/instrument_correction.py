@@ -66,13 +66,46 @@ def apply_instrument_correction(
                 f"harus lebih kecil dari Nyquist ({nyquist:.2f} Hz)."
             )
 
-        # Pastikan response cocok dengan identity trace + waktu.
+        # Cocokkan response dengan identity trace lengkap
+        # (network.station.location.channel) + waktu waveform.
         # get_response melempar exception bila tidak ditemukan atau
-        # tidak berlaku pada waktu waveform.
-        inventory.get_response(
-            trace.id,
-            trace.stats.starttime,
-        )
+        # tidak berlaku pada waktu tersebut — di-wrap agar pesan error
+        # jelas menyebut trace & waktu.
+        seed_id = trace.id
+        trace_time = trace.stats.starttime
+
+        try:
+            response = inventory.get_response(
+                seed_id,
+                trace_time,
+            )
+        except Exception as exc:
+            raise ValueError(
+                f"Response tidak ditemukan atau tidak berlaku untuk "
+                f"{seed_id} pada waktu {trace_time.isoformat()}. "
+                f"Detail: {exc}"
+            ) from exc
+
+        # Validasi kelengkapan response sebelum remove_response:
+        # harus ada response stage dan instrument sensitivity.
+        stages = response.response_stages or []
+        sensitivity = response.instrument_sensitivity
+
+        if not stages:
+            raise ValueError(
+                f"Response untuk {seed_id} tidak lengkap: "
+                f"tidak ada response stage."
+            )
+
+        if (
+            sensitivity is None
+            or sensitivity.value is None
+            or sensitivity.value == 0
+        ):
+            raise ValueError(
+                f"Response untuk {seed_id} tidak lengkap: "
+                f"instrument sensitivity tidak valid."
+            )
 
         trace.remove_response(
             inventory=inventory,

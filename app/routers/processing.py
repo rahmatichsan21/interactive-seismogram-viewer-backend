@@ -19,6 +19,7 @@ from app.services.waveform_provider_service import (
 )
 from app.services.upload_storage import get_stream as get_upload_stream
 from app.services.upload_storage import get_inventory as get_upload_inventory
+from app.services.response_cache import response_cache
 
 router = APIRouter(prefix="/process", tags=["Processing"])
 
@@ -44,27 +45,42 @@ def _resolve_inventory(request, db):
             )
         return inventory
 
-    try:
-        inventory = get_fdsn_inventory(
-            network=request.network,
-            station=request.station,
-            location=request.location or "*",
-            channel=request.channel or "*",
-            starttime=UTCDateTime(request.start_time),
-            endtime=UTCDateTime(request.end_time),
-            level="response",
-        )
-    except FDSNNoDataException:
-        raise ValueError(
-            f"Response FDSN tidak tersedia untuk "
-            f"{request.network}.{request.station}."
-        )
+    # FDSN: cache Inventory level="response" per
+    # (network, station, start_time, end_time) untuk menghindari
+    # fetch ulang ke BMKG pada Apply/Undo/Redo berulang.
+    cache_key = (
+        request.network,
+        request.station,
+        request.start_time,
+        request.end_time,
+    )
 
-    if not inventory or len(inventory) == 0:
-        raise ValueError(
-            f"Response FDSN tidak tersedia untuk "
-            f"{request.network}.{request.station}."
-        )
+    inventory = response_cache.get(cache_key)
+
+    if inventory is None:
+        try:
+            inventory = get_fdsn_inventory(
+                network=request.network,
+                station=request.station,
+                location=request.location or "*",
+                channel=request.channel or "*",
+                starttime=UTCDateTime(request.start_time),
+                endtime=UTCDateTime(request.end_time),
+                level="response",
+            )
+        except FDSNNoDataException:
+            raise ValueError(
+                f"Response FDSN tidak tersedia untuk "
+                f"{request.network}.{request.station}."
+            )
+
+        if not inventory or len(inventory) == 0:
+            raise ValueError(
+                f"Response FDSN tidak tersedia untuk "
+                f"{request.network}.{request.station}."
+            )
+
+        response_cache.put(cache_key, inventory)
 
     return inventory
 
