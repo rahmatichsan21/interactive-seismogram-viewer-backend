@@ -10,8 +10,9 @@ class ResponseCache:
     In-process memory (OrderedDict), bukan Redis/database — mengikuti
     pola ProcessingCache yang sudah ada.
 
-    Key = (network, station, start_time, end_time) agar inventory dari
-    station atau periode waktu berbeda tidak tertukar.
+    Key = (network, station, location, channel, start_time, end_time)
+    agar inventory dari station/location/channel/periode waktu berbeda
+    tidak tertukar (sama dengan key persistent L2).
 
     TTL + LRU eviction (max_entries). Tanpa size guard per-entry untuk
     sekarang (inventory station umumnya kecil; max_entries cukup).

@@ -20,6 +20,11 @@ from app.services.waveform_provider_service import (
 from app.services.upload_storage import get_stream as get_upload_stream
 from app.services.upload_storage import get_inventory as get_upload_inventory
 from app.services.response_cache import response_cache
+from app.services.persistent_instrument_response_cache import (
+    get as get_persistent_response,
+    put as put_persistent_response,
+    make_key as make_persistent_response_key,
+)
 
 router = APIRouter(prefix="/process", tags=["Processing"])
 
@@ -45,25 +50,51 @@ def _resolve_inventory(request, db):
             )
         return inventory
 
-    # FDSN: cache Inventory level="response" per
-    # (network, station, start_time, end_time) untuk menghindari
-    # fetch ulang ke BMKG pada Apply/Undo/Redo berulang.
+    # FDSN: cache Inventory level="response". Key identitas response
+    # mencakup network/station/location/channel + waktu (L1 & L2 sama).
+    location = request.location or "*"
+    channel = request.channel or "*"
     cache_key = (
         request.network,
         request.station,
+        location,
+        channel,
+        request.start_time,
+        request.end_time,
+    )
+    persistent_key = make_persistent_response_key(
+        request.network,
+        request.station,
+        location,
+        channel,
         request.start_time,
         request.end_time,
     )
 
+    # L1: in-memory Inventory cache.
     inventory = response_cache.get(cache_key)
 
     if inventory is None:
+        # L2: persistent StationXML — bertahan setelah restart backend.
+        inventory = get_persistent_response(persistent_key)
+
+        if inventory is not None:
+            response_cache.put(cache_key, inventory)
+            return inventory
+
+        # L2 MISS → fetch dari BMKG.
+        print(
+            f"[FDSN RESPONSE FETCH] "
+            f"{request.network}.{request.station} "
+            f"{location}.{channel} "
+            f"{request.start_time} -> {request.end_time}"
+        )
         try:
             inventory = get_fdsn_inventory(
                 network=request.network,
                 station=request.station,
-                location=request.location or "*",
-                channel=request.channel or "*",
+                location=location,
+                channel=channel,
                 starttime=UTCDateTime(request.start_time),
                 endtime=UTCDateTime(request.end_time),
                 level="response",
@@ -80,6 +111,8 @@ def _resolve_inventory(request, db):
                 f"{request.network}.{request.station}."
             )
 
+        # Simpan ke L2 (persistent) dan L1 (memory). Gagal L2 → fallback.
+        put_persistent_response(persistent_key, inventory)
         response_cache.put(cache_key, inventory)
 
     return inventory
