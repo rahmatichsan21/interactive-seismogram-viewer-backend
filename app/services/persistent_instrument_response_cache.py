@@ -1,39 +1,43 @@
-import hashlib
 import os
+import re
+import threading
 from pathlib import Path
 
 from obspy import read_inventory
 
 from app.core.config import BASE_DIR
+from app.services.inventory_service import get_inventory as get_fdsn_inventory
+from app.services.response_cache import response_cache
 
 # Direktori persistent Instrument Response Cache (StationXML).
 # Dibuat otomatis saat runtime; masuk .gitignore seperti storage/waveforms.
 RESPONSES_DIR = BASE_DIR / "storage" / "responses"
 
+# Single-flight guard: mencegah dua request melakukan FDSN fetch untuk
+# station yang sama secara bersamaan. RLock karena diakses bersarang
+# (Condition berbasis lock yang sama untuk L1 get/put).
+_fetch_lock = threading.RLock()
+_fetch_cond = threading.Condition(_fetch_lock)
+_in_flight = set()
 
-def make_key(
-    network,
-    station,
-    location,
-    channel,
-    start_time,
-    end_time,
-):
+
+def _sanitize(value):
+    """Hanya karakter aman filesystem (alfanumerik, _, -)."""
+    return re.sub(r"[^A-Za-z0-9_-]", "_", value or "")
+
+
+def filename_for(network, station):
     """
-    Cache key identitas Instrument Response (bukan hasil processing).
-    Mencakup seluruh parameter FDSN query yang menentukan response:
-    network, station, location, channel, start/end time.
-    TIDAK menyertakan filter/normalize/output unit/processing operation.
+    Nama file StationXML per (network, station), tanpa ekstensi.
+    Contoh: ('IA','AAFM') -> 'IA.AAFM' -> file 'IA.AAFM.xml'.
+    Satu file mencakup semua channel & epoch response station;
+    `inventory.get_response(seed_id, time)` memilih response yang benar
+    berdasarkan channel + waktu. start/end waktu TIDAK masuk nama agar
+    tidak membuat XML redundant per rentang waktu.
     """
-    raw = "|".join([
-        network or "",
-        station or "",
-        location or "",
-        channel or "",
-        start_time or "",
-        end_time or "",
-    ])
-    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+    net = _sanitize(network)
+    sta = _sanitize(station)
+    return f"{net}.{sta}"
 
 
 def _path_for(key):
@@ -83,3 +87,104 @@ def put(key, inventory):
     except Exception as exc:
         print(f"[PERSISTENT RESPONSE CACHE ERROR] put {key}: {exc}")
         return False
+
+
+def _fetch_from_fdsn(network, station):
+    """Fetch Instrument Response (level="response") semua channel station."""
+    print(f"[FDSN RESPONSE FETCH] {network}.{station}")
+    return get_fdsn_inventory(
+        network=network,
+        station=station,
+        location="*",
+        channel="*",
+        level="response",
+    )
+
+
+def resolve_instrument_response(network, station):
+    """
+    Resolve Inventory Instrument Response utk SATU station.
+    L1 (RAM) → L2 (persistent StationXML) → FDSN/BMKG.
+
+    Single-flight: jika station yang sama sedang di-fetch oleh thread
+    lain, request ini menunggu & memakai hasil yang sama (tidak fetch
+    ganda). Failure-tolerant: kegagalan cache/fetch → log + return None.
+    """
+    key = filename_for(network, station)
+    cache_key = (network, station)
+
+    # L1 (in-memory, guarded oleh lock).
+    with _fetch_lock:
+        inventory = response_cache.get(cache_key)
+
+    # L2 (persistent file) — read aman dari beberapa thread.
+    if inventory is None:
+        inventory = get(key)
+        if inventory is not None:
+            with _fetch_lock:
+                response_cache.put(cache_key, inventory)
+
+    if inventory is not None:
+        return inventory
+
+    # Fetch FDSN dengan single-flight.
+    with _fetch_cond:
+        while key in _in_flight:
+            _fetch_cond.wait(timeout=0.5)
+
+            with _fetch_lock:
+                inventory = response_cache.get(cache_key)
+            if inventory is None:
+                inventory = get(key)
+                if inventory is not None:
+                    with _fetch_lock:
+                        response_cache.put(cache_key, inventory)
+            if inventory is not None:
+                return inventory
+
+        # Cek ulang setelah menunggu: thread lain mungkin sudah mengisi
+        # cache (kasus sukses) — hindari fetch duplikat.
+        with _fetch_lock:
+            inventory = response_cache.get(cache_key)
+        if inventory is None:
+            inventory = get(key)
+            if inventory is not None:
+                with _fetch_lock:
+                    response_cache.put(cache_key, inventory)
+        if inventory is not None:
+            return inventory
+
+        _in_flight.add(key)
+
+    try:
+        try:
+            inventory = _fetch_from_fdsn(network, station)
+        except Exception as exc:
+            print(f"[FDSN RESPONSE FETCH ERROR] {network}.{station}: {exc}")
+            inventory = None
+
+        if inventory is not None and len(inventory) > 0:
+            put(key, inventory)
+            with _fetch_lock:
+                response_cache.put(cache_key, inventory)
+
+        return inventory
+    finally:
+        with _fetch_cond:
+            _in_flight.discard(key)
+            _fetch_cond.notify_all()
+
+
+def preload_instrument_response(network, station):
+    """
+    Preload best-effort untuk dipakai background (FastAPI BackgroundTasks):
+    isi cache L1/L2 response station TANPA memengaruhi request utama.
+    Selalu return tanpa raise (gagal → log).
+    """
+    try:
+        resolve_instrument_response(network, station)
+    except Exception as exc:
+        print(
+            f"[INSTRUMENT RESPONSE PRELOAD ERROR] "
+            f"{network}.{station}: {exc}"
+        )

@@ -78,3 +78,42 @@ def _parse_hourly_cache_clear_time(value):
 HOURLY_CACHE_CLEAR_TIME = _parse_hourly_cache_clear_time(
     os.getenv("HOURLY_CACHE_CLEAR_TIME")
 )
+
+
+# --- Konfigurasi operasional (dapat di-tuning via .env) ---
+# Nilai default di sini mencerminkan behavior existing; .env boleh
+# menimpanya. Jangan ubah CACHE_WINDOW_SECONDS / HOURLY_CACHE_CLEAR_TIME.
+
+# Timeout request FDSN/BMKG dalam detik.
+FDSN_TIMEOUT_SECONDS = int(os.getenv("FDSN_TIMEOUT_SECONDS", "20"))
+
+# Retry download waveform (total percobaan & delay antar percobaan).
+MAX_DOWNLOAD_ATTEMPTS = int(os.getenv("MAX_DOWNLOAD_ATTEMPTS", "3"))
+RETRY_DELAY_SECONDS = int(os.getenv("RETRY_DELAY_SECONDS", "2"))
+
+# ProcessingCache (L1 hasil processing): TTL, jumlah entry, batas ukuran.
+PROCESSING_CACHE_TTL_SECONDS = int(
+    os.getenv("PROCESSING_CACHE_TTL_SECONDS", "300")
+)
+PROCESSING_CACHE_MAX_ENTRIES = int(
+    os.getenv("PROCESSING_CACHE_MAX_ENTRIES", "20")
+)
+PROCESSING_CACHE_MAX_SIZE_BYTES = int(
+    os.getenv("PROCESSING_CACHE_MAX_SIZE_BYTES", "200000000")
+)
+
+# Instrument Response L1 cache (in-memory Inventory): TTL & jumlah entry.
+RESPONSE_CACHE_TTL_SECONDS = int(
+    os.getenv("RESPONSE_CACHE_TTL_SECONDS", "300")
+)
+RESPONSE_CACHE_MAX_ENTRIES = int(
+    os.getenv("RESPONSE_CACHE_MAX_ENTRIES", "20")
+)
+
+# Interval sweep ProcessingCache (detik) & backoff cleanup error (detik).
+PROCESSING_SWEEP_INTERVAL_SECONDS = int(
+    os.getenv("PROCESSING_SWEEP_INTERVAL_SECONDS", "60")
+)
+CACHE_CLEANUP_RETRY_SECONDS = int(
+    os.getenv("CACHE_CLEANUP_RETRY_SECONDS", "3600")
+)

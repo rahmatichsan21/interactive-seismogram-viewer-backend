@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 storage/waveforms/
 storage/responses/
+storage/.last_cleanup

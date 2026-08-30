@@ -35,11 +35,12 @@ app.include_router(download_router)
 async def startup_processing_cache_sweep():
     import asyncio
 
+    from app.core.config import PROCESSING_SWEEP_INTERVAL_SECONDS
     from app.services.processing_cache import processing_cache
 
     async def sweep_loop():
         while True:
-            await asyncio.sleep(60)
+            await asyncio.sleep(PROCESSING_SWEEP_INTERVAL_SECONDS)
             removed = processing_cache.sweep()
             if removed:
                 print(
@@ -56,6 +57,7 @@ async def startup_hourly_cache_cleanup():
     from datetime import datetime, timedelta
 
     from app.core.config import HOURLY_CACHE_CLEAR_TIME
+    from app.core.config import CACHE_CLEANUP_RETRY_SECONDS
     from app.services.waveform_storage_service import (
         get_last_cleanup_date,
         run_waveform_cache_cleanup,
@@ -133,7 +135,7 @@ async def startup_hourly_cache_cleanup():
                     f"[CACHE CLEANUP] Error: {exc} — "
                     "retry in 1 hour"
                 )
-                await asyncio.sleep(3600)
+                await asyncio.sleep(CACHE_CLEANUP_RETRY_SECONDS)
 
     asyncio.create_task(cleanup_loop())
 

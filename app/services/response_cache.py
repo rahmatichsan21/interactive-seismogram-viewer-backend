@@ -1,6 +1,11 @@
 import time
 from collections import OrderedDict
 
+from app.core.config import (
+    RESPONSE_CACHE_TTL_SECONDS,
+    RESPONSE_CACHE_MAX_ENTRIES,
+)
+
 
 class ResponseCache:
     """
@@ -10,15 +15,16 @@ class ResponseCache:
     In-process memory (OrderedDict), bukan Redis/database — mengikuti
     pola ProcessingCache yang sudah ada.
 
-    Key = (network, station, location, channel, start_time, end_time)
-    agar inventory dari station/location/channel/periode waktu berbeda
-    tidak tertukar (sama dengan key persistent L2).
+    Key = (network, station) — satu Inventory per station (semua channel
+    & epoch). Sama dengan key persistent L2. start/end waktu tidak masuk
+    key karena `inventory.get_response(seed_id, time)` memilih response
+    yang benar berdasarkan channel + waktu.
 
     TTL + LRU eviction (max_entries). Tanpa size guard per-entry untuk
     sekarang (inventory station umumnya kecil; max_entries cukup).
     """
 
-    def __init__(self, ttl=300, max_entries=20):
+    def __init__(self, ttl=RESPONSE_CACHE_TTL_SECONDS, max_entries=RESPONSE_CACHE_MAX_ENTRIES):
         self._cache = OrderedDict()
         self._ttl = ttl
         self._max_entries = max_entries
@@ -58,4 +64,8 @@ class ResponseCache:
 
 
 # Singleton — satu instance untuk seluruh backend.
-response_cache = ResponseCache()
+# TTL/max_entries diambil dari config (dapat di-tuning).
+response_cache = ResponseCache(
+    ttl=RESPONSE_CACHE_TTL_SECONDS,
+    max_entries=RESPONSE_CACHE_MAX_ENTRIES,
+)

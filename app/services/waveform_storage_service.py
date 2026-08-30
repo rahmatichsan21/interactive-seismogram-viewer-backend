@@ -9,10 +9,14 @@ from app.core.config import (
     BASE_DIR,
     CACHE_WINDOW_SECONDS,
 )
+from app.services.persistent_instrument_response_cache import RESPONSES_DIR
 from obspy import Stream, read
 
 
 STORAGE_DIR = BASE_DIR / "storage" / "waveforms"
+
+# Marker cleanup bersama untuk SELURUH storage cache (waveform + responses).
+CLEANUP_MARKER = BASE_DIR / "storage" / ".last_cleanup"
 
 
 def compute_hourly_windows(request_start: datetime, request_end: datetime):
@@ -230,22 +234,16 @@ def get_seen_channels(
 
 def run_waveform_cache_cleanup():
     """
-    Hapus SELURUH Hourly Waveform Cache: semua file MiniSEED
-    di STORAGE_DIR (kecuali marker .last_cleanup) dan semua
-    baris WaveformRecord, lalu commit DB.
+    Hapus SELURUH Hourly Waveform Cache (file MiniSEED + WaveformRecord)
+    DAN seluruh Instrument Response StationXML (storage/responses/*.xml),
+    lalu commit DB.
 
-    Tidak ada lagi retention / created_at cutoff — konsep umur
-    file sudah dihapus. Cache dibersihkan menyeluruh setiap hari
-    pada waktu HOURLY_CACHE_CLEAR_TIME.
+    Tidak ada lagi retention / created_at cutoff — cache dibersihkan
+    menyeluruh setiap hari pada waktu HOURLY_CACHE_CLEAR_TIME.
 
     Reusable — dipanggil oleh scripts/cleanup_cache.py (manual)
     dan background task otomatis di app/main.py. Mengelola
     session DB sendiri.
-
-    Seluruh isi folder STORAGE_DIR adalah Hourly Waveform Cache,
-    jadi orphan file (.mseed tanpa DB record) tetap dihapus.
-    DB record tanpa file fisik juga tetap dihapus — file dan DB
-    dibersihkan sebagai satu lifecycle.
     """
     from app.core.database import SessionLocal
 
@@ -255,13 +253,10 @@ def run_waveform_cache_cleanup():
 
     try:
         # 1. Hapus semua file cache di folder Hourly Waveform.
-        #    Marker .last_cleanup TIDAK dihapus oleh cleanup.
+        #    Marker .last_cleanup kini berada di storage/ (bukan sini).
         if STORAGE_DIR.exists():
             for entry in STORAGE_DIR.iterdir():
-                if (
-                    entry.is_file()
-                    and entry.name != ".last_cleanup"
-                ):
+                if entry.is_file() and entry.name != ".last_cleanup":
                     try:
                         entry.unlink()
                         deleted_files += 1
@@ -271,7 +266,29 @@ def run_waveform_cache_cleanup():
                             f"{entry}: {exc}"
                         )
 
-        # 2. Hapus semua DB record (termasuk yang file-nya
+        # 2. Hapus seluruh Instrument Response StationXML (L2).
+        if RESPONSES_DIR.exists():
+            deleted_responses = 0
+            for entry in RESPONSES_DIR.iterdir():
+                if entry.is_file() and (
+                    entry.suffix == ".xml"
+                    or entry.name.endswith(".xml.tmp")
+                ):
+                    try:
+                        entry.unlink()
+                        deleted_responses += 1
+                    except Exception as exc:
+                        print(
+                            f"[CACHE CLEANUP] Gagal hapus file "
+                            f"{entry}: {exc}"
+                        )
+            if deleted_responses:
+                print(
+                    f"[CACHE CLEANUP] Removed "
+                    f"{deleted_responses} response files"
+                )
+
+        # 3. Hapus semua DB record (termasuk yang file-nya
         #    sudah hilang). Commit setelah seluruh record
         #    dihapus supaya file & DB bersih bersamaan.
         records = db.query(WaveformRecord).all()
@@ -288,9 +305,10 @@ def run_waveform_cache_cleanup():
 def get_last_cleanup_date():
     """
     Baca tanggal terakhir cleanup sukses dari marker file
-    (storage/waveforms/.last_cleanup). None jika belum pernah.
+    (storage/.last_cleanup — untuk seluruh storage cache).
+    None jika belum pernah.
     """
-    marker = STORAGE_DIR / ".last_cleanup"
+    marker = CLEANUP_MARKER
 
     if not marker.exists():
         return None
@@ -304,12 +322,12 @@ def get_last_cleanup_date():
 
 def set_last_cleanup_date(date=None):
     """
-    Tulis tanggal cleanup terakhir ke marker file.
+    Tulis tanggal cleanup terakhir ke marker file (storage/.last_cleanup).
     Dipanggil SETELAH cleanup berhasil, supaya catch-up
     tidak berulang pada hari yang sama.
     """
-    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
-    marker = STORAGE_DIR / ".last_cleanup"
+    CLEANUP_MARKER.parent.mkdir(parents=True, exist_ok=True)
+    marker = CLEANUP_MARKER
 
     if date is None:
         date = datetime.now()

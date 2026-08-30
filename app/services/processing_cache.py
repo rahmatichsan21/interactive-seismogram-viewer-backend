@@ -4,6 +4,12 @@ from collections import OrderedDict
 
 from obspy import Stream
 
+from app.core.config import (
+    PROCESSING_CACHE_TTL_SECONDS,
+    PROCESSING_CACHE_MAX_ENTRIES,
+    PROCESSING_CACHE_MAX_SIZE_BYTES,
+)
+
 
 def _serialize_operation(operation):
     """Serialize satu operation menjadi string pendek untuk cache key."""
@@ -52,9 +58,9 @@ class ProcessingCache:
 
     def __init__(
         self,
-        ttl=300,
-        max_entries=20,
-        max_size_bytes=200_000_000,
+        ttl=PROCESSING_CACHE_TTL_SECONDS,
+        max_entries=PROCESSING_CACHE_MAX_ENTRIES,
+        max_size_bytes=PROCESSING_CACHE_MAX_SIZE_BYTES,
     ):
         self._cache = OrderedDict()
         self._ttl = ttl
@@ -131,8 +137,9 @@ class ProcessingCache:
 
 
 # Singleton — satu instance untuk seluruh backend.
+# Parameter TTL/entries/ukuran diambil dari config (dapat di-tuning).
 processing_cache = ProcessingCache(
-    ttl=300,
-    max_entries=20,
-    max_size_bytes=200_000_000,
+    ttl=PROCESSING_CACHE_TTL_SECONDS,
+    max_entries=PROCESSING_CACHE_MAX_ENTRIES,
+    max_size_bytes=PROCESSING_CACHE_MAX_SIZE_BYTES,
 )

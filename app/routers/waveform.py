@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from obspy.clients.fdsn.header import FDSNNoDataException
 
 from app.services.inventory_service import (
@@ -11,6 +11,9 @@ from app.services.waveform_service import (
 
 from app.services.waveform_provider_service import (
     get_waveform,
+)
+from app.services.persistent_instrument_response_cache import (
+    preload_instrument_response,
 )
 from sqlalchemy.orm import Session
 
@@ -33,6 +36,7 @@ def get_waveform_endpoint(
     start_time: str,
     end_time: str,
     max_points: int | None = None,
+    background_tasks: BackgroundTasks = None,
     db: Session = Depends(get_db),
 ):
     try:
@@ -45,6 +49,16 @@ def get_waveform_endpoint(
             start_time=start_time,
             end_time=end_time,
         )
+
+        # Preload Instrument Response (per station) di background agar
+        # Instrument Correction berikutnya tidak menunggu FDSN. Best-effort:
+        # kegagalan tidak memengaruhi response waveform.
+        if background_tasks is not None:
+            background_tasks.add_task(
+                preload_instrument_response,
+                network,
+                station,
+            )
 
         return stream_to_json(
             stream=stream,

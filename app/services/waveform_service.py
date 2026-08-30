@@ -10,7 +10,11 @@ from obspy.clients.fdsn.header import (
     FDSNTimeoutException,
 )
 from app.core.fdsn_client import client
-from app.core.config import MAX_DISPLAY_POINTS
+from app.core.config import (
+    MAX_DISPLAY_POINTS,
+    MAX_DOWNLOAD_ATTEMPTS,
+    RETRY_DELAY_SECONDS,
+)
 from app.models.processing import TraceResponse
 
 
@@ -42,9 +46,8 @@ RETRYABLE_ERRORS = (
     *_REQUESTS_RETRYABLE,
 )
 
-# Maksimal 3 attempt total (1 percobaan + 2 retry).
-MAX_DOWNLOAD_ATTEMPTS = 3
-RETRY_DELAY_SECONDS = 2
+# Maksimal 3 attempt total (1 percobaan + 2 retry) — configurable.
+# MAX_DOWNLOAD_ATTEMPTS / RETRY_DELAY_SECONDS dibaca dari config.
 
 
 def download_waveform(
