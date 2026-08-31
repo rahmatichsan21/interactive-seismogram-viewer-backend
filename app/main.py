@@ -11,6 +11,7 @@ from app.routers.upload import router as upload_router
 from app.routers.spectrogram import router as spectrogram_router
 from app.routers.download import router as download_router
 from app.routers.psd import router as psd_router
+from app.routers.hvsr import router as hvsr_router
 
 setup_logging()
 
@@ -39,6 +40,7 @@ app.include_router(upload_router)
 app.include_router(spectrogram_router)
 app.include_router(download_router)
 app.include_router(psd_router)
+app.include_router(hvsr_router)
 
 
 @app.exception_handler(Exception)
@@ -59,7 +61,11 @@ async def startup_processing_cache_sweep():
 
     from app.core.config import PROCESSING_SWEEP_INTERVAL_SECONDS
     from app.services.processing_cache import processing_cache
-    from app.services.ttl_cache import psd_cache, spectrogram_cache
+    from app.services.ttl_cache import (
+        psd_cache,
+        spectrogram_cache,
+        hvsr_cache,
+    )
 
     async def sweep_loop():
         while True:
@@ -72,11 +78,14 @@ async def startup_processing_cache_sweep():
                 )
             removed_psd = psd_cache.sweep()
             removed_spec = spectrogram_cache.sweep()
-            if removed_psd or removed_spec:
+            removed_hvsr = hvsr_cache.sweep()
+            if removed_psd or removed_spec or removed_hvsr:
                 logger.info(
-                    "[CACHE SWEEP] Removed PSD=%d spectrogram=%d",
+                    "[CACHE SWEEP] Removed PSD=%d spectrogram=%d "
+                    "hvsr=%d",
                     removed_psd,
                     removed_spec,
+                    removed_hvsr,
                 )
 
     asyncio.create_task(sweep_loop())

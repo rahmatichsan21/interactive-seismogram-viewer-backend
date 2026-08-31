@@ -138,3 +138,21 @@ SPECTROGRAM_CACHE_TTL_SECONDS = int(
 SPECTROGRAM_CACHE_MAX_ENTRIES = int(
     os.getenv("SPECTROGRAM_CACHE_MAX_ENTRIES", "20")
 )
+
+# HVSR (Nakamura H/V) — parameter perhitungan yang memengaruhi hasil
+# dan masuk cache key.
+HVSR_WINDOW_SECONDS = float(os.getenv("HVSR_WINDOW_SECONDS", "60"))
+HVSR_OVERLAP = float(os.getenv("HVSR_OVERLAP", "0.5"))
+# Bandwidth Konno-Ohmachi (b).
+HVSR_KO_BANDWIDTH = float(os.getenv("HVSR_KO_BANDWIDTH", "40"))
+# Rentang frekuensi output (Hz). FMAX diklamp ke Nyquist di service.
+HVSR_FMIN = float(os.getenv("HVSR_FMIN", "0.1"))
+HVSR_FMAX = float(os.getenv("HVSR_FMAX", "20"))
+
+# Cache hasil HVSR (RAM-only, ephemeral).
+HVSR_CACHE_TTL_SECONDS = int(
+    os.getenv("HVSR_CACHE_TTL_SECONDS", "300")
+)
+HVSR_CACHE_MAX_ENTRIES = int(
+    os.getenv("HVSR_CACHE_MAX_ENTRIES", "20")
+)

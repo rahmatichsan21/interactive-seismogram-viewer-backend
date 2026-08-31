@@ -8,6 +8,8 @@ from app.core.config import (
     PSD_CACHE_MAX_ENTRIES,
     SPECTROGRAM_CACHE_TTL_SECONDS,
     SPECTROGRAM_CACHE_MAX_ENTRIES,
+    HVSR_CACHE_TTL_SECONDS,
+    HVSR_CACHE_MAX_ENTRIES,
 )
 
 logger = logging.getLogger(__name__)
@@ -92,4 +94,8 @@ psd_cache = TTLCache(
 spectrogram_cache = TTLCache(
     ttl=SPECTROGRAM_CACHE_TTL_SECONDS,
     max_entries=SPECTROGRAM_CACHE_MAX_ENTRIES,
+)
+hvsr_cache = TTLCache(
+    ttl=HVSR_CACHE_TTL_SECONDS,
+    max_entries=HVSR_CACHE_MAX_ENTRIES,
 )
