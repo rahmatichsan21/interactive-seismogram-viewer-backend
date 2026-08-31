@@ -1,7 +1,11 @@
+import logging
+
 from obspy import Stream
 
 from app.processing.pipeline import apply_pipeline
 from app.models.processing import Operation
+
+logger = logging.getLogger(__name__)
 
 
 def process_waveform(
@@ -86,12 +90,12 @@ def process_waveform_per_channel(
 
             cached = processing_cache.get(key)
             if cached is not None:
-                print(
-                    f"[PROC CACHE HIT] "
-                    f"{trace_cache_info['network']}."
-                    f"{trace_cache_info['station']}."
-                    f"{channel} "
-                    f"ops={[op.type for op in operations]}"
+                logger.debug(
+                    "PROC CACHE HIT %s.%s.%s ops=%s",
+                    trace_cache_info["network"],
+                    trace_cache_info["station"],
+                    channel,
+                    [op.type for op in operations],
                 )
                 yield cached.traces[0]
                 continue
@@ -134,13 +138,13 @@ def process_waveform_per_channel(
                 size_mb = sum(
                     tr.data.nbytes for tr in processed
                 ) / (1024 * 1024)
-                print(
-                    f"[PROC FINAL] "
-                    f"{trace_cache_info['network']}."
-                    f"{trace_cache_info['station']}."
-                    f"{channel} "
-                    f"ops={[op.type for op in operations]} "
-                    f"size={size_mb:.1f}MB"
+                logger.debug(
+                    "PROC FINAL %s.%s.%s ops=%s size=%.1fMB",
+                    trace_cache_info["network"],
+                    trace_cache_info["station"],
+                    channel,
+                    [op.type for op in operations],
+                    size_mb,
                 )
 
         yield processed.traces[0]

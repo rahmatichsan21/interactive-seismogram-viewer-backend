@@ -1,8 +1,12 @@
+import logging
+
 from obspy import Stream
 
 from app.processing.registry import OPERATION_REGISTRY
 from app.models.processing import Operation
 from app.services.processing_cache import processing_cache
+
+logger = logging.getLogger(__name__)
 
 
 def _is_expensive_boundary(ops_processed, op_type):
@@ -112,12 +116,12 @@ def apply_pipeline(
             working_stream = snapshot_stream
             ops_processed = prefix_ops
             start_index = prefix_len
-            print(
-                f"[PROC SNAPSHOT HIT] "
-                f"{cache_info['network']}."
-                f"{cache_info['station']}."
-                f"{cache_info['channel']} "
-                f"ops={[op.type for op in ops_processed]}"
+            logger.debug(
+                "PROC SNAPSHOT HIT %s.%s.%s ops=%s",
+                cache_info["network"],
+                cache_info["station"],
+                cache_info["channel"],
+                [op.type for op in ops_processed],
             )
 
     for operation in operations[start_index:]:
@@ -159,13 +163,13 @@ def apply_pipeline(
                     size_mb = sum(
                         tr.data.nbytes for tr in working_stream
                     ) / (1024 * 1024)
-                    print(
-                        f"[PROC SNAPSHOT] "
-                        f"{cache_info['network']}."
-                        f"{cache_info['station']}."
-                        f"{cache_info['channel']} "
-                        f"ops={[op.type for op in ops_processed]} "
-                        f"size={size_mb:.1f}MB"
+                    logger.debug(
+                        "PROC SNAPSHOT %s.%s.%s ops=%s size=%.1fMB",
+                        cache_info["network"],
+                        cache_info["station"],
+                        cache_info["channel"],
+                        [op.type for op in ops_processed],
+                        size_mb,
                     )
 
         handler = OPERATION_REGISTRY[op_type]

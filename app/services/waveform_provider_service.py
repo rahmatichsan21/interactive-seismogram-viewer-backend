@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime
 
 from sqlalchemy.orm import Session
 from obspy import Stream, UTCDateTime
 from obspy.clients.fdsn.header import FDSNNoDataException
+
+logger = logging.getLogger(__name__)
 
 from app.services.inventory_service import (
     get_inventory as get_fdsn_inventory,
@@ -132,9 +135,9 @@ def get_waveform(
             except WaveformNoDataError:
                 # Partial: channel ini tidak punya data pada rentang
                 # waktu tsb — jangan menggagalkan seluruh request.
-                print(
-                    f"[WILDCARD PARTIAL] {network}.{station} "
-                    f"{location}.{concrete_channel} tidak ada data"
+                logger.warning(
+                    "WILDCARD PARTIAL %s.%s %s.%s tidak ada data",
+                    network, station, location, concrete_channel,
                 )
                 continue
 
@@ -166,10 +169,10 @@ def get_waveform(
             break
 
     if all_windows_complete:
-        print(
-            f"[CACHE HIT] {network}.{station} "
-            f"{location}.{channel} "
-            f"{start_time} -> {end_time}"
+        logger.info(
+            "CACHE HIT %s.%s %s.%s %s -> %s",
+            network, station, location, channel,
+            start_time, end_time,
         )
         return _assemble_or_raise(
             db, network, station, location, channel,
@@ -194,10 +197,10 @@ def get_waveform(
         ):
             continue
 
-        print(
-            f"[DOWNLOAD WINDOW] {network}.{station} "
-            f"{location}.{channel} "
-            f"{win_start.isoformat()} -> {win_end.isoformat()}"
+        logger.info(
+            "DOWNLOAD WINDOW %s.%s %s.%s %s -> %s",
+            network, station, location, channel,
+            win_start.isoformat(), win_end.isoformat(),
         )
 
         try:
@@ -211,20 +214,20 @@ def get_waveform(
             )
         except WaveformNoDataError as exc:
             any_window_failed = True
-            print(
-                f"[DOWNLOAD WINDOW FAILED] {network}.{station} "
-                f"{location}.{channel} "
-                f"{win_start.isoformat()} -> {win_end.isoformat()} "
-                f"reason=WaveformNoDataError: {exc}"
+            logger.warning(
+                "DOWNLOAD WINDOW FAILED %s.%s %s.%s "
+                "%s -> %s reason=WaveformNoDataError: %s",
+                network, station, location, channel,
+                win_start.isoformat(), win_end.isoformat(), exc,
             )
             continue
-        except Exception as exc:
+        except Exception:
             any_window_failed = True
-            print(
-                f"[DOWNLOAD WINDOW FAILED] {network}.{station} "
-                f"{location}.{channel} "
-                f"{win_start.isoformat()} -> {win_end.isoformat()} "
-                f"reason={type(exc).__name__}: {exc}"
+            logger.exception(
+                "DOWNLOAD WINDOW FAILED %s.%s %s.%s "
+                "%s -> %s",
+                network, station, location, channel,
+                win_start.isoformat(), win_end.isoformat(),
             )
             continue
 
@@ -241,10 +244,10 @@ def get_waveform(
     )
 
     if any_window_failed:
-        print(
-            f"[DOWNLOAD PARTIAL] {network}.{station} "
-            f"{location}.{channel} — beberapa window gagal "
-            f"tetapi ada data yang bisa dikembalikan"
+        logger.warning(
+            "DOWNLOAD PARTIAL %s.%s %s.%s — beberapa window gagal "
+            "tetapi ada data yang bisa dikembalikan",
+            network, station, location, channel,
         )
 
     return result

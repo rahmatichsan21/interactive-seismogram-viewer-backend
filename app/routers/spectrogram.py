@@ -1,5 +1,6 @@
 import base64
 import io
+import logging
 
 import matplotlib
 matplotlib.use("Agg")
@@ -15,6 +16,9 @@ from obspy import UTCDateTime
 from app.core.database import get_db
 from app.services.waveform_provider_service import get_waveform
 from app.services.upload_storage import get_stream as get_upload_stream
+from app.services.ttl_cache import make_cache_key, spectrogram_cache
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["Spectrogram"])
 
@@ -39,6 +43,10 @@ def get_spectrogram(
     dan Local File (session_id). Trim hanya mengubah rentang
     waktu — Filter TIDAK diterapkan. Hasil berupa base64 PNG.
     """
+    logger.info(
+        "Spectrogram %s.%s %s (session=%s)",
+        network, station, channel, session_id,
+    )
 
     # 1. Get raw full-resolution Stream
     if session_id:
@@ -84,6 +92,19 @@ def get_spectrogram(
         raise HTTPException(
             404, f"Channel '{channel}' not found in stream."
         )
+
+    # Cache RAM (ephemeral) — HIT tanpa recompute.
+    cache_key = make_cache_key(
+        network, station, location, channel,
+        start_time, end_time, trim_start, trim_end, session_id,
+    )
+    cached = spectrogram_cache.get(cache_key)
+    if cached is not None:
+        logger.info("SPECTROGRAM CACHE HIT %s.%s %s", network, station, channel)
+        return {
+            "channel": channel,
+            "spectrogram": cached,
+        }
 
     # 4. Compute spectrogram dari raw full-resolution data.
     duration = len(trace.data) / trace.stats.sampling_rate
@@ -134,7 +155,10 @@ def get_spectrogram(
     plt.close(fig)
 
     buf.seek(0)
+    b64 = base64.b64encode(buf.read()).decode()
+    spectrogram_cache.put(cache_key, b64)
+    logger.info("SPECTROGRAM CACHE PUT %s.%s %s", network, station, channel)
     return {
         "channel": channel,
-        "spectrogram": base64.b64encode(buf.read()).decode(),
+        "spectrogram": b64,
     }

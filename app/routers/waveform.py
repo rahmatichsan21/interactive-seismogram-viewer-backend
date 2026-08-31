@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from obspy.clients.fdsn.header import FDSNNoDataException
 
@@ -18,6 +20,8 @@ from app.services.persistent_instrument_response_cache import (
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -40,6 +44,10 @@ def get_waveform_endpoint(
     db: Session = Depends(get_db),
 ):
     try:
+        logger.info(
+            "Load waveform %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
         stream = get_waveform(
             db=db,
             network=network,
@@ -67,17 +75,29 @@ def get_waveform_endpoint(
         )
 
     except WaveformNoDataError as error:
+        logger.exception(
+            "Waveform no data %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
         raise HTTPException(
             status_code=404,
             detail=str(error),
         )
 
     except ValueError as error:
+        logger.exception(
+            "Invalid waveform request %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
         raise HTTPException(
             status_code=400,
             detail=str(error),
         )
     except Exception as error:
+        logger.exception(
+            "Failed to load waveform %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
         raise HTTPException(
             status_code=500,
             detail=str(error),

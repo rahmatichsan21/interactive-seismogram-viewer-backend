@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import threading
@@ -8,6 +9,8 @@ from obspy import read_inventory
 from app.core.config import BASE_DIR
 from app.services.inventory_service import get_inventory as get_fdsn_inventory
 from app.services.response_cache import response_cache
+
+logger = logging.getLogger(__name__)
 
 # Direktori persistent Instrument Response Cache (StationXML).
 # Dibuat otomatis saat runtime; masuk .gitignore seperti storage/waveforms.
@@ -53,16 +56,16 @@ def get(key):
 
     try:
         if not path.exists():
-            print(f"[PERSISTENT RESPONSE CACHE MISS] {key}")
+            logger.info("PERSISTENT RESPONSE CACHE MISS %s", key)
             return None
 
         inventory = read_inventory(str(path))
-        print(f"[PERSISTENT RESPONSE CACHE HIT] {key}")
+        logger.info("PERSISTENT RESPONSE CACHE HIT %s", key)
         return inventory
     except Exception as exc:
         # Cache failure bukan alasan gagal Instrument Correction —
         # fallback ke FDSN/normal processing.
-        print(f"[PERSISTENT RESPONSE CACHE ERROR] get {key}: {exc}")
+        logger.warning("PERSISTENT RESPONSE CACHE ERROR get %s: %s", key, exc)
         return None
 
 
@@ -82,16 +85,16 @@ def put(key, inventory):
         # Atomic replace: hindari file setengah tertulis saat concurrent.
         os.replace(str(tmp), str(target))
 
-        print(f"[PERSISTENT RESPONSE CACHE PUT] {key}")
+        logger.info("PERSISTENT RESPONSE CACHE PUT %s", key)
         return True
     except Exception as exc:
-        print(f"[PERSISTENT RESPONSE CACHE ERROR] put {key}: {exc}")
+        logger.warning("PERSISTENT RESPONSE CACHE ERROR put %s: %s", key, exc)
         return False
 
 
 def _fetch_from_fdsn(network, station):
     """Fetch Instrument Response (level="response") semua channel station."""
-    print(f"[FDSN RESPONSE FETCH] {network}.{station}")
+    logger.info("FDSN RESPONSE FETCH %s.%s", network, station)
     return get_fdsn_inventory(
         network=network,
         station=station,
@@ -160,7 +163,7 @@ def resolve_instrument_response(network, station):
         try:
             inventory = _fetch_from_fdsn(network, station)
         except Exception as exc:
-            print(f"[FDSN RESPONSE FETCH ERROR] {network}.{station}: {exc}")
+            logger.error("FDSN RESPONSE FETCH ERROR %s.%s: %s", network, station, exc)
             inventory = None
 
         if inventory is not None and len(inventory) > 0:
@@ -184,7 +187,7 @@ def preload_instrument_response(network, station):
     try:
         resolve_instrument_response(network, station)
     except Exception as exc:
-        print(
-            f"[INSTRUMENT RESPONSE PRELOAD ERROR] "
-            f"{network}.{station}: {exc}"
+        logger.warning(
+            "INSTRUMENT RESPONSE PRELOAD ERROR %s.%s: %s",
+            network, station, exc,
         )

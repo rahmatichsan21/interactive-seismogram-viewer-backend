@@ -1,3 +1,4 @@
+import logging
 import math
 import socket
 import time
@@ -16,6 +17,8 @@ from app.core.config import (
     RETRY_DELAY_SECONDS,
 )
 from app.models.processing import TraceResponse
+
+logger = logging.getLogger(__name__)
 
 
 class WaveformNoDataError(Exception):
@@ -80,11 +83,11 @@ def download_waveform(
             )
 
             if attempt > 1:
-                print(
-                    f"[DOWNLOAD SUCCESS] {network}.{station} "
-                    f"{location}.{channel} "
-                    f"{start_time} -> {end_time} "
-                    f"attempt={attempt}"
+                logger.info(
+                    "DOWNLOAD SUCCESS %s.%s %s.%s "
+                    "%s -> %s attempt=%d",
+                    network, station, location, channel,
+                    start_time, end_time, attempt,
                 )
             return stream
 
@@ -96,27 +99,35 @@ def download_waveform(
 
         except RETRYABLE_ERRORS as exc:
             last_exc = exc
-            print(
-                f"[DOWNLOAD RETRY] {network}.{station} "
-                f"{location}.{channel} "
-                f"{start_time} -> {end_time} "
-                f"attempt={attempt}/{MAX_DOWNLOAD_ATTEMPTS} "
-                f"reason={type(exc).__name__}"
+            logger.warning(
+                "DOWNLOAD RETRY %s.%s %s.%s "
+                "%s -> %s attempt=%d/%d reason=%s",
+                network, station, location, channel,
+                start_time, end_time,
+                attempt, MAX_DOWNLOAD_ATTEMPTS,
+                type(exc).__name__,
             )
             if attempt < MAX_DOWNLOAD_ATTEMPTS:
                 time.sleep(RETRY_DELAY_SECONDS)
 
-        except Exception as exc:
-            print(
-                f"[DOWNLOAD FAILED] {network}.{station} "
-                f"{location}.{channel} "
-                f"{start_time} -> {end_time} "
-                f"reason={type(exc).__name__}: {exc}"
+        except Exception:
+            logger.exception(
+                "DOWNLOAD FAILED %s.%s %s.%s "
+                "%s -> %s",
+                network, station, location, channel,
+                start_time, end_time,
             )
             raise
 
     # Semua retry habis untuk error transient — propagate
     # exception terakhir supaya caller tahu kegagalan.
+    logger.error(
+        "DOWNLOAD FAILED (retry habis) %s.%s %s.%s "
+        "%s -> %s reason=%s",
+        network, station, location, channel,
+        start_time, end_time,
+        type(last_exc).__name__ if last_exc else "unknown",
+    )
     raise last_exc
 
 def _decimate_temporal(data, decimation_factor, num_buckets):

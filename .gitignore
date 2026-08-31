@@ -5,3 +5,4 @@ __pycache__/
 storage/waveforms/
 storage/responses/
 storage/.last_cleanup
+storage/logs/

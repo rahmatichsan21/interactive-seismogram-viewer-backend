@@ -1,4 +1,5 @@
 import io
+import logging
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
@@ -16,12 +17,15 @@ from app.services.upload_storage import (
 from app.services.inventory_service import unique_channels, unique_locations
 from app.services.waveform_service import stream_to_json
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api/upload", tags=["Upload"])
 
 
 @router.post("/miniseed")
 async def upload_miniseed(file: UploadFile = File(...)):
     """Upload satu file MiniSEED, simpan di Local Upload Storage."""
+    logger.info("Upload MiniSEED file=%s", file.filename)
     if not file.filename:
         raise HTTPException(400, "No file provided.")
 

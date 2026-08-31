@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -11,6 +12,8 @@ from app.core.config import (
 )
 from app.services.persistent_instrument_response_cache import RESPONSES_DIR
 from obspy import Stream, read
+
+logger = logging.getLogger(__name__)
 
 
 STORAGE_DIR = BASE_DIR / "storage" / "waveforms"
@@ -261,9 +264,9 @@ def run_waveform_cache_cleanup():
                         entry.unlink()
                         deleted_files += 1
                     except Exception as exc:
-                        print(
-                            f"[CACHE CLEANUP] Gagal hapus file "
-                            f"{entry}: {exc}"
+                        logger.warning(
+                            "CACHE CLEANUP Gagal hapus file %s: %s",
+                            entry, exc,
                         )
 
         # 2. Hapus seluruh Instrument Response StationXML (L2).
@@ -278,14 +281,14 @@ def run_waveform_cache_cleanup():
                         entry.unlink()
                         deleted_responses += 1
                     except Exception as exc:
-                        print(
-                            f"[CACHE CLEANUP] Gagal hapus file "
-                            f"{entry}: {exc}"
+                        logger.warning(
+                            "CACHE CLEANUP Gagal hapus file %s: %s",
+                            entry, exc,
                         )
             if deleted_responses:
-                print(
-                    f"[CACHE CLEANUP] Removed "
-                    f"{deleted_responses} response files"
+                logger.info(
+                    "CACHE CLEANUP Removed %d response files",
+                    deleted_responses,
                 )
 
         # 3. Hapus semua DB record (termasuk yang file-nya

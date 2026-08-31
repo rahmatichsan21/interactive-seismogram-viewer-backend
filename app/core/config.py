@@ -117,3 +117,24 @@ PROCESSING_SWEEP_INTERVAL_SECONDS = int(
 CACHE_CLEANUP_RETRY_SECONDS = int(
     os.getenv("CACHE_CLEANUP_RETRY_SECONDS", "3600")
 )
+
+# Panjang segmen PSD (detik) utk ObsPy PPSD. Waveform lebih pendek
+# dari nilai ini akan ditolak (error jelas). Developer dapat
+# menyesuaikan via .env.
+PPSD_LENGTH_SECONDS = int(os.getenv("PPSD_LENGTH_SECONDS", "300"))
+
+# Overlap segmen PSD (0..1) utk ObsPy PPSD. Memengaruhi hasil PSD;
+# default sama persis dengan behavior saat ini.
+PPSD_OVERLAP = float(os.getenv("PPSD_OVERLAP", "0.5"))
+
+# Cache hasil PSD (RAM-only, ephemeral).
+PSD_CACHE_TTL_SECONDS = int(os.getenv("PSD_CACHE_TTL_SECONDS", "300"))
+PSD_CACHE_MAX_ENTRIES = int(os.getenv("PSD_CACHE_MAX_ENTRIES", "20"))
+
+# Cache hasil Spectrogram (RAM-only, ephemeral).
+SPECTROGRAM_CACHE_TTL_SECONDS = int(
+    os.getenv("SPECTROGRAM_CACHE_TTL_SECONDS", "300")
+)
+SPECTROGRAM_CACHE_MAX_ENTRIES = int(
+    os.getenv("SPECTROGRAM_CACHE_MAX_ENTRIES", "20")
+)

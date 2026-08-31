@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from obspy import Stream, UTCDateTime
@@ -20,6 +22,8 @@ from app.services.upload_storage import get_inventory as get_upload_inventory
 from app.services.persistent_instrument_response_cache import (
     resolve_instrument_response,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/process", tags=["Processing"])
 
@@ -68,6 +72,12 @@ def process(
         db: Session = Depends(get_db),
     ):
     try:
+        logger.info(
+            "Process %s.%s %s (%s -> %s) ops=%s",
+            request.network, request.station,
+            request.channel, request.start_time, request.end_time,
+            [op.type for op in request.operations],
+        )
         if request.session_id:
             stream = get_upload_stream(request.session_id)
             if stream is None:
@@ -138,6 +148,11 @@ def process(
         }
 
     except WaveformNoDataError as exc:
+        logger.exception(
+            "Processing no data %s.%s (%s -> %s)",
+            request.network, request.station,
+            request.start_time, request.end_time,
+        )
         raise HTTPException(
             status_code=404,
             detail=str(exc),
@@ -148,12 +163,22 @@ def process(
         # gagal di satu channel) - technical debt yang sudah kita
         # sepakati: kalau satu channel gagal, SELURUH request ini
         # gagal (all-or-nothing), belum partial-per-channel.
+        logger.exception(
+            "Processing invalid %s.%s (%s -> %s): %s",
+            request.network, request.station,
+            request.start_time, request.end_time, exc,
+        )
         raise HTTPException(
             status_code=400,
             detail=str(exc),
         )
 
     except Exception as exc:
+        logger.exception(
+            "Processing failed %s.%s (%s -> %s): %s",
+            request.network, request.station,
+            request.start_time, request.end_time, exc,
+        )
         raise HTTPException(
             status_code=500,
             detail=str(exc),

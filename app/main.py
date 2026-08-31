@@ -1,11 +1,20 @@
-from fastapi import FastAPI
+import logging
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from app.core.logging_config import setup_logging
 from app.routers.stations import router as station_router
 from app.routers.waveform import router as waveform_router
 from app.routers.processing import router as processing_router
 from app.routers.upload import router as upload_router
 from app.routers.spectrogram import router as spectrogram_router
 from app.routers.download import router as download_router
+from app.routers.psd import router as psd_router
+
+setup_logging()
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Interactive Seismogram Viewer API",
@@ -29,6 +38,19 @@ app.include_router(processing_router)
 app.include_router(upload_router)
 app.include_router(spectrogram_router)
 app.include_router(download_router)
+app.include_router(psd_router)
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """Log exception tak terduga (500) + kembalikan error ke frontend."""
+    logger.exception(
+        "Unhandled error %s %s: %s",
+        request.method,
+        request.url.path,
+        exc,
+    )
+    return JSONResponse(status_code=500, content={"detail": str(exc)})
 
 
 @app.on_event("startup")
@@ -37,15 +59,24 @@ async def startup_processing_cache_sweep():
 
     from app.core.config import PROCESSING_SWEEP_INTERVAL_SECONDS
     from app.services.processing_cache import processing_cache
+    from app.services.ttl_cache import psd_cache, spectrogram_cache
 
     async def sweep_loop():
         while True:
             await asyncio.sleep(PROCESSING_SWEEP_INTERVAL_SECONDS)
             removed = processing_cache.sweep()
             if removed:
-                print(
-                    f"[CACHE SWEEP] Removed {removed} "
-                    f"expired entries"
+                logger.info(
+                    "[CACHE SWEEP] Removed %d expired entries",
+                    removed,
+                )
+            removed_psd = psd_cache.sweep()
+            removed_spec = spectrogram_cache.sweep()
+            if removed_psd or removed_spec:
+                logger.info(
+                    "[CACHE SWEEP] Removed PSD=%d spectrogram=%d",
+                    removed_psd,
+                    removed_spec,
                 )
 
     asyncio.create_task(sweep_loop())
@@ -92,25 +123,24 @@ async def startup_hourly_cache_cleanup():
                     last_cleanup is None
                     or last_cleanup < today_start
                 ):
-                    print(
-                        "[CACHE CLEANUP] "
-                        "Running missed daily cleanup"
+                    logger.info(
+                        "[CACHE CLEANUP] Running missed daily cleanup"
                     )
                     deleted_files, deleted_rows = (
                         run_waveform_cache_cleanup()
                     )
                     set_last_cleanup_date()
-                    print(
-                        f"[CACHE CLEANUP] Removed "
-                        f"{deleted_files} files"
+                    logger.info(
+                        "[CACHE CLEANUP] Removed %d files",
+                        deleted_files,
                     )
-                    print(
-                        f"[CACHE CLEANUP] Removed "
-                        f"{deleted_rows} database records"
+                    logger.info(
+                        "[CACHE CLEANUP] Removed %d database records",
+                        deleted_rows,
                     )
-                    print("[CACHE CLEANUP] Completed")
+                    logger.info("[CACHE CLEANUP] Completed")
                 else:
-                    print(
+                    logger.info(
                         "[CACHE CLEANUP] Daily cleanup "
                         "already done, skipping"
                     )
@@ -123,17 +153,16 @@ async def startup_hourly_cache_cleanup():
                     next_cleanup - now
                 ).total_seconds()
 
-                print(
-                    f"[CACHE CLEANUP] Next cleanup at "
-                    f"{next_cleanup.strftime('%Y-%m-%d %H:%M')}"
+                logger.info(
+                    "[CACHE CLEANUP] Next cleanup at %s",
+                    next_cleanup.strftime("%Y-%m-%d %H:%M"),
                 )
                 await asyncio.sleep(wait_seconds)
             except asyncio.CancelledError:
                 raise
-            except Exception as exc:
-                print(
-                    f"[CACHE CLEANUP] Error: {exc} — "
-                    "retry in 1 hour"
+            except Exception:
+                logger.exception(
+                    "[CACHE CLEANUP] Error — retry in 1 hour"
                 )
                 await asyncio.sleep(CACHE_CLEANUP_RETRY_SECONDS)
 
