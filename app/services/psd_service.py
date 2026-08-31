@@ -2,6 +2,7 @@ import base64
 import logging
 import os
 import tempfile
+import threading
 
 from obspy.signal import PPSD
 
@@ -11,6 +12,12 @@ from app.core.config import (
 )
 
 logger = logging.getLogger(__name__)
+
+# matplotlib.pyplot global-state tidak thread-safe. Beberapa request
+# PSD paralel (mis. SHE/SHN/SHZ) memanggil PPSD.plot() bersamaan →
+# plt.figure()/plt.savefig()/plt.close() di thread berbeda bisa
+# menghasilkan PNG blank/parsial. Lock ini menserialkan tahap plot.
+_PLOT_LOCK = threading.Lock()
 
 
 def compute_psd_image(
@@ -63,13 +70,14 @@ def compute_psd_image(
     fd, path = tempfile.mkstemp(suffix=".png")
     os.close(fd)
     try:
-        ppsd.plot(
-            filename=path,
-            show=False,
-            show_noise_models=True,
-            show_percentiles=True,
-            grid=True,
-        )
+        with _PLOT_LOCK:
+            ppsd.plot(
+                filename=path,
+                show=False,
+                show_noise_models=True,
+                show_percentiles=True,
+                grid=True,
+            )
         with open(path, "rb") as f:
             data = f.read()
     finally:

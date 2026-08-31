@@ -13,6 +13,7 @@ from app.services.waveform_service import (
 
 from app.services.waveform_provider_service import (
     get_waveform,
+    check_waveform_availability,
 )
 from app.services.persistent_instrument_response_cache import (
     preload_instrument_response,
@@ -48,7 +49,7 @@ def get_waveform_endpoint(
             "Load waveform %s.%s %s %s -> %s",
             network, station, channel, start_time, end_time,
         )
-        stream = get_waveform(
+        stream, source = get_waveform(
             db=db,
             network=network,
             station=station,
@@ -56,6 +57,7 @@ def get_waveform_endpoint(
             channel=channel,
             start_time=start_time,
             end_time=end_time,
+            with_source=True,
         )
 
         # Preload Instrument Response (per station) di background agar
@@ -68,11 +70,14 @@ def get_waveform_endpoint(
                 station,
             )
 
-        return stream_to_json(
-            stream=stream,
-            station=station,
-            max_points=max_points,
-        )
+        return {
+            **stream_to_json(
+                stream=stream,
+                station=station,
+                max_points=max_points,
+            ),
+            "source": source,
+        }
 
     except WaveformNoDataError as error:
         logger.exception(
@@ -96,6 +101,110 @@ def get_waveform_endpoint(
     except Exception as error:
         logger.exception(
             "Failed to load waveform %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=str(error),
+        )
+
+
+@router.get("/waveform/status")
+def get_waveform_status(
+    network: str,
+    station: str,
+    location: str,
+    channel: str,
+    start_time: str,
+    end_time: str,
+    db: Session = Depends(get_db),
+):
+    """
+    Cek kelengkapan cache untuk request waveform — read-only, tanpa
+    download. Dipakai frontend untuk memilih pesan loading:
+    cache lengkap → "Loading waveform...", perlu download →
+    "Downloading waveform from BMKG...".
+    """
+    try:
+        available = check_waveform_availability(
+            db=db,
+            network=network,
+            station=station,
+            location=location,
+            channel=channel,
+            start_time=start_time,
+            end_time=end_time,
+        )
+        return {"download_needed": not available}
+    except ValueError as error:
+        logger.exception(
+            "Invalid waveform status request %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        )
+    except Exception as error:
+        logger.exception(
+            "Failed to check waveform status %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=str(error),
+        )
+
+
+@router.post("/waveform/download")
+def download_waveform_endpoint(
+    network: str,
+    station: str,
+    location: str,
+    channel: str,
+    start_time: str,
+    end_time: str,
+    db: Session = Depends(get_db),
+):
+    """
+    Populasi cache: download window yang hilang dari BMKG lalu simpan,
+    tanpa mengembalikan data waveform. Dipanggil frontend sebagai fase
+    download terpisah; request load berikutnya akan menjadi cache hit
+    (tidak ada double download).
+    """
+    try:
+        _, source = get_waveform(
+            db=db,
+            network=network,
+            station=station,
+            location=location,
+            channel=channel,
+            start_time=start_time,
+            end_time=end_time,
+            with_source=True,
+        )
+        return {"downloaded": source == "download"}
+    except WaveformNoDataError as error:
+        logger.exception(
+            "Waveform download no data %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
+        raise HTTPException(
+            status_code=404,
+            detail=str(error),
+        )
+    except ValueError as error:
+        logger.exception(
+            "Invalid waveform download request %s.%s %s %s -> %s",
+            network, station, channel, start_time, end_time,
+        )
+        raise HTTPException(
+            status_code=400,
+            detail=str(error),
+        )
+    except Exception as error:
+        logger.exception(
+            "Failed to download waveform %s.%s %s %s -> %s",
             network, station, channel, start_time, end_time,
         )
         raise HTTPException(

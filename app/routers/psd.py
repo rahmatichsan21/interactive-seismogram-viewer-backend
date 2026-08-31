@@ -81,7 +81,22 @@ def get_psd(
 
         trace = None
         for tr in stream:
-            if tr.stats.channel == channel:
+            tr_location = tr.stats.location or "--"
+            if (
+                tr.stats.channel == channel
+                and (
+                    network in ("*", "")
+                    or (tr.stats.network or "") == network
+                )
+                and (
+                    station in ("*", "")
+                    or (tr.stats.station or "") == station
+                )
+                and (
+                    location == "*"
+                    or tr_location == (location or "--")
+                )
+            ):
                 trace = tr
                 break
 

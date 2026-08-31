@@ -96,11 +96,17 @@ def get_waveform(
     channel: str,
     start_time: str,
     end_time: str,
+    with_source: bool = False,
 ):
     """
     Return waveform — cek cache per jendela UTC-aligned,
     download hanya jendela yang hilang, assemble, merge,
     trim ke rentang request user.
+
+    `with_source=True` → return (stream, source) di mana source =
+    "cache" (seluruh data dari cache) atau "download" (ada window yang
+    di-download dari BMKG; termasuk mixed). Default False → return
+    stream saja (call-site lain tidak terpengaruh).
     """
     request_start = datetime.fromisoformat(start_time)
     request_end = datetime.fromisoformat(end_time)
@@ -148,25 +154,18 @@ def get_waveform(
                 f"in {start_time} -> {end_time}"
             )
 
+        # Wildcard: bisa campuran cache/download — dilaporkan sebagai
+        # "download" (mixed dianggap perlu ambil dari BMKG).
+        if with_source:
+            return combined, "download"
         return combined
 
     expected_channels = {channel}
 
     # Cek kelengkapan: setiap jendela punya semua channel?
-    all_windows_complete = bool(expected_channels)
-    for win_start, win_end in windows:
-        cached = get_cached_channels_for_window(
-            db=db,
-            network=network,
-            station=station,
-            location=location,
-            channel=channel,
-            window_start=win_start,
-            window_end=win_end,
-        )
-        if not expected_channels.issubset(cached):
-            all_windows_complete = False
-            break
+    all_windows_complete = _is_channel_fully_cached(
+        db, network, station, location, channel, windows
+    )
 
     if all_windows_complete:
         logger.info(
@@ -174,10 +173,13 @@ def get_waveform(
             network, station, location, channel,
             start_time, end_time,
         )
-        return _assemble_or_raise(
+        stream = _assemble_or_raise(
             db, network, station, location, channel,
             windows, start_time, end_time,
         )
+        if with_source:
+            return stream, "cache"
+        return stream
 
     # Download jendela yang belum lengkap
     any_window_failed = False
@@ -250,6 +252,8 @@ def get_waveform(
             network, station, location, channel,
         )
 
+    if with_source:
+        return result, "download"
     return result
 
 
@@ -314,3 +318,69 @@ def _assemble_and_trim(
         UTCDateTime(request_end),
     )
     return full_stream
+
+
+def _is_channel_fully_cached(db, network, station, location, channel, windows):
+    """
+    True jika SEMUA window sudah punya channel ini di cache.
+    Murni cek cache — tidak ada download.
+    """
+    expected = {channel}
+    for win_start, win_end in windows:
+        cached = get_cached_channels_for_window(
+            db=db,
+            network=network,
+            station=station,
+            location=location,
+            channel=channel,
+            window_start=win_start,
+            window_end=win_end,
+        )
+        if not expected.issubset(cached):
+            return False
+    return True
+
+
+def check_waveform_availability(
+    db: Session,
+    network: str,
+    station: str,
+    location: str,
+    channel: str,
+    start_time: str,
+    end_time: str,
+) -> bool:
+    """
+    Cek apakah request waveform sudah tersedia penuh di cache
+    (tidak perlu download BMKG). Read-only — tidak ada download,
+    tidak ada assembly. Untuk wildcard, semua channel konkret hasil
+    expansion harus lengkap.
+    """
+    request_start = datetime.fromisoformat(start_time)
+    request_end = datetime.fromisoformat(end_time)
+    windows = compute_hourly_windows(request_start, request_end)
+
+    is_wildcard = "*" in channel or "?" in channel
+
+    if is_wildcard:
+        try:
+            channels = _expand_channel_wildcard(
+                db, network, station, location, channel,
+                start_time, end_time,
+            )
+        except WaveformNoDataError:
+            return False
+
+        if not channels:
+            return False
+
+        for concrete_channel in channels:
+            if not _is_channel_fully_cached(
+                db, network, station, location, concrete_channel, windows
+            ):
+                return False
+        return True
+
+    return _is_channel_fully_cached(
+        db, network, station, location, channel, windows
+    )
