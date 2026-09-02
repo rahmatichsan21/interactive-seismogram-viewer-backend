@@ -7,14 +7,13 @@ from obspy import UTCDateTime
 from app.core.database import get_db
 from app.core.config import (
     HVSR_WINDOW_SECONDS,
-    HVSR_OVERLAP,
-    HVSR_KO_BANDWIDTH,
     HVSR_FMIN,
     HVSR_FMAX,
+    HVSR_REJECTION_ENABLED,
 )
 from app.services.waveform_provider_service import get_waveform
 from app.services.waveform_service import WaveformNoDataError
-from app.services.hvsr_service import compute_hvsr_image
+from app.services.hvsr_service import compute_hvsr_result
 from app.services.ttl_cache import make_cache_key, hvsr_cache
 from app.services.upload_storage import (
     get_stream as get_upload_stream,
@@ -160,8 +159,8 @@ def get_hvsr(
             network, station, location,
             channel_n, channel_e, channel_z,
             start_time, end_time, trim_start, trim_end, session_id,
-            HVSR_WINDOW_SECONDS, HVSR_OVERLAP,
-            HVSR_KO_BANDWIDTH, HVSR_FMIN, HVSR_FMAX,
+            HVSR_WINDOW_SECONDS, HVSR_FMIN, HVSR_FMAX,
+            HVSR_REJECTION_ENABLED,
         )
         cached = hvsr_cache.get(cache_key)
         if cached is not None:
@@ -174,18 +173,18 @@ def get_hvsr(
                 "station": station,
                 "location": location,
                 "channels": [channel_n, channel_e, channel_z],
-                "hvsr_image": cached,
+                "hvsr_image": cached["image"],
+                "meta": cached["meta"],
             }
 
-        hvsr_image = compute_hvsr_image(
+        result = compute_hvsr_result(
             n_trace, e_trace, z_trace,
             window_seconds=HVSR_WINDOW_SECONDS,
-            overlap=HVSR_OVERLAP,
-            ko_bandwidth=HVSR_KO_BANDWIDTH,
             fmin=HVSR_FMIN,
             fmax=HVSR_FMAX,
+            rejection_enabled=HVSR_REJECTION_ENABLED,
         )
-        hvsr_cache.put(cache_key, hvsr_image)
+        hvsr_cache.put(cache_key, result)
         logger.info(
             "HVSR CACHE PUT %s.%s [%s, %s, %s]",
             network, station, channel_n, channel_e, channel_z,
@@ -196,7 +195,8 @@ def get_hvsr(
             "station": station,
             "location": location,
             "channels": [channel_n, channel_e, channel_z],
-            "hvsr_image": hvsr_image,
+            "hvsr_image": result["image"],
+            "meta": result["meta"],
         }
 
     except WaveformNoDataError as exc:

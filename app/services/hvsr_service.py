@@ -3,22 +3,40 @@ import io
 import logging
 
 import numpy as np
-from scipy.signal import detrend
 
-from obspy.signal.konnoohmachismoothing import (
-    konno_ohmachi_smoothing,
+import hvsrpy
+from hvsrpy import (
+    TimeSeries,
+    SeismicRecording3C,
+    preprocess,
+    process,
+    frequency_domain_window_rejection,
+)
+from hvsrpy.settings import (
+    HvsrPreProcessingSettings,
+    HvsrTraditionalProcessingSettings,
 )
 
 from app.core.config import (
     HVSR_WINDOW_SECONDS,
-    HVSR_OVERLAP,
-    HVSR_KO_BANDWIDTH,
     HVSR_FMIN,
     HVSR_FMAX,
 )
 from app.services.psd_service import _PLOT_LOCK
 
 logger = logging.getLogger(__name__)
+
+# Detail metodologi internal (default reasonable hvsrpy, TIDAK di .env).
+_HVSR_DETREND = "linear"
+_HVSR_TAPER = ["tukey", 0.1]
+_HVSR_KO_BANDWIDTH = 40
+_HVSR_N_FREQ = 200
+# Kombinasi horizontal: default hvsrpy (geometric_mean).
+_HVSR_COMBINE_METHOD = "geometric_mean"
+# Parameter internal rejection (Cox et al. 2020).
+_HVSR_REJECTION_N = 2
+# Fraksi Nyquist yang dipakai membatasi FMAX.
+_NYQUIST_FRACTION = 0.95
 
 
 def _validate_traces(n_trace, e_trace, z_trace):
@@ -98,63 +116,50 @@ def _validate_traces(n_trace, e_trace, z_trace):
         )
 
 
-def _window_spectrum(trace, window_npts, step_npts, fmin, fmax, ko_b):
-    """FFT amplitudo per window, di-restrict [fmin,fmax], di-smooth
-    Konno-Ohmachi. Return (freqs, spectra) di mana spectra shape
-    (n_windows, n_freq)."""
-    data = trace.data
-    npts = len(data)
-    n_windows = 1 + (npts - window_npts) // step_npts
-
-    taper = np.hanning(window_npts)
-    freqs_full = np.fft.rfftfreq(window_npts, 1.0 / trace.stats.sampling_rate)
-    mask = (freqs_full >= fmin) & (freqs_full <= fmax)
-
-    if not mask.any():
+def _build_processing_settings(window_seconds, fmin, fmax, nyquist):
+    """Susun HvsrTraditionalProcessingSettings dengan grid frekuensi
+    yang dibatasi Nyquist (hvsrpy menolak frekuensi > Nyquist)."""
+    grid_max = min(fmax, nyquist * _NYQUIST_FRACTION)
+    if fmin >= grid_max:
         raise ValueError(
-            "Rentang frekuensi HVSR kosong pada sampling rate ini."
+            "Rentang frekuensi HVSR tidak valid "
+            f"(fmin={fmin} Hz >= batas {grid_max:.2f} Hz)."
         )
 
-    freqs = freqs_full[mask]
-    spectra = np.empty((n_windows, freqs.shape[0]))
+    grid = np.geomspace(fmin, grid_max, _HVSR_N_FREQ)
 
-    for i in range(n_windows):
-        segment = data[i * step_npts:i * step_npts + window_npts]
-        segment = detrend(segment, type="linear")
-        segment = segment * taper
-        fft = np.fft.rfft(segment)
-        amp = np.abs(fft)[mask]
-        spectra[i] = konno_ohmachi_smoothing(
-            amp, freqs, bandwidth=ko_b, normalize=False
-        )
-
-    return freqs, spectra
+    return HvsrTraditionalProcessingSettings(
+        hvsrpy_version=hvsrpy.__version__,
+        window_type_and_width=_HVSR_TAPER,
+        smoothing=dict(
+            operator="konno_and_ohmachi",
+            bandwidth=_HVSR_KO_BANDWIDTH,
+            center_frequencies_in_hz=grid,
+        ),
+        method_to_combine_horizontals=_HVSR_COMBINE_METHOD,
+    )
 
 
-def compute_hvsr_image(
+def compute_hvsr_result(
     n_trace,
     e_trace,
     z_trace,
     window_seconds=None,
-    overlap=None,
-    ko_bandwidth=None,
     fmin=None,
     fmax=None,
+    rejection_enabled=False,
 ):
     """
-    Hitung kurva HVSR (Nakamura H/V):
-      H(f) = sqrt((N(f)^2 + E(f)^2) / 2)
-      HVSR(f) = H(f) / Z(f)
-    - Windowing, detrend, taper, FFT, Konno-Ohmachi smoothing.
-    - Hasil akhir mean HVSR + variasi antar-window (band std).
-    - Output: PNG base64 (mekanisme sama dengan PSD).
+    Hitung HVSR (Nakamura H/V) menggunakan hvsrpy sebagai engine utama.
+
+    - Validasi trace tetap di project (_validate_traces).
+    - preprocess/process/windowing/spectral/smoothing/combine/HV,
+      kurva individual, mean & statistik, first peak, dan rejection
+      (Cox et al. 2020, opsional) ditangani hvsrpy.
+    - Output: dict {"image": PNG base64, "meta": {...}}.
     """
     if window_seconds is None:
         window_seconds = HVSR_WINDOW_SECONDS
-    if overlap is None:
-        overlap = HVSR_OVERLAP
-    if ko_bandwidth is None:
-        ko_bandwidth = HVSR_KO_BANDWIDTH
     if fmin is None:
         fmin = HVSR_FMIN
     if fmax is None:
@@ -164,60 +169,119 @@ def compute_hvsr_image(
 
     sampling_rate = n_trace.stats.sampling_rate
     nyquist = sampling_rate / 2.0
-    fmin = float(max(fmin, 1e-6))
-    fmax = float(min(fmax, nyquist * 0.95))
 
-    if fmin >= fmax:
-        raise ValueError(
-            "Rentang frekuensi HVSR tidak valid (fmin >= fmax)."
-        )
-
-    window_npts = int(round(window_seconds * sampling_rate))
-    step_npts = max(1, int(round(window_npts * (1.0 - overlap))))
-
-    freqs, spec_n = _window_spectrum(
-        n_trace, window_npts, step_npts, fmin, fmax, ko_bandwidth
-    )
-    _, spec_e = _window_spectrum(
-        e_trace, window_npts, step_npts, fmin, fmax, ko_bandwidth
-    )
-    _, spec_z = _window_spectrum(
-        z_trace, window_npts, step_npts, fmin, fmax, ko_bandwidth
+    prep_settings = HvsrPreProcessingSettings(
+        hvsrpy_version=hvsrpy.__version__,
+        window_length_in_seconds=float(window_seconds),
+        detrend=_HVSR_DETREND,
     )
 
-    horiz = np.sqrt((spec_n ** 2 + spec_e ** 2) / 2.0)
-
-    z_min = 1e-12
-    ratios = np.divide(
-        horiz,
-        spec_z,
-        out=np.full_like(horiz, np.nan),
-        where=spec_z > z_min,
+    record = SeismicRecording3C(
+        ns=TimeSeries.from_trace(n_trace),
+        ew=TimeSeries.from_trace(e_trace),
+        vt=TimeSeries.from_trace(z_trace),
     )
 
-    valid_windows = np.isfinite(ratios).all(axis=1)
-    ratios = ratios[valid_windows]
+    records = preprocess([record], prep_settings)
 
-    if ratios.shape[0] == 0:
+    proc_settings = _build_processing_settings(
+        window_seconds, float(fmin), float(fmax), nyquist
+    )
+
+    hvsr = process(records, proc_settings)
+
+    n_windows_total = int(hvsr.n_curves)
+
+    if rejection_enabled:
+        frequency_domain_window_rejection(hvsr, n=_HVSR_REJECTION_N)
+
+    accepted_mask = np.asarray(hvsr.valid_window_boolean_mask, dtype=bool)
+    n_accepted = int(accepted_mask.sum())
+
+    if n_accepted == 0:
         raise ValueError(
             "Tidak ada window HVSR yang valid — "
             "HVSR tidak dapat dihitung."
         )
 
-    mean_ratio = np.clip(np.mean(ratios, axis=0), 1e-3, None)
-    std_ratio = np.std(ratios, axis=0)
+    frequency = np.asarray(hvsr.frequency)
+    accepted_curves = np.asarray(hvsr.amplitude)[accepted_mask]
 
-    return _render_png(
-        freqs,
-        mean_ratio,
-        std_ratio,
+    mean_curve = np.asarray(hvsr.mean_curve())
+
+    # Statistik SD hanya terdefinisi bila ada >1 window valid. Dengan
+    # satu window, hvsrpy melempar ValueError (mis. nth_std_curve).
+    has_sd = n_accepted > 1
+    if has_sd:
+        lower_sd = np.asarray(hvsr.nth_std_curve(-1))
+        upper_sd = np.asarray(hvsr.nth_std_curve(+1))
+        fn_low = float(hvsr.nth_std_fn_frequency(-1))
+        fn_high = float(hvsr.nth_std_fn_frequency(+1))
+        mean_fn = float(hvsr.mean_fn_frequency())
+        std_fn = float(hvsr.std_fn_frequency())
+    else:
+        lower_sd = None
+        upper_sd = None
+        fn_low = None
+        fn_high = None
+        mean_fn = None
+        std_fn = None
+
+    try:
+        first_peak = hvsr.mean_curve_peak()
+        peak_frequency = float(first_peak[0])
+        peak_amplitude = float(first_peak[1])
+    except ValueError:
+        peak_frequency = None
+        peak_amplitude = None
+
+    meta = {
+        "n_windows": n_windows_total,
+        "n_accepted": n_accepted,
+        "peak_frequency": peak_frequency,
+        "peak_amplitude": peak_amplitude,
+        "mean_fn_frequency": mean_fn,
+        "std_fn_frequency": std_fn,
+        "fn_low": fn_low,
+        "fn_high": fn_high,
+    }
+
+    image = _render_png(
+        frequency,
+        accepted_curves,
+        mean_curve,
+        lower_sd,
+        upper_sd,
+        fn_low,
+        fn_high,
+        peak_frequency,
+        peak_amplitude,
+        mean_fn,
+        std_fn,
         n_trace,
         e_trace,
         z_trace,
     )
 
+    return {"image": image, "meta": meta}
 
-def _render_png(freqs, mean_ratio, std_ratio, n_trace, e_trace, z_trace):
+
+def _render_png(
+    frequency,
+    accepted_curves,
+    mean_curve,
+    lower_sd,
+    upper_sd,
+    fn_low,
+    fn_high,
+    peak_frequency,
+    peak_amplitude,
+    mean_fn,
+    std_fn,
+    n_trace,
+    e_trace,
+    z_trace,
+):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -230,19 +294,117 @@ def _render_png(freqs, mean_ratio, std_ratio, n_trace, e_trace, z_trace):
         f"{net}.{sta}.{loc} [{base}N + {base}E + {base}Z] H/V"
     )
 
-    # matplotlib.pyplot global tidak thread-safe — serialkan dengan
-    # lock yang sama dengan PSD.
+    has_sd = lower_sd is not None and upper_sd is not None
+    has_fn_band = has_sd and fn_low is not None and fn_high is not None
+    has_peak = peak_frequency is not None and peak_amplitude is not None
+
     with _PLOT_LOCK:
         fig, ax = plt.subplots(figsize=(9, 5))
-        ax.loglog(freqs, mean_ratio, color="#1f77b4", linewidth=2)
-        ax.fill_between(
-            freqs,
-            mean_ratio - std_ratio,
-            mean_ratio + std_ratio,
+
+        # Band vertikal mean frequency ± 1 SD (lognormal hvsrpy):
+        # [nth_std_fn_frequency(-1), nth_std_fn_frequency(+1)].
+        if has_fn_band:
+            ax.axvspan(
+                fn_low,
+                fn_high,
+                color="#e91e63",
+                alpha=0.22,
+                zorder=0,
+                label="Mean Frequency \u00b1 1 Standard Deviation",
+            )
+
+        for curve in accepted_curves:
+            ax.loglog(
+                frequency,
+                curve,
+                color="#94a3b8",
+                linewidth=0.5,
+                alpha=0.35,
+                zorder=1,
+            )
+
+        # ±1 SD shaded area antara kurva lognormal nth_std_curve(±1).
+        if has_sd:
+            ax.fill_between(
+                frequency,
+                lower_sd,
+                upper_sd,
+                color="#1f77b4",
+                alpha=0.2,
+                zorder=2,
+                label="\u00b1 1 SD",
+            )
+
+        ax.loglog(
+            frequency,
+            mean_curve,
             color="#1f77b4",
-            alpha=0.2,
-            label="± 1 std (antar-window)",
+            linewidth=2,
+            zorder=3,
+            label="Mean",
         )
+
+        # Kurva mean ± 1 SD (dashed) — statistik lognormal hvsrpy
+        # (nth_std_curve), selalu positif, tidak perlu clipping.
+        if has_sd:
+            ax.loglog(
+                frequency,
+                upper_sd,
+                color="#475569",
+                linestyle="--",
+                linewidth=1,
+                alpha=0.9,
+                zorder=3,
+                label="Mean +1 SD",
+            )
+            ax.loglog(
+                frequency,
+                lower_sd,
+                color="#475569",
+                linestyle="--",
+                linewidth=1,
+                alpha=0.9,
+                zorder=3,
+                label="Mean -1 SD",
+            )
+
+        if has_peak:
+            ax.plot(
+                [peak_frequency],
+                [peak_amplitude],
+                "o",
+                color="#d62728",
+                markersize=7,
+                zorder=4,
+                label="First peak",
+            )
+
+        annotation = ""
+        if has_peak:
+            annotation += f"fp = {peak_frequency:.2f} Hz"
+        if has_sd and mean_fn is not None and std_fn is not None:
+            if annotation:
+                annotation += "\n"
+            annotation += (
+                f"fn = {mean_fn:.2f} \u00b1 {std_fn:.2f} Hz"
+            )
+
+        if annotation:
+            ax.text(
+                0.02,
+                0.97,
+                annotation,
+                transform=ax.transAxes,
+                verticalalignment="top",
+                fontsize=10,
+                bbox=dict(
+                    boxstyle="round,pad=0.35",
+                    facecolor="white",
+                    edgecolor="#cbd5e1",
+                    alpha=0.9,
+                ),
+            )
+
         ax.set_xlabel("Frequency [Hz]")
         ax.set_ylabel("H/V")
         ax.set_title(title)

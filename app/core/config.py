@@ -139,15 +139,19 @@ SPECTROGRAM_CACHE_MAX_ENTRIES = int(
     os.getenv("SPECTROGRAM_CACHE_MAX_ENTRIES", "20")
 )
 
-# HVSR (Nakamura H/V) — parameter perhitungan yang memengaruhi hasil
-# dan masuk cache key.
+# HVSR (Nakamura H/V) — parameter yang dikonfigurasi operator/developer.
+# Detail metodologi (taper, bandwidth Konno-Ohmachi, jumlah titik grid,
+# kombinasi horizontal, distribusi) menggunakan default reasonable hvsrpy
+# di service, TIDAK diekspos ke .env.
 HVSR_WINDOW_SECONDS = float(os.getenv("HVSR_WINDOW_SECONDS", "60"))
-HVSR_OVERLAP = float(os.getenv("HVSR_OVERLAP", "0.5"))
-# Bandwidth Konno-Ohmachi (b).
-HVSR_KO_BANDWIDTH = float(os.getenv("HVSR_KO_BANDWIDTH", "40"))
 # Rentang frekuensi output (Hz). FMAX diklamp ke Nyquist di service.
 HVSR_FMIN = float(os.getenv("HVSR_FMIN", "0.1"))
-HVSR_FMAX = float(os.getenv("HVSR_FMAX", "20"))
+HVSR_FMAX = float(os.getenv("HVSR_FMAX", "50"))
+# Window rejection (Cox et al. 2020) — default OFF, configurable.
+HVSR_REJECTION_ENABLED = (
+    os.getenv("HVSR_REJECTION_ENABLED", "false").lower()
+    in ("1", "true", "yes", "on")
+)
 
 # Cache hasil HVSR (RAM-only, ephemeral).
 HVSR_CACHE_TTL_SECONDS = int(

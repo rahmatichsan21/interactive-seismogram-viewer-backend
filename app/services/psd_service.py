@@ -76,6 +76,7 @@ def compute_psd_image(
                 show=False,
                 show_noise_models=True,
                 show_percentiles=True,
+                percentiles=[50],
                 grid=True,
             )
         with open(path, "rb") as f:
