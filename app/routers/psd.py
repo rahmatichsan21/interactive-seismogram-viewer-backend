@@ -1,6 +1,7 @@
 import logging
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from obspy import UTCDateTime
 
@@ -25,15 +26,15 @@ router = APIRouter(prefix="/api", tags=["PSD"])
 
 @router.get("/psd")
 def get_psd(
-    network: str,
-    station: str,
-    location: str,
     channel: str,
-    start_time: str,
-    end_time: str,
-    session_id: str | None = None,
-    trim_start: str | None = None,
-    trim_end: str | None = None,
+    network: Optional[str] = Query(default=None),
+    station: Optional[str] = Query(default=None),
+    location: Optional[str] = Query(default=None),
+    start_time: Optional[str] = Query(default=None),
+    end_time: Optional[str] = Query(default=None),
+    session_id: Optional[str] = Query(default=None),
+    trim_start: Optional[str] = Query(default=None),
+    trim_end: Optional[str] = Query(default=None),
     db: Session = Depends(get_db),
 ):
     """
@@ -85,15 +86,15 @@ def get_psd(
             if (
                 tr.stats.channel == channel
                 and (
-                    network in ("*", "")
+                    network in ("*", "", None)
                     or (tr.stats.network or "") == network
                 )
                 and (
-                    station in ("*", "")
+                    station in ("*", "", None)
                     or (tr.stats.station or "") == station
                 )
                 and (
-                    location == "*"
+                    location in ("*", None)
                     or tr_location == (location or "--")
                 )
             ):

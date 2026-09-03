@@ -26,21 +26,30 @@ router = APIRouter(prefix="/api", tags=["HVSR"])
 
 def _select_trace(stream, network, station, location, channel):
     """Pilih trace yang cocok (channel + network/station/location,
-    dengan normalisasi lokasi seperti PSD)."""
+    dengan normalisasi lokasi seperti PSD).
+
+    network/station/location bersifat wildcard ("*", "", atau None)
+    saat tidak dikirim frontend (mis. Local Upload yang hanya
+    mengirim channel_n/e/z + session_id) — konsisten dengan matching
+    di psd.py.
+    """
+    if channel is not None:
+        channel = channel.strip()
     for tr in stream:
         tr_location = tr.stats.location or "--"
+        tr_channel = (tr.stats.channel or "").strip()
         if (
-            tr.stats.channel == channel
+            tr_channel == channel
             and (
-                network in ("*", "")
+                network in ("*", "", None)
                 or (tr.stats.network or "") == network
             )
             and (
-                station in ("*", "")
+                station in ("*", "", None)
                 or (tr.stats.station or "") == station
             )
             and (
-                location == "*"
+                location in ("*", None)
                 or tr_location == (location or "--")
             )
         ):
