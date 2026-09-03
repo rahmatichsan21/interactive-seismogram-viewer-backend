@@ -209,6 +209,58 @@ def compute_hvsr_result(
 
     mean_curve = np.asarray(hvsr.mean_curve())
 
+    # ==========================================================
+    # EKSPERIMEN BOUNDED PEAK SEARCH — OPSI D (fp/2 – 2*fp)
+    # ==========================================================
+    # Tujuan: menguji efek visual/metodologis membatasi pencarian
+    # peak per-window (dan mean-curve peak) ke rentang di sekitar
+    # fp, alih-alih unbounded/full-spectrum (baseline/opsi A).
+    #
+    # Urutan WAJIB:
+    #   1) Hitung fp dulu dari mean curve TANPA bound (full range),
+    #      supaya rentang eksperimen (fp/2, fp*2) punya basis fp
+    #      yang belum bias oleh bound itu sendiri.
+    #   2) Panggil hvsr.update_peaks_bounded(search_range_in_hz=...)
+    #      — ini akan mem-bound baik peak per-window
+    #      (peak_frequencies -> dipakai mean_fn/std_fn/nth_std_fn)
+    #      MAUPUN mean_curve_peak() berikutnya (keduanya memakai
+    #      hvsr._search_range_in_hz yang sama di hvsrpy 2.0.0).
+    #   3) Hitung ulang fp via mean_curve_peak() (bounded) — nilainya
+    #      seharusnya identik dengan langkah (1) karena fp pasti
+    #      berada di dalam (fp/2, fp*2) secara konstruksi, tapi
+    #      dihitung ulang agar konsisten dengan pipeline eksperimen.
+    #
+    # CATATAN (wajib dibaca sebelum membandingkan hasil):
+    # - Ini HANYA eksperimen OPSI D (sedang dipertahankan sebagai
+    #   konfigurasi sementara). Opsi B (fp/4-4fp), C (fp/3-3fp),
+    #   E (fp/1.5-1.5fp) TIDAK aktif — ganti nilai
+    #   `_EXPERIMENT_LOW_DIVISOR`/`_EXPERIMENT_HIGH_MULTIPLIER` di
+    #   bawah untuk menguji opsi lain satu per satu, JANGAN
+    #   aktifkan beberapa sekaligus.
+    # - Rentang fp/2–2fp TIDAK diklaim sebagai "admissible range"
+    #   resmi Geopsy — Geopsy tidak mempublikasikan formula/angka
+    #   tersebut (lihat hasil audit sebelumnya). Ini murni heuristic
+    #   internal aplikasi, tanpa dasar dokumentasi Geopsy/SESAME.
+    _EXPERIMENT_LOW_DIVISOR = 2.0   # opsi D: fp / 2
+    _EXPERIMENT_HIGH_MULTIPLIER = 2.0  # opsi D: fp * 2
+
+    try:
+        fp_unbounded, _ = hvsr.mean_curve_peak()
+    except ValueError:
+        fp_unbounded = None
+
+    if fp_unbounded is not None:
+        experiment_search_range = (
+            fp_unbounded / _EXPERIMENT_LOW_DIVISOR,
+            fp_unbounded * _EXPERIMENT_HIGH_MULTIPLIER,
+        )
+        hvsr.update_peaks_bounded(
+            search_range_in_hz=experiment_search_range
+        )
+    # ==========================================================
+    # END EKSPERIMEN OPSI D
+    # ==========================================================
+
     # Statistik SD hanya terdefinisi bila ada >1 window valid. Dengan
     # satu window, hvsrpy melempar ValueError (mis. nth_std_curve).
     has_sd = n_accepted > 1
@@ -235,6 +287,16 @@ def compute_hvsr_result(
         peak_frequency = None
         peak_amplitude = None
 
+    # LOG EKSPERIMEN — catat fp, mean_fn, std_fn, fn_low, fn_high,
+    # dan jumlah accepted windows untuk perbandingan opsi A/B/C/D/E.
+    logger.info(
+        "HVSR EXPERIMENT D (fp/%.1f - fp*%.1f): "
+        "fp=%s mean_fn=%s std_fn=%s fn_low=%s fn_high=%s "
+        "n_accepted=%s",
+        _EXPERIMENT_LOW_DIVISOR, _EXPERIMENT_HIGH_MULTIPLIER,
+        peak_frequency, mean_fn, std_fn, fn_low, fn_high, n_accepted,
+    )
+
     meta = {
         "n_windows": n_windows_total,
         "n_accepted": n_accepted,
@@ -245,6 +307,7 @@ def compute_hvsr_result(
         "fn_low": fn_low,
         "fn_high": fn_high,
     }
+
 
     image = _render_png(
         frequency,
@@ -299,7 +362,7 @@ def _render_png(
     has_peak = peak_frequency is not None and peak_amplitude is not None
 
     with _PLOT_LOCK:
-        fig, ax = plt.subplots(figsize=(9, 5))
+        fig, ax = plt.subplots(figsize=(11, 5))
 
         # Band vertikal mean frequency ± 1 SD (lognormal hvsrpy):
         # [nth_std_fn_frequency(-1), nth_std_fn_frequency(+1)].
@@ -409,7 +472,18 @@ def _render_png(
         ax.set_ylabel("H/V")
         ax.set_title(title)
         ax.grid(True, which="both", alpha=0.3)
-        ax.legend(loc="upper right")
+        # Legend dipindah ke LUAR area plot (kanan grafik) supaya
+        # tidak menutupi kurva. `bbox_inches="tight"` di fig.savefig
+        # di bawah akan otomatis memperluas canvas PNG agar legend
+        # ini tidak terpotong. Semua 6 item legend yang sudah ada
+        # (Mean Frequency ± 1 SD band, ± 1 SD, Mean, Mean +1 SD,
+        # Mean -1 SD, First peak) dipertahankan apa adanya — hanya
+        # posisi legend yang berubah, bukan isinya.
+        ax.legend(
+            loc="center left",
+            bbox_to_anchor=(1.02, 0.5),
+            borderaxespad=0,
+        )
 
         buf = io.BytesIO()
         fig.savefig(buf, format="png", dpi=100, bbox_inches="tight")
