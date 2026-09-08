@@ -1,0 +1,283 @@
+{
+  "_readme": [
+    "Isi placeholder di 'fdsn' dan 'local' sebelum menjalankan.",
+    "Payload operasi di 'operations' persis mengikuti app/models/processing.py",
+    "(TrimOperation/FilterOperation/InstrumentCorrectionOperation) — jangan diubah",
+    "strukturnya, hanya nilai (network/station/channel/waktu/param filter) yang perlu",
+    "disesuaikan dengan data yang tersedia di environment Anda.",
+    "fdsn.multi_stations, fdsn.uncached_start_time/end_time, dan 'advanced' adalah config BARU untuk 9 skenario tambahan - isi sesuai data yang benar-benar Anda punya, jangan dibiarkan placeholder."
+  ],
+  "fdsn": {
+    "network": "IA",
+    "location": "*",
+    "channel": "SH*",
+    "start_time": "2025-07-01T00:00:00",
+    "end_time": "2025-07-02T00:00:00",
+    "max_points": 150000,
+    "stations": [
+      "AAFM"
+    ],
+    "uncached_start_time": "2025-08-01T00:00:00",
+    "uncached_end_time": "2025-08-02T00:00:00",
+    "multi_stations": ["AAI", "ABJI", "ABSM", "ACJM"]
+    
+  },
+  "local": {
+    "miniseed_path": "benchmark/data/IA.AAFM.mseed",
+    "stationxml_path": "benchmark/data/IA.AAFM.xml"
+  },
+  "scenarios": [
+    {
+      "id": "base_fdsn_1station_1day",
+      "label": "FDSN Download 1 stasiun, data 1 hari",
+      "kind": "fdsn_load_multi",
+      "operations": []
+    },
+    {
+      "id": "base_local_upload_1day",
+      "label": "Local Upload AAFM, data 1 hari",
+      "kind": "local_upload",
+      "operations": []
+    },
+    {
+      "id": "op_trim",
+      "label": "Trim",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "trim",
+          "start_time": "__DATA_START__",
+          "end_time": "__DATA_MID__"
+        }
+      ]
+    },
+    {
+      "id": "op_bandpass",
+      "label": "Bandpass 1-10 Hz",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "filter",
+          "filter_type": "bandpass",
+          "freqmin": 1.0,
+          "freqmax": 10.0,
+          "corners": 4,
+          "zerophase": true
+        }
+      ]
+    },
+    {
+      "id": "op_highpass",
+      "label": "Highpass",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "filter",
+          "filter_type": "highpass",
+          "freq": 1.0,
+          "corners": 4,
+          "zerophase": true
+        }
+      ]
+    },
+    {
+      "id": "op_lowpass",
+      "label": "Lowpass",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "filter",
+          "filter_type": "lowpass",
+          "freq": 10.0,
+          "corners": 4,
+          "zerophase": true
+        }
+      ]
+    },
+    {
+      "id": "op_ic_displacement",
+      "label": "Instrument Correction: Displacement",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "instrument_correction",
+          "output": "DISP",
+          "water_level": 60
+        }
+      ]
+    },
+    {
+      "id": "op_ic_velocity",
+      "label": "Instrument Correction: Velocity",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "instrument_correction",
+          "output": "VEL",
+          "water_level": 60
+        }
+      ]
+    },
+    {
+      "id": "op_ic_acceleration",
+      "label": "Instrument Correction: Acceleration",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "instrument_correction",
+          "output": "ACC",
+          "water_level": 60
+        }
+      ]
+    },
+    {
+      "id": "combo_trim_filter",
+      "label": "Trim + Filter",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "trim",
+          "start_time": "__DATA_START__",
+          "end_time": "__DATA_MID__"
+        },
+        {
+          "type": "filter",
+          "filter_type": "bandpass",
+          "freqmin": 1.0,
+          "freqmax": 10.0,
+          "corners": 4,
+          "zerophase": true
+        }
+      ]
+    },
+    {
+      "id": "combo_trim_ic",
+      "label": "Trim + Instrument Correction",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "trim",
+          "start_time": "__DATA_START__",
+          "end_time": "__DATA_MID__"
+        },
+        {
+          "type": "instrument_correction",
+          "output": "VEL",
+          "water_level": 60
+        }
+      ]
+    },
+    {
+      "id": "combo_filter_ic",
+      "label": "Filter + Instrument Correction",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "instrument_correction",
+          "output": "VEL",
+          "water_level": 60
+        },
+        {
+          "type": "filter",
+          "filter_type": "bandpass",
+          "freqmin": 1.0,
+          "freqmax": 10.0,
+          "corners": 4,
+          "zerophase": true
+        }
+      ]
+    },
+    {
+      "id": "combo_trim_ic_filter",
+      "label": "Trim + Instrument Correction + Filter",
+      "kind": "process_local",
+      "operations": [
+        {
+          "type": "trim",
+          "start_time": "__DATA_START__",
+          "end_time": "__DATA_MID__"
+        },
+        {
+          "type": "instrument_correction",
+          "output": "VEL",
+          "water_level": 60
+        },
+        {
+          "type": "filter",
+          "filter_type": "bandpass",
+          "freqmin": 1.0,
+          "freqmax": 10.0,
+          "corners": 4,
+          "zerophase": true
+        }
+      ]
+    },
+    {
+      "id": "fdsn_1station_cached",
+      "label": "FDSN 1 stasiun (cached)",
+      "kind": "fdsn_cached",
+      "operations": []
+    },
+    {
+      "id": "fdsn_1station_uncached",
+      "label": "FDSN 1 stasiun (uncached)",
+      "kind": "fdsn_uncached",
+      "operations": []
+    },
+    {
+      "id": "fdsn_4station_cached",
+      "label": "FDSN 4 stasiun (all cached)",
+      "kind": "fdsn_multi_cached",
+      "operations": []
+    },
+    {
+      "id": "fdsn_4station_uncached",
+      "label": "FDSN 4 stasiun (all uncached)",
+      "kind": "fdsn_multi_uncached",
+      "operations": []
+    },
+    {
+      "id": "fdsn_2cached_2uncached",
+      "label": "FDSN 2 cached + 2 uncached",
+      "kind": "fdsn_multi_mixed",
+      "operations": []
+    },
+    {
+      "id": "adv_spectrogram",
+      "label": "Spectrogram",
+      "kind": "spectrogram_local",
+      "operations": []
+    },
+    {
+      "id": "adv_psd_cold",
+      "label": "PSD cold cache",
+      "kind": "psd_cache_cold",
+      "operations": []
+    },
+    {
+      "id": "adv_psd_warm",
+      "label": "PSD warm cache",
+      "kind": "psd_cache_warm",
+      "operations": []
+    },
+    {
+      "id": "adv_hvsr",
+      "label": "HVSR",
+      "kind": "hvsr_local",
+      "operations": []
+    }
+  ],
+  "advanced": {
+    "_readme": [
+      "Isi channel sesuai NAMA KOMPONEN ASLI di file lokal Anda -",
+      "cek lewat GET /api/upload/{session_id}/waveform (field 'channel'",
+      "per trace) sebelum menjalankan skenario spectrogram/psd/hvsr.",
+      "JANGAN menebak dari channel FDSN, karena konvensi bisa beda."
+    ],
+    "spectrogram_channel": "SHZ",
+    "psd_channel": "SHZ",
+    "hvsr_channel_n": "SHN",
+    "hvsr_channel_e": "SHE",
+    "hvsr_channel_z": "SHZ"
+  }
+}
