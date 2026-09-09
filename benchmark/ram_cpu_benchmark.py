@@ -5,6 +5,7 @@ Menjalankan 22 skenario (13 skenario dasar Milestone 10 + 9 skenario
 lanjutan: FDSN cached/uncached/multi/mixed, Spectrogram, PSD cold/warm,
 HVSR) lewat endpoint backend YANG SUDAH ADA:
   GET    /api/waveform                 (FDSN)
+  GET    /api/waveform/status          (FDSN — cek cache, read-only)
   POST   /api/upload/miniseed          (Local Upload)
   POST   /api/upload/stationxml        (Local Upload, opsional/PSD/HVSR)
   GET    /api/upload/{session_id}/waveform
@@ -17,6 +18,23 @@ HVSR) lewat endpoint backend YANG SUDAH ADA:
 TIDAK mengubah kode aplikasi apapun — murni memanggil API dari luar dan
 mengukur RSS + CPU proses backend via psutil.
 
+== FDSN modular multi-station (5 skenario fdsn_*) ==
+Channel SELALU dikirim konkret satu-satu dari `fdsn.channels` (mis.
+SHZ/SHE/SHN) — TIDAK PERNAH wildcard "SH*". Window SELALU 24 jam penuh
+dari `fdsn.target_date`. `target_date` SELALU dihitung otomatis =
+tanggal KEMARIN (waktu lokal komputer yang menjalankan script), TIDAK
+PERNAH hari ini dan TIDAK di-hardcode — override manual lewat --date.
+Stasiun yang dipakai diatur oleh
+`fdsn.stations` (default 5, override via --stations).
+
+Status cached/uncached SELALU diverifikasi live lewat GET
+/api/waveform/status per (stasiun, channel) — TIDAK PERNAH diasumsikan.
+Kalau `target_date` ternyata sudah (sebagian) ter-cache untuk suatu
+stasiun, resolver mundur ke date-1, date-2, dst. sampai menemukan
+window yang benar-benar uncached di SEMUA channel stasiun itu — cache
+waveform persisten (disk+DB), bukan TTL, jadi ini WAJIB, bukan opsional.
+Lihat `resolve_uncached_window()`.
+
 Cara pakai (lihat juga bagian "Cara menjalankan" di laporan):
   # Mode A - script yang menjalankan/mengelola server (uvicorn):
   python benchmarks/ram_cpu_benchmark.py \
@@ -28,6 +46,14 @@ Cara pakai (lihat juga bagian "Cara menjalankan" di laporan):
       --attach-pid 12345 \
       --base-url http://127.0.0.1:8000 \
       --no-restart
+
+  # Subset station FDSN (default: 5 station di scenarios.json):
+  python benchmarks/ram_cpu_benchmark.py --attach-pid 12345 --no-restart \
+      --stations AAFM AAI
+
+  # Override target date FDSN (default: OTOMATIS = kemarin, lokal):
+  python benchmarks/ram_cpu_benchmark.py --attach-pid 12345 --no-restart \
+      --date 2026-09-10
 """
 
 import argparse
@@ -41,7 +67,7 @@ import time
 import urllib.error
 import urllib.request
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import psutil
@@ -287,30 +313,171 @@ class ServerHandle:
 
 def run_fdsn_load_multi(base_url, cfg, sampler):
     fdsn = cfg["fdsn"]
-    _fdsn_call_all(base_url, cfg, fdsn["stations"], fdsn["start_time"], fdsn["end_time"])
+    start, end = _day_range(fdsn["target_date"])
+    _fdsn_call_all(base_url, cfg, [fdsn["stations"][0]], start, end)
 
 
-def _fdsn_call_all(base_url, cfg, stations, start_time, end_time):
-    """Panggil GET /api/waveform untuk setiap station di `stations`,
-    pakai rentang waktu `start_time`/`end_time` yang diberikan.
-    Dipakai bareng oleh skenario base, cached, uncached, dan mixed —
-    supaya logika permintaan HTTP-nya konsisten satu tempat."""
+def default_target_date():
+    """Tanggal kalender KEMARIN menurut waktu lokal komputer yang
+    menjalankan script ini (BUKAN hari ini, BUKAN hardcoded). Dipakai
+    sebagai default fdsn.target_date supaya benchmark tidak pernah
+    diam-diam mengetes window "hari ini" yang datanya mungkin belum
+    lengkap terkirim ke FDSN. `resolve_uncached_window()` tetap boleh
+    mundur lebih jauh lagi (kemarin-1, kemarin-2, dst.) kalau tanggal
+    ini ternyata sudah cached — tapi TIDAK PERNAH maju ke hari ini."""
+    return (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+
+def _qs(params):
+    return "&".join(
+        f"{k}={urllib.request.quote(str(v))}" for k, v in params.items() if v is not None
+    )
+
+
+def _day_range(date_str, window_hours=24):
+    """'YYYY-MM-DD' -> (start_iso, end_iso) untuk window N jam penuh
+    (default 24 jam), UTC-aligned di 00:00."""
+    start = datetime.fromisoformat(date_str + "T00:00:00")
+    end = start + timedelta(hours=window_hours)
+    return start.isoformat(), end.isoformat()
+
+
+def check_waveform_cached(base_url, cfg, station, channel, start_time, end_time):
+    """GET /api/waveform/status — read-only, TIDAK mengisi cache.
+    Return True kalau window (station, channel, start, end) SUDAH
+    fully cached (download_needed=False)."""
     fdsn = cfg["fdsn"]
-    for station in stations:
-        params = {
-            "network": fdsn["network"],
-            "station": station,
-            "location": fdsn["location"],
-            "channel": fdsn["channel"],
-            "start_time": start_time,
-            "end_time": end_time,
+    params = {
+        "network": fdsn["network"],
+        "station": station,
+        "location": fdsn["location"],
+        "channel": channel,
+        "start_time": start_time,
+        "end_time": end_time,
+    }
+    status, resp = http_json("GET", f"{base_url}/api/waveform/status?{_qs(params)}")
+    if status != 200:
+        raise RuntimeError(
+            f"GET /api/waveform/status gagal untuk {station}.{channel}: "
+            f"HTTP {status} {resp}"
+        )
+    return not resp["download_needed"]
+
+
+def resolve_uncached_window(base_url, cfg, station, channels=None, start_date=None):
+    """
+    Cari window 24-jam yang BENAR-BENAR uncached (download_needed=True
+    di SEMUA channel) untuk `station`, mulai dari `start_date` (default
+    fdsn.target_date) mundur ke date-1, date-2, dst. kalau tanggal
+    tersebut ternyata sudah (sebagian) ter-cache.
+
+    Status dicek LIVE per (station, channel) lewat GET
+    /api/waveform/status — TIDAK PERNAH diasumsikan dari cache lokal
+    script ini, karena cache waveform backend persisten (disk+DB),
+    bukan TTL: sekali sebuah tanggal pernah diminta, ia AKAN selalu
+    cached untuk run-run berikutnya.
+
+    Return dict: {"date", "start", "end", "reason", "cached_before"}
+    - "cached_before": True kalau start_date awal (target_date) SUDAH
+      cached (dipakai untuk pesan info "kenapa tanggal dipindah").
+    """
+    fdsn = cfg["fdsn"]
+    channels = channels or fdsn["channels"]
+    start_date = start_date or fdsn["target_date"]
+    max_lookback = fdsn.get("max_lookback_days", 30)
+
+    date = datetime.fromisoformat(start_date)
+    reason = f"target date {start_date} belum ter-cache untuk semua channel"
+    cached_before = False
+
+    for _ in range(max_lookback):
+        date_str = date.strftime("%Y-%m-%d")
+        start, end = _day_range(date_str)
+        status_map = {
+            ch: check_waveform_cached(base_url, cfg, station, ch, start, end)
+            for ch in channels
         }
-        if fdsn.get("max_points"):
-            params["max_points"] = fdsn["max_points"]
-        qs = "&".join(f"{k}={urllib.request.quote(str(v))}" for k, v in params.items())
-        status, _ = http_json("GET", f"{base_url}/api/waveform?{qs}")
-        if status != 200:
-            raise RuntimeError(f"FDSN load {station} failed: HTTP {status}")
+        if not any(status_map.values()):
+            # Tidak satu channel pun cached -> window ini genuinely uncached.
+            return {
+                "date": date_str, "start": start, "end": end,
+                "reason": reason, "cached_before": cached_before,
+            }
+
+        cached_before = True
+        cached_chs = [ch for ch, is_cached in status_map.items() if is_cached]
+        reason = (
+            f"{date_str} sudah (sebagian) ter-cache untuk channel "
+            f"{cached_chs} — mundur ke tanggal sebelumnya"
+        )
+        date -= timedelta(days=1)
+
+    raise RuntimeError(
+        f"Tidak menemukan window uncached untuk station={station} "
+        f"channels={channels} dalam {max_lookback} hari mundur dari "
+        f"{start_date}. Semua tanggal yang dicoba sudah (sebagian) "
+        "ter-cache — perluas fdsn.max_lookback_days kalau ini memang "
+        "diharapkan."
+    )
+
+
+def prime_window(base_url, cfg, station, channels, start, end):
+    """Panggil /api/waveform untuk semua channel sekali (untimed) agar
+    window benar-benar fully cached. Idempotent: kalau sebagian/semua
+    channel sudah cached (mis. karena scenario lain sudah men-download
+    window yang sama), panggilan ini tetap aman (cache hit)."""
+    _fdsn_call_all(base_url, cfg, [station], start, end, channels=channels)
+
+
+def verify_fully_cached(base_url, cfg, station, channels, start, end, context):
+    """Assert semua channel benar2 fully cached SETELAH sebuah request
+    — dipanggil dari cleanup_fn (untimed) supaya tidak ikut mengotori
+    RAM/CPU measurement. Cetak hasil verifikasi, raise kalau gagal
+    (partial download tidak boleh dianggap sukses diam-diam)."""
+    status_map = {
+        ch: check_waveform_cached(base_url, cfg, station, ch, start, end)
+        for ch in channels
+    }
+    not_cached = [ch for ch, ok in status_map.items() if not ok]
+    if not_cached:
+        raise RuntimeError(
+            f"[{context}] Verifikasi pasca-request GAGAL: {station} "
+            f"channel {not_cached} @ {start}->{end} MASIH "
+            "download_needed=True (kemungkinan ada window/jendela jam "
+            "yang gagal di-download parsial)."
+        )
+    print(f"      [VERIFY] {context}: {station} @ {start}->{end} "
+          "FULLY CACHED untuk semua channel.")
+
+
+def _fdsn_call_all(base_url, cfg, stations, start_time, end_time, channels=None):
+    """Panggil GET /api/waveform untuk setiap (station, channel) di
+    `stations` x `channels`, pakai rentang waktu `start_time`/
+    `end_time` yang diberikan. Channel SELALU konkret satu-satu (dari
+    fdsn.channels) — TIDAK PERNAH wildcard "SH*". Dipakai bareng oleh
+    skenario base, cached, uncached, multi, dan mixed — supaya logika
+    permintaan HTTP-nya konsisten satu tempat."""
+    fdsn = cfg["fdsn"]
+    channels = channels or fdsn["channels"]
+    for station in stations:
+        for channel in channels:
+            params = {
+                "network": fdsn["network"],
+                "station": station,
+                "location": fdsn["location"],
+                "channel": channel,
+                "start_time": start_time,
+                "end_time": end_time,
+            }
+            if fdsn.get("max_points"):
+                params["max_points"] = fdsn["max_points"]
+            status, resp = http_json(
+                "GET", f"{base_url}/api/waveform?{_qs(params)}"
+            )
+            if status != 200:
+                raise RuntimeError(
+                    f"FDSN load {station}.{channel} failed: HTTP {status} {resp}"
+                )
 
 
 def upload_local(base_url, cfg):
@@ -431,12 +598,6 @@ SCENARIO_RUNNERS = {
 #  app/routers/psd.py, app/routers/hvsr.py — lihat catatan di masing2 fungsi)
 # --------------------------------------------------------------------------
 
-def _qs(params):
-    return "&".join(
-        f"{k}={urllib.request.quote(str(v))}" for k, v in params.items() if v is not None
-    )
-
-
 def run_spectrogram_local(base_url, cfg, sampler):
     """GET /api/spectrogram?session_id=...&channel=... — sesuai
     app/routers/spectrogram.py (Local: wajib session_id + channel,
@@ -514,89 +675,186 @@ def default_prepare(base_url, cfg, scn):
 
 
 def prepare_fdsn_cached(base_url, cfg, scn):
-    """FDSN 1 stasiun — CACHED: panggil sekali dulu (untimed, priming)
-    dengan window waktu & station YANG SAMA seperti base scenario
-    (fdsn.start_time/end_time) supaya window jam UTC-nya pasti sudah
-    lengkap di cache persisten (waveform_provider_service.py -
-    _is_channel_fully_cached), lalu panggilan KEDUA (measured) yang
-    diukur, dijamin CACHE HIT."""
+    """FDSN 1 stasiun — CACHED: resolve window uncached (live-check,
+    mundur tanggal kalau target_date sudah cached), lalu PRIME (untimed
+    — idempotent, aman walau window sudah cached duluan oleh scenario
+    lain), verifikasi FULLY CACHED, baru measured call (harus HIT).
+
+    Window yang dipakai SAMA PERSIS dengan yang dipakai
+    prepare_fdsn_uncached (keduanya resolve ke tanggal live-uncached
+    pertama dari target_date) — regardless urutan scenario di
+    scenarios.json, karena status selalu dicek live ke backend, bukan
+    diasumsikan dari config statis."""
     fdsn = cfg["fdsn"]
-    station = [fdsn["stations"][0]]
-    _fdsn_call_all(base_url, cfg, station, fdsn["start_time"], fdsn["end_time"])  # prime
+    station = fdsn["stations"][0]
+    channels = fdsn["channels"]
+
+    res = resolve_uncached_window(base_url, cfg, station, channels)
+    print(f"[INFO] fdsn_1station_cached: station={station} "
+          f"channels={channels} date={res['date']} status=akan di-PRIME "
+          f"lalu diukur sebagai CACHED"
+          + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+
+    prime_window(base_url, cfg, station, channels, res["start"], res["end"])
+    verify_fully_cached(base_url, cfg, station, channels, res["start"], res["end"],
+                         "fdsn_1station_cached (pre-measure)")
 
     def measure():
-        _fdsn_call_all(base_url, cfg, station, fdsn["start_time"], fdsn["end_time"])
+        _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
+                        channels=channels)
 
     return measure, (lambda: None)
 
 
 def prepare_fdsn_uncached(base_url, cfg, scn):
-    """FDSN 1 stasiun — UNCACHED: TANPA priming, pakai rentang waktu
-    `fdsn.uncached_start_time/end_time` yang terpisah dari yang
-    dipakai skenario cached, supaya window jam UTC-nya belum pernah
-    diminta di run ini (guaranteed miss pada run pertama).
-    CATATAN: sekali sebuah rentang waktu pernah diminta, ia AKAN
-    tersimpan permanen di cache persisten (disk+MySQL) — bukan TTL.
-    Untuk run BERIKUTNYA yang benar2 "cold" lagi, ganti
-    uncached_start_time/end_time ke rentang yang belum pernah dipakai."""
+    """FDSN 1 stasiun — UNCACHED: resolve window yang BENAR-BENAR
+    belum cached (live-check per channel, mundur tanggal kalau
+    target_date sudah cached), lalu measured call TANPA priming
+    (guaranteed miss). Setelah request ini, window otomatis menjadi
+    cached — diverifikasi di cleanup_fn (untimed)."""
     fdsn = cfg["fdsn"]
-    station = [fdsn["stations"][0]]
+    station = fdsn["stations"][0]
+    channels = fdsn["channels"]
+
+    res = resolve_uncached_window(base_url, cfg, station, channels)
+    print(f"[INFO] fdsn_1station_uncached: station={station} "
+          f"channels={channels} date={res['date']} status=UNCACHED"
+          + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
 
     def measure():
-        _fdsn_call_all(
-            base_url, cfg, station,
-            fdsn["uncached_start_time"], fdsn["uncached_end_time"],
-        )
+        _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
+                        channels=channels)
 
-    return measure, (lambda: None)
+    def cleanup():
+        verify_fully_cached(base_url, cfg, station, channels, res["start"],
+                             res["end"], "fdsn_1station_uncached (post-measure)")
+
+    return measure, cleanup
 
 
 def prepare_fdsn_multi_cached(base_url, cfg, scn):
+    """N stasiun (fdsn.stations, default 5, subset via --stations) —
+    semuanya CACHED: resolve + prime + verify per stasiun (window bisa
+    beda tanggal antar-stasiun, wajar — masing2 dicek live), lalu
+    measured call memanggil semua stasiun x channel sekali lagi
+    (harus semuanya HIT)."""
     fdsn = cfg["fdsn"]
-    stations = fdsn["multi_stations"]
-    _fdsn_call_all(base_url, cfg, stations, fdsn["start_time"], fdsn["end_time"])  # prime
+    stations = fdsn["stations"]
+    channels = fdsn["channels"]
+
+    windows = {}
+    for station in stations:
+        res = resolve_uncached_window(base_url, cfg, station, channels)
+        print(f"[INFO] fdsn_{len(stations)}station_cached: station={station} "
+              f"channels={channels} date={res['date']} status=akan di-PRIME "
+              f"lalu diukur sebagai CACHED"
+              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+        prime_window(base_url, cfg, station, channels, res["start"], res["end"])
+        verify_fully_cached(base_url, cfg, station, channels, res["start"],
+                             res["end"], f"fdsn_multi_cached/{station} (pre-measure)")
+        windows[station] = res
 
     def measure():
-        _fdsn_call_all(base_url, cfg, stations, fdsn["start_time"], fdsn["end_time"])
+        for station in stations:
+            res = windows[station]
+            _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
+                            channels=channels)
 
     return measure, (lambda: None)
 
 
 def prepare_fdsn_multi_uncached(base_url, cfg, scn):
+    """N stasiun — semuanya UNCACHED: resolve window live-uncached per
+    stasiun (independen, bisa beda tanggal antar-stasiun), measured
+    call TANPA priming. Verifikasi semua jadi cached di cleanup_fn."""
     fdsn = cfg["fdsn"]
-    stations = fdsn["multi_stations"]
+    stations = fdsn["stations"]
+    channels = fdsn["channels"]
+
+    windows = {}
+    for station in stations:
+        res = resolve_uncached_window(base_url, cfg, station, channels)
+        print(f"[INFO] fdsn_{len(stations)}station_uncached: station={station} "
+              f"channels={channels} date={res['date']} status=UNCACHED"
+              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+        windows[station] = res
 
     def measure():
-        _fdsn_call_all(
-            base_url, cfg, stations,
-            fdsn["uncached_start_time"], fdsn["uncached_end_time"],
-        )
+        for station in stations:
+            res = windows[station]
+            _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
+                            channels=channels)
 
-    return measure, (lambda: None)
+    def cleanup():
+        for station in stations:
+            res = windows[station]
+            verify_fully_cached(base_url, cfg, station, channels, res["start"],
+                                 res["end"], f"fdsn_multi_uncached/{station} (post-measure)")
+
+    return measure, cleanup
 
 
 def prepare_fdsn_multi_mixed(base_url, cfg, scn):
-    """2 stasiun pertama dari multi_stations = CACHED (di-prime dulu
-    dengan window waktu yang sama seperti skenario cached), 2 stasiun
-    berikutnya = UNCACHED (window waktu terpisah, belum pernah
-    diminta). Total tetap satu window terukur (mixed dalam satu
-    request batch), sesuai definisi "2 cached + 2 uncached"."""
+    """Separuh stasiun pertama dari fdsn.stations = CACHED (resolve +
+    prime + verify), separuh berikutnya = UNCACHED (resolve saja, TANPA
+    priming). SATU measured scenario memanggil KEDUA kelompok secara
+    sequential — cached station pakai window cached-nya, uncached
+    station pakai window uncached-nya (bisa beda tanggal per stasiun,
+    ditentukan otomatis dari hasil resolve, BUKAN dua benchmark
+    terpisah). Verifikasi window uncached menjadi cached di
+    cleanup_fn (untimed)."""
     fdsn = cfg["fdsn"]
-    stations = fdsn["multi_stations"]
-    half = len(stations) // 2
-    cached_stations = stations[:half]
-    uncached_stations = stations[half:]
+    stations = fdsn["stations"]
+    channels = fdsn["channels"]
 
-    _fdsn_call_all(base_url, cfg, cached_stations, fdsn["start_time"], fdsn["end_time"])  # prime
-
-    def measure():
-        _fdsn_call_all(base_url, cfg, cached_stations, fdsn["start_time"], fdsn["end_time"])
-        _fdsn_call_all(
-            base_url, cfg, uncached_stations,
-            fdsn["uncached_start_time"], fdsn["uncached_end_time"],
+    if len(stations) < 2:
+        raise RuntimeError(
+            "fdsn_multi_mixed butuh minimal 2 stasiun (untuk kelompok "
+            f"cached + uncached), tapi hanya {len(stations)} dipilih "
+            f"({stations}). Jalankan dengan --stations lebih dari satu."
         )
 
-    return measure, (lambda: None)
+    half = len(stations) // 2
+    cached_stations = stations[:half] or stations[:1]
+    uncached_stations = stations[half:] if half else stations[1:]
+
+    windows = {}
+    for station in cached_stations:
+        res = resolve_uncached_window(base_url, cfg, station, channels)
+        print(f"[INFO] fdsn_mixed: station={station} role=CACHED "
+              f"channels={channels} date={res['date']}"
+              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+        prime_window(base_url, cfg, station, channels, res["start"], res["end"])
+        verify_fully_cached(base_url, cfg, station, channels, res["start"],
+                             res["end"], f"fdsn_mixed/{station} CACHED (pre-measure)")
+        windows[station] = res
+
+    for station in uncached_stations:
+        res = resolve_uncached_window(base_url, cfg, station, channels)
+        print(f"[INFO] fdsn_mixed: station={station} role=UNCACHED "
+              f"channels={channels} date={res['date']}"
+              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+        windows[station] = res
+
+    def measure():
+        # Sequential: kelompok cached dulu, lalu kelompok uncached —
+        # sesuai statusnya masing-masing, dalam SATU measured scenario.
+        for station in cached_stations:
+            res = windows[station]
+            _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
+                            channels=channels)
+        for station in uncached_stations:
+            res = windows[station]
+            _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
+                            channels=channels)
+
+    def cleanup():
+        for station in uncached_stations:
+            res = windows[station]
+            verify_fully_cached(base_url, cfg, station, channels, res["start"],
+                                 res["end"], f"fdsn_mixed/{station} (post-measure)")
+
+    return measure, cleanup
 
 
 def prepare_spectrogram_local(base_url, cfg, scn):
@@ -709,8 +967,14 @@ def run_scenario(base_url, cfg, scn, server, restart_between):
 
     try:
         cleanup_fn()
-    except Exception:  # noqa: BLE001 - cleanup gagal tidak boleh gagalkan run
-        pass
+    except Exception as exc:  # noqa: BLE001
+        # Cleanup biasa (mis. DELETE session lokal) boleh gagal tanpa
+        # menggagalkan run. TAPI kalau ini verifikasi cache
+        # (verify_fully_cached), kegagalannya WAJIB terlihat di status
+        # — bukan ditelan diam-diam — karena itu berarti klaim
+        # cached/uncached scenario ini tidak valid.
+        if status == "OK":
+            status = f"FAILED (post-verify): {exc}"
 
     # Window stabilisasi SETELAH response selesai.
     time.sleep(STABLE_WAIT_SEC)
@@ -755,12 +1019,38 @@ def main():
     parser.add_argument("--no-restart", action="store_true", help="Jangan restart server antar-skenario")
     parser.add_argument("--cwd", default=str(BENCH_DIR.parent), help="Working dir untuk --spawn")
     parser.add_argument("--out-prefix", default=None, help="Prefix nama file output (default: timestamp)")
+    parser.add_argument(
+        "--stations", nargs="+", default=None,
+        help=(
+            "Subset stasiun FDSN, mis. --stations AAFM atau "
+            "--stations AAFM AAI ABJI. Default: fdsn.stations di "
+            "scenarios.json (5 stasiun)."
+        ),
+    )
+    parser.add_argument(
+        "--date", default=None,
+        help=(
+            "Override fdsn.target_date (format YYYY-MM-DD). Resolver "
+            "tetap mundur otomatis kalau tanggal ini sudah cached."
+        ),
+    )
     args = parser.parse_args()
 
     if not args.spawn and not args.attach_pid:
         parser.error("Wajib salah satu: --spawn '<cmd>' atau --attach-pid <pid>")
 
     cfg = json.loads(SCENARIOS_PATH.read_text())
+    if args.stations:
+        cfg["fdsn"]["stations"] = args.stations
+    # target_date SELALU kemarin (lokal) secara default — TIDAK PERNAH
+    # hari ini, TIDAK di-hardcode. scenarios.json tidak lagi menyimpan
+    # tanggal tetap; nilai apa pun di sana diabaikan kecuali --date
+    # diberikan secara eksplisit.
+    cfg["fdsn"]["target_date"] = args.date or default_target_date()
+    print(f"[CONFIG] FDSN stations={cfg['fdsn']['stations']} "
+          f"channels={cfg['fdsn']['channels']} "
+          f"target_date={cfg['fdsn']['target_date']} "
+          f"({'override --date' if args.date else 'otomatis: kemarin, lokal'})\n")
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     run_id = args.out_prefix or time.strftime("%Y%m%d_%H%M%S")
 

@@ -1,5 +1,0 @@
-scenario,label,ram_before_mb,ram_average_mb,ram_peak_mb,ram_stable_mb,delta_ram_mb,cpu_average_pct,cpu_peak_pct,duration_sec,status
-fdsn_1station_uncached,FDSN 1 station - uncached,300.7,309.95,310.17,310.97,10.27,5.5,30.8,3.299,FAILED: AAI=HTTP 404 (No waveform data found for IA.AAI.*.SHZ in 2025-08-10T00:00:00 -> 2025-08-10T02:00:00)
-fdsn_4station_cached,FDSN 4 station - all cached,344.34,346.4,351.16,342.77,-1.57,94.65,107.8,4.378,OK
-fdsn_4station_uncached,FDSN 4 station - all uncached,342.77,343.65,347.47,343.05,0.28,23.89,107.8,17.317,FAILED: AAI=HTTP 404 (No waveform data found for IA.AAI.*.SHZ in 2025-08-11T00:00:00 -> 2025-08-11T02:00:00)
-fdsn_2cached_2uncached,FDSN 2 cached + 2 uncached,343.05,344.4,351.52,343.14,0.09,32.85,107.8,15.032,OK

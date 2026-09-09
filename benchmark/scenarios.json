@@ -1,26 +1,40 @@
 {
   "_readme": [
-    "Isi placeholder di 'fdsn' dan 'local' sebelum menjalankan.",
+    "Isi placeholder di 'local' sebelum menjalankan.",
     "Payload operasi di 'operations' persis mengikuti app/models/processing.py",
     "(TrimOperation/FilterOperation/InstrumentCorrectionOperation) — jangan diubah",
     "strukturnya, hanya nilai (network/station/channel/waktu/param filter) yang perlu",
     "disesuaikan dengan data yang tersedia di environment Anda.",
-    "fdsn.multi_stations, fdsn.uncached_start_time/end_time, dan 'advanced' adalah config BARU untuk 9 skenario tambahan - isi sesuai data yang benar-benar Anda punya, jangan dibiarkan placeholder."
+    "'fdsn' sekarang modular multi-station: 'stations' = daftar stasiun (default 5,",
+    "subset via CLI --stations), 'channels' = channel KONKRET satu-satu (bukan",
+    "wildcard 'SH*').",
+    "'target_date' TIDAK disimpan di sini — script menghitungnya OTOMATIS setiap",
+    "run = tanggal KEMARIN (waktu lokal komputer), TIDAK PERNAH hari ini, TIDAK",
+    "di-hardcode. Override manual lewat CLI --date kalau perlu.",
+    "Status cached/uncached diverifikasi LIVE ke GET /api/waveform/status oleh",
+    "script — kalau target_date (atau --date) ternyata sudah ter-cache, script",
+    "otomatis mundur ke date-1/date-2/dst. Anda TIDAK perlu isi tanggal uncached",
+    "manual.",
+    "'advanced' adalah config skenario Spectrogram/PSD/HVSR - isi sesuai data yang",
+    "benar-benar Anda punya, jangan dibiarkan placeholder."
   ],
   "fdsn": {
     "network": "IA",
     "location": "*",
-    "channel": "SH*",
-    "start_time": "2025-07-01T00:00:00",
-    "end_time": "2025-07-02T00:00:00",
+    "channels": [
+      "SHZ",
+      "SHE",
+      "SHN"
+    ],
+    "max_lookback_days": 30,
     "max_points": 150000,
     "stations": [
-      "AAFM"
-    ],
-    "uncached_start_time": "2025-08-01T00:00:00",
-    "uncached_end_time": "2025-08-02T00:00:00",
-    "multi_stations": ["AAI", "ABJI", "ABSM", "ACJM"]
-    
+      "AAFM",
+      "AAI",
+      "ABJI",
+      "ABSM",
+      "ACJM"
+    ]
   },
   "local": {
     "miniseed_path": "benchmark/data/IA.AAFM.mseed",
