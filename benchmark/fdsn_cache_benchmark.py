@@ -30,18 +30,24 @@ Pembagian scenario Mixed (jumlah ganjil -> uncached mendominasi):
   4 station -> 2 cached + 2 uncached
   5 station -> 2 cached + 3 uncached
 
-Konsep benchmark: DATA 1 HARI (24 jam), dua peran window per stasiun:
+Konsep benchmark: DATA 1 HARI (24 jam) PENUH — data partial TIDAK
+PERNAH dipakai sebagai hasil benchmark — dua peran window per stasiun:
 
-  1. CACHED  -> SELALU pakai fdsn.target_date (default: KEMARIN,
-     lokal, TIDAK di-hardcode; override --date). TIDAK PERNAH cari
-     tanggal lain untuk peran ini, TIDAK ADA cek availability FDSN di
-     sini. Kalau target_date belum fully cached (live-check ke
-     GET /api/waveform/status), di-PRIME (download) dulu sampai
-     selesai, baru measured call (harus HIT). Kalau ternyata data
-     target_date sendiri tidak lengkap di FDSN, priming TIDAK akan
-     pernah membuatnya fully cached — verify_fully_cached() akan GAGAL
-     dengan pesan jelas (bukan pura-pura sukses); kita TIDAK pindah ke
-     tanggal lain hanya untuk menghindari kegagalan ini.
+  1. CACHED  -> fdsn.target_date (default: KEMARIN, lokal, TIDAK
+     di-hardcode; override --date) adalah TITIK AWAL pencarian, BUKAN
+     tanggal yang wajib dipakai sampai akhir. Alurnya (lihat
+     determine_cached_role_date() + resolve_cached_window()):
+       a. Kalau target_date SUDAH fully cached (live-check ke
+          GET /api/waveform/status) -> langsung dipakai.
+       b. Kalau belum cached TAPI has_full_day_fdsn_data() bilang
+          datanya lengkap 24 jam untuk semua channel -> di-PRIME
+          (download), lalu diverifikasi ulang; kalau benar-benar
+          fully cached -> dipakai untuk measured call (harus HIT).
+       c. Kalau datanya sendiri TIDAK lengkap 24 jam di FDSN (mis.
+          sensor mati sebagian hari) -> tanggal ini TIDAK BOLEH
+          dipakai (bukan FAILED — cuma di-skip), mundur satu hari,
+          ulangi dari (a) di tanggal baru. Terus sampai ketemu
+          tanggal yang datanya benar-benar lengkap.
      Lihat resolve_cached_window().
 
   2. UNCACHED -> dicari MUNDUR mulai dari target_date - 1 hari (TIDAK
@@ -77,6 +83,34 @@ Konsep benchmark: DATA 1 HARI (24 jam), dua peran window per stasiun:
   fdsn.max_lookback_days (scenarios.json, default 30) membatasi berapa
   hari mundur dicoba. --skip-availability-check menonaktifkan syarat
   (b) di atas (TIDAK direkomendasikan).
+
+Optimasi lintas-scenario (PENTING supaya cepat — lihat komentar di
+_CACHED_ROLE_MEMO / _UNCACHED_SEARCH_POINTER / _FDSN_AVAILABILITY_CACHE
+untuk detail lengkap):
+  - has_full_day_fdsn_data() di-memo per (station, channel, date) —
+    fetch FDSN LANGSUNG (bukan lewat backend) untuk kombinasi yang
+    SAMA hanya terjadi SEKALI per run, siapa pun pemanggilnya.
+  - resolve_cached_window() di-memo per station: begitu tanggal CACHED
+    ketemu (dan sudah dipastikan fully cached), fdsn_cached,
+    fdsn_multi_cached, dan grup CACHED di fdsn_multi_mixed untuk
+    station yang sama TIDAK melakukan request/pencarian apa pun lagi —
+    langsung pakai hasil yang sudah ada.
+  - resolve_uncached_window() melanjutkan pencarian dari pointer per
+    station (tanggal SATU HARI di bawah tanggal UNCACHED terakhir yang
+    ditemukan untuk station itu), BUKAN mulai lagi dari
+    cached_date - 1. Ini valid karena semua tanggal DI ATAS pointer
+    sudah TERBUKTI reject (sudah cached, atau data FDSN-nya tidak
+    lengkap) — status itu TIDAK PERNAH berbalik dalam satu run
+    benchmark (backend cache cuma bertambah, dan data historis di
+    FDSN tidak tiba-tiba jadi lengkap) — jadi aman dilewati permanen,
+    TANPA mengurangi validitas hasil (definisi CACHED/UNCACHED/MIXED
+    di atas TIDAK berubah sedikit pun, cuma pencarian yang tidak perlu
+    diulang dihindari).
+  - Verifikasi ganda yang sebelumnya ada (resolve_cached_window()
+    sudah menjamin fully-cached, tapi prepare_fdsn_cached()/
+    prepare_fdsn_mixed() masih memanggil verify_fully_cached() SEKALI
+    LAGI persis sesudahnya) dihapus — post-condition itu sudah
+    dijamin oleh resolver sendiri.
 
 Pengukuran RAM/CPU pakai metode SAMA PERSIS dengan
 ram_cpu_benchmark.py (RSS + CPU% via psutil, baseline window sebelum
@@ -337,6 +371,31 @@ def check_waveform_cached(base_url, fdsn_cfg, station, channel, start_time, end_
 
 
 _FDSN_AVAILABILITY_CACHE = {}  # {(station, channel, date_str): (bool, str)} — memo dalam satu run
+
+# --------------------------------------------------------------------------
+# Memoization LINTAS SCENARIO dalam satu run (bukan cuma per-panggilan) —
+# ini yang membuat fdsn_multi_cached/fdsn_multi_uncached/fdsn_multi_mixed
+# TIDAK mengulang pencarian tanggal yang sudah ditemukan scenario
+# sebelumnya untuk station yang sama.
+#
+# _CACHED_ROLE_MEMO[station] = hasil LENGKAP resolve_cached_window()
+#   (tanggal sudah dipastikan fully cached — via already-cached ATAU
+#   sudah di-download+diverifikasi). SEKALI diisi, aman dipakai ulang
+#   TANPA request apa pun ke backend/FDSN lagi, karena cache di backend
+#   TIDAK PERNAH "mundur" jadi uncached lagi dalam satu run benchmark
+#   ini — jadi tidak ada risiko stale.
+#
+# _UNCACHED_SEARCH_POINTER[station] = tanggal (datetime) TERJAUH yang
+#   sudah pernah diperiksa untuk peran UNCACHED station ini. Panggilan
+#   berikutnya untuk station yang sama (mis. fdsn_uncached lalu
+#   fdsn_multi_uncached memakai station yang sama) mulai mundur dari
+#   pointer ini, BUKAN dari cached_role_date - 1 lagi — karena semua
+#   tanggal di ATAS pointer sudah TERBUKTI reject (sudah cached, atau
+#   FDSN tidak lengkap) dan status itu TIDAK PERNAH berbalik dalam satu
+#   run (cached tetap cached, FDSN yang tidak lengkap tidak akan
+#   mendadak lengkap). Aman untuk dilewati permanen.
+_CACHED_ROLE_MEMO = {}  # {station: resolve_cached_window() result dict}
+_UNCACHED_SEARCH_POINTER = {}  # {station: datetime — tanggal berikutnya yang belum diperiksa}
 
 
 class _FDSNAvailabilityConnectivityError(Exception):
@@ -599,15 +658,27 @@ def resolve_cached_window(base_url, fdsn_cfg, station, channels):
            tertutupi dengan pindah tanggal diam-diam.
 
     Return dict: {"date", "start", "end", "reason", "needed_priming"}
+
+    MEMOIZED per station (_CACHED_ROLE_MEMO): panggilan kedua+ untuk
+    station yang SAMA dalam satu run (mis. fdsn_cached lalu
+    fdsn_multi_cached lalu grup cached di fdsn_multi_mixed) langsung
+    return hasil yang sudah diverifikasi TANPA request apa pun lagi —
+    aman karena begitu tanggal ini fully cached, ia TIDAK PERNAH
+    "mundur" jadi uncached lagi dalam satu run.
     """
+    if station in _CACHED_ROLE_MEMO:
+        return _CACHED_ROLE_MEMO[station]
+
     candidate = determine_cached_role_date(base_url, fdsn_cfg, station, channels)
     date_str, start, end = candidate["date"], candidate["start"], candidate["end"]
 
     if candidate["already_cached"]:
-        return {
+        result = {
             "date": date_str, "start": start, "end": end,
             "reason": candidate["reason"], "needed_priming": False,
         }
+        _CACHED_ROLE_MEMO[station] = result
+        return result
 
     print(f"      [DOWNLOAD] {station} @ {date_str}: {candidate['reason']}")
     prime_window(base_url, fdsn_cfg, station, channels, start, end)
@@ -630,11 +701,13 @@ def resolve_cached_window(base_url, fdsn_cfg, station, channels):
             "melanjutkan benchmark."
         )
 
-    return {
+    result = {
         "date": date_str, "start": start, "end": end,
         "reason": f"{date_str} berhasil di-download dan fully cached",
         "needed_priming": True,
     }
+    _CACHED_ROLE_MEMO[station] = result
+    return result
 
 
 def resolve_uncached_window(base_url, fdsn_cfg, station, channels):
@@ -656,12 +729,37 @@ def resolve_uncached_window(base_url, fdsn_cfg, station, channels):
     langsung (guaranteed miss), lalu verify_fully_cached() sesudahnya.
 
     Return dict: {"date", "start", "end", "reason"}
+
+    DIOPTIMASI dengan dua memo lintas-scenario (lihat komentar di
+    _CACHED_ROLE_MEMO / _UNCACHED_SEARCH_POINTER):
+      1. Batas atas pencarian (tanggal peran CACHED - 1) diambil dari
+         _CACHED_ROLE_MEMO kalau sudah pernah di-resolve (TANPA
+         memanggil determine_cached_role_date() lagi — fungsi itu
+         sendiri melakukan loop mundur + availability check yang bisa
+         mahal). Fallback ke determine_cached_role_date() (read-only)
+         hanya kalau station ini belum pernah lewat resolve_cached_window().
+      2. Titik mulai scan MUNDUR dilanjutkan dari
+         _UNCACHED_SEARCH_POINTER[station] kalau ada (posisi persis
+         setelah tanggal terakhir yang DITEMUKAN untuk station ini) —
+         BUKAN mulai dari cached_role_date - 1 lagi. Semua tanggal di
+         ATAS pointer itu SUDAH TERBUKTI reject (sudah cached / FDSN
+         tidak lengkap), status itu tidak pernah berbalik dalam satu
+         run, jadi aman dilewati tanpa re-check.
     """
     max_lookback = fdsn_cfg.get("max_lookback_days", 30)
     check_availability = fdsn_cfg.get("check_availability", True)
 
-    cached_role = determine_cached_role_date(base_url, fdsn_cfg, station, channels)
-    date = datetime.fromisoformat(cached_role["date"]) - timedelta(days=1)
+    if station in _CACHED_ROLE_MEMO:
+        cached_role_date_str = _CACHED_ROLE_MEMO[station]["date"]
+    else:
+        cached_role_date_str = determine_cached_role_date(
+            base_url, fdsn_cfg, station, channels
+        )["date"]
+
+    if station in _UNCACHED_SEARCH_POINTER:
+        date = _UNCACHED_SEARCH_POINTER[station]
+    else:
+        date = datetime.fromisoformat(cached_role_date_str) - timedelta(days=1)
 
     for _ in range(max_lookback):
         date_str = date.strftime("%Y-%m-%d")
@@ -699,6 +797,12 @@ def resolve_uncached_window(base_url, fdsn_cfg, station, channels):
                 date -= timedelta(days=1)
                 continue
 
+        # Simpan pointer SATU hari di bawah tanggal yang ditemukan —
+        # panggilan berikutnya untuk station ini (scenario lain yang
+        # juga butuh peran UNCACHED) langsung lanjut dari sini, tidak
+        # perlu scan ulang dari cached_role_date - 1.
+        _UNCACHED_SEARCH_POINTER[station] = date - timedelta(days=1)
+
         return {
             "date": date_str, "start": start, "end": end,
             "reason": (
@@ -711,7 +815,7 @@ def resolve_uncached_window(base_url, fdsn_cfg, station, channels):
         f"Tidak menemukan window UNCACHED yang juga lengkap 24 jam "
         f"untuk station={station} channels={channels} dalam "
         f"{max_lookback} hari mundur dari tanggal CACHED "
-        f"({cached_role['date']}). Semua tanggal yang dicoba sudah "
+        f"({cached_role_date_str}). Semua tanggal yang dicoba sudah "
         "(sebagian) ter-cache ATAU datanya sendiri tidak lengkap di "
         "FDSN — perluas fdsn.max_lookback_days di scenarios.json kalau "
         "ini memang diharapkan, atau cek "
@@ -798,15 +902,21 @@ def prepare_fdsn_cached(base_url, fdsn_cfg, stations, scn_id):
     mundur otomatis kalau datanya tidak lengkap; download+verifikasi
     SUDAH dilakukan di dalam resolve_cached_window()), lalu measured
     call di sini (harus HIT semua, karena sudah dipastikan fully
-    cached oleh resolver)."""
+    cached oleh resolver).
+
+    Catatan optimasi: TIDAK ADA verify_fully_cached() tambahan di sini
+    lagi — resolve_cached_window() SUDAH menjamin postcondition "fully
+    cached" sebagai bagian dari kontraknya sendiri sebelum ia return
+    (lewat cabang already_cached, ATAU lewat cabang download+verifikasi
+    eksplisit yang me-raise kalau gagal). Memanggil verify_fully_cached()
+    lagi di sini cuma mengulang N-channel HTTP check yang hasilnya sudah
+    pasti True — persis jenis request redundant yang ingin dihilangkan."""
     channels = fdsn_cfg["channels"]
     windows = {}
     for station in stations:
         res = resolve_cached_window(base_url, fdsn_cfg, station, channels)
         print(f"[INFO] {scn_id}: station={station} channels={channels} "
               f"date={res['date']} ({res['reason']})")
-        verify_fully_cached(base_url, fdsn_cfg, station, channels, res["start"],
-                             res["end"], f"{scn_id}/{station} (pre-measure)")
         windows[station] = res
 
     def measure():
@@ -868,11 +978,12 @@ def prepare_fdsn_mixed(base_url, fdsn_cfg, stations, scn_id):
 
     windows = {}
     for station in cached_stations:
+        # Tidak ada verify_fully_cached() tambahan di sini — lihat
+        # catatan optimasi di prepare_fdsn_cached(), alasannya sama
+        # persis: resolve_cached_window() sudah menjaminnya.
         res = resolve_cached_window(base_url, fdsn_cfg, station, channels)
         print(f"[INFO] {scn_id}: station={station} role=CACHED "
               f"channels={channels} date={res['date']} ({res['reason']})")
-        verify_fully_cached(base_url, fdsn_cfg, station, channels, res["start"],
-                             res["end"], f"{scn_id}/{station} CACHED (pre-measure)")
         windows[station] = res
 
     for station in uncached_stations:
