@@ -30,22 +30,53 @@ Pembagian scenario Mixed (jumlah ganjil -> uncached mendominasi):
   4 station -> 2 cached + 2 uncached
   5 station -> 2 cached + 3 uncached
 
-Logika cache (per station x channel x window 24 jam, live-check ke
-GET /api/waveform/status, TIDAK PERNAH diasumsikan):
-  - cached   = SEMUA channel di window itu sudah download_needed=False.
-  - uncached = TIDAK SATU channel pun cached di window itu.
-  - target awal = KEMARIN (tanggal lokal komputer yang menjalankan
-    script ini, TIDAK PERNAH hari ini, TIDAK di-hardcode). Kalau
-    ternyata (sebagian) sudah cached, mundur satu hari, dst
-    (fdsn.max_lookback_days dari scenarios.json, default 30).
-  - scenario cached: window di-PRIME dulu (untimed, idempotent) sampai
-    fully cached, verifikasi, baru measured call (harus HIT).
-  - scenario uncached: measured call TANPA priming (guaranteed MISS),
-    lalu verifikasi pasca-request bahwa semua channel sudah menjadi
-    cached. Kalau setelah request masih ada download_needed=True untuk
-    channel manapun, scenario DIANGGAP GAGAL (bukan sukses diam-diam)
-    — status FAILED mencantumkan persis station, channel, dan tanggal
-    yang gagal.
+Konsep benchmark: DATA 1 HARI (24 jam), dua peran window per stasiun:
+
+  1. CACHED  -> SELALU pakai fdsn.target_date (default: KEMARIN,
+     lokal, TIDAK di-hardcode; override --date). TIDAK PERNAH cari
+     tanggal lain untuk peran ini, TIDAK ADA cek availability FDSN di
+     sini. Kalau target_date belum fully cached (live-check ke
+     GET /api/waveform/status), di-PRIME (download) dulu sampai
+     selesai, baru measured call (harus HIT). Kalau ternyata data
+     target_date sendiri tidak lengkap di FDSN, priming TIDAK akan
+     pernah membuatnya fully cached — verify_fully_cached() akan GAGAL
+     dengan pesan jelas (bukan pura-pura sukses); kita TIDAK pindah ke
+     tanggal lain hanya untuk menghindari kegagalan ini.
+     Lihat resolve_cached_window().
+
+  2. UNCACHED -> dicari MUNDUR mulai dari target_date - 1 hari (TIDAK
+     PERNAH target_date itu sendiri, karena sudah dipakai role CACHED
+     di atas). Kandidat tanggal harus lolos DUA syarat:
+       a. live-check /api/waveform/status: TIDAK SATU channel pun
+          boleh sudah cached (kalau ada -> mundur).
+       b. has_full_day_fdsn_data(): SEMUA channel harus punya data
+          FDSN 24 jam penuh TANPA GAP (satu fetch 24-jam per channel,
+          bypass cache, lalu Stream.get_gaps() + cek cakupan awal/
+          akhir GABUNGAN semua trace/segmen) — kalau tidak lengkap,
+          SKIP tanggal ini (data tidak lengkap TIDAK BOLEH dipakai
+          sebagai benchmark 1 hari), mundur lagi.
+     TIDAK ADA priming untuk peran ini — measured call langsung
+     (guaranteed miss), lalu verify_fully_cached() sesudahnya (kalau
+     masih ada channel yang belum cached, scenario DIANGGAP GAGAL).
+     Lihat resolve_uncached_window().
+
+  Contoh (target_date = 8 Sep): 8 Sep dipakai untuk CACHED apa pun
+  isinya (prime kalau perlu). Untuk UNCACHED, mulai cek 7 Sep -> kalau
+  7 Sep sudah cached, mundur ke 6 Sep; kalau 7 Sep belum cached tapi
+  datanya bolong di FDSN, tetap mundur ke 6 Sep; begitu ketemu tanggal
+  yang belum cached DAN datanya lengkap 24 jam, tanggal itu dipakai
+  (tidak perlu cek lebih mundur lagi).
+
+  Kasus nyata yang melatarbelakangi aturan (b): IA.AAFM 2026-09-08
+  cuma punya data FDSN jam 00:00-04:00 (dikonfirmasi
+  scripts/diagnose_fdsn_hourly.py --check-fdsn -> FDSNNoDataException
+  untuk sisa hari) — window begini TIDAK AKAN PERNAH fully cached
+  berapa kali pun di-download, karena backend memang sengaja skip jam
+  yang FDSNNoDataException (lihat waveform_provider_service.get_waveform()).
+
+  fdsn.max_lookback_days (scenarios.json, default 30) membatasi berapa
+  hari mundur dicoba. --skip-availability-check menonaktifkan syarat
+  (b) di atas (TIDAK direkomendasikan).
 
 Pengukuran RAM/CPU pakai metode SAMA PERSIS dengan
 ram_cpu_benchmark.py (RSS + CPU% via psutil, baseline window sebelum
@@ -64,12 +95,18 @@ Cara pakai:
   python benchmark/fdsn_cache_benchmark.py \
       --spawn "uvicorn app.main:app --host 127.0.0.1 --port 8000" \
       --stations AAFM AAI ABJI --date 2026-09-05
+
+  # Nonaktifkan validasi ketersediaan FDSN penuh 24 jam (TIDAK
+  # direkomendasikan, hanya untuk debugging cepat):
+  python benchmark/fdsn_cache_benchmark.py --attach-pid 10956 \
+      --stations AAFM --skip-availability-check
 """
 
 import argparse
 import csv
 import json
 import subprocess
+import sys
 import threading
 import time
 import urllib.error
@@ -78,6 +115,14 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import psutil
+
+# Supaya bisa import modul app.* langsung (untuk has_full_day_fdsn_data,
+# yang butuh app.core.fdsn_client & app.core.config — bypass cache,
+# read-only, TIDAK menulis apa pun ke DB/disk aplikasi). Script ini
+# tetap dijalankan dari root project seperti biasa.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 BENCH_DIR = Path(__file__).resolve().parent
 SCENARIOS_PATH = BENCH_DIR / "scenarios.json"
@@ -90,6 +135,12 @@ STABLE_WINDOW_SEC = 1.5
 
 MIN_STATIONS = 1
 MAX_STATIONS = 5
+
+# Toleransi pembacaan sampel di tepi hari (detik) — trace real dari
+# BMKG jarang mulai/berakhir TEPAT di 00:00:00.000000, ada slack
+# beberapa milidetik/detik wajar karena sample rate. Longgar tapi
+# tetap ketat: kalau lebih dari ini, dianggap coverage TIDAK penuh.
+COVERAGE_EDGE_TOLERANCE_SEC = 2.0
 
 
 # --------------------------------------------------------------------------
@@ -285,46 +336,387 @@ def check_waveform_cached(base_url, fdsn_cfg, station, channel, start_time, end_
     return not resp["download_needed"]
 
 
-def resolve_uncached_window(base_url, fdsn_cfg, station, channels, start_date):
-    """Cari window 24-jam yang BENAR-BENAR uncached (download_needed=True
-    di SEMUA channel) untuk `station`, mulai dari `start_date` mundur ke
-    date-1, date-2, dst kalau tanggal itu ternyata (sebagian) sudah
-    cached. Status selalu dicek LIVE, tidak pernah diasumsikan.
+_FDSN_AVAILABILITY_CACHE = {}  # {(station, channel, date_str): (bool, str)} — memo dalam satu run
 
-    Return dict: {"date", "start", "end", "reason", "cached_before"}
+
+class _FDSNAvailabilityConnectivityError(Exception):
+    """Discovery/koneksi/timeout gagal setelah retry — BUKAN bukti
+    data tidak lengkap. Resolver TIDAK boleh menafsirkan ini sebagai
+    'data tidak ada' dan pindah tanggal — harus berhenti/lapor jelas."""
+
+
+def _fresh_fdsn_client():
+    """Client FDSN baru, konfigurasi PERSIS yang dipakai backend
+    (app/core/fdsn_client.py) — dibuat ulang tiap percobaan supaya
+    discovery dicoba lagi dari nol kalau attempt sebelumnya gagal."""
+    from obspy.clients.fdsn import Client
+    from app.core.config import (
+        BMKG_URL, BMKG_USERNAME, BMKG_PASSWORD, FDSN_TIMEOUT_SECONDS,
+    )
+    return Client(
+        BMKG_URL, user=BMKG_USERNAME, password=BMKG_PASSWORD,
+        timeout=FDSN_TIMEOUT_SECONDS,
+    )
+
+
+def _get_full_day_stream_with_retry(network, station, location, channel,
+                                     day_start, day_end):
+    """Ambil SATU hari penuh (24 jam) LANGSUNG dari FDSN, bypass cache/
+    backend sepenuhnya — read-only, TIDAK menulis apa pun. Dibungkus
+    retry ala backend (fresh Client tiap percobaan, MAX_DOWNLOAD_ATTEMPTS
+    / RETRY_DELAY_SECONDS dari app.core.config) untuk error transient
+    (koneksi/timeout/discovery). FDSNNoDataException TIDAK di-retry —
+    itu definitif 'tidak ada data sama sekali', bukan soal konektivitas.
+    """
+    import socket
+    import time as _time
+    import urllib.error as _urllib_error
+    from obspy.clients.fdsn.header import FDSNNoDataException
+    from app.core.config import MAX_DOWNLOAD_ATTEMPTS, RETRY_DELAY_SECONDS
+
+    try:
+        import requests
+        _requests_errors = (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+            requests.exceptions.ProxyError,
+            requests.exceptions.SSLError,
+        )
+    except ImportError:
+        _requests_errors = ()
+
+    last_exc = None
+    for attempt in range(1, MAX_DOWNLOAD_ATTEMPTS + 1):
+        try:
+            client = _fresh_fdsn_client()
+            return client.get_waveforms(
+                network=network, station=station, location=location,
+                channel=channel, starttime=day_start, endtime=day_end,
+            )
+        except FDSNNoDataException:
+            return None  # definitif: tidak ada data sama sekali
+        except (
+            TimeoutError, socket.timeout, ConnectionError,
+            _urllib_error.URLError, *_requests_errors,
+        ) as exc:
+            last_exc = exc
+        except Exception as exc:  # noqa: BLE001 - termasuk error discovery FDSN umum
+            last_exc = exc
+
+        if attempt < MAX_DOWNLOAD_ATTEMPTS:
+            _time.sleep(RETRY_DELAY_SECONDS)
+
+    raise _FDSNAvailabilityConnectivityError(
+        f"{type(last_exc).__name__}: {last_exc} "
+        f"(gagal setelah {MAX_DOWNLOAD_ATTEMPTS} percobaan)"
+    )
+
+
+def has_full_day_fdsn_data(network, station, location, channel, date_str):
+    """
+    True kalau (network, station, location, channel) BENAR-BENAR
+    punya data FDSN untuk SELURUH 24 jam `date_str` (00:00:00 ->
+    besoknya 00:00:00), TANPA GAP — dicek LANGSUNG ke FDSN, bypass
+    cache/backend, read-only.
+
+    Metodologi (satu fetch 24-jam per channel, BUKAN 24 fetch per
+    jam — jauh lebih murah, tapi tetap benar untuk multi-trace/gap):
+      1. Ambil seluruh stream 24 jam sekaligus.
+      2. Kalau kosong / FDSNNoDataException -> jelas tidak lengkap.
+      3. `Stream.get_gaps()` pada stream yang SUDAH di-merge(method=1)
+         -> daftar gap ANTAR SEGMEN/TRACE (termasuk kalau datanya
+         datang sebagai banyak trace terpisah, mis. akibat instrument
+         restart/parameter berubah di tengah hari). Ada gap dengan
+         durasi > toleransi -> TIDAK lengkap.
+      4. Cakupan ujung: waktu mulai trace PALING AWAL harus <=
+         day_start + toleransi, dan waktu selesai trace PALING AKHIR
+         harus >= day_end - toleransi (menutup KESELURUHAN 00:00-24:00,
+         bukan cuma sebagian). Ini menutup kasus AAFM 2026-09-08 (data
+         cuma sampai jam 04:00 -> trace terakhir berakhir jauh sebelum
+         day_end -> gagal di sini).
+
+    Return (is_full: bool, detail: str). Exception
+    `_FDSNAvailabilityConnectivityError` MENJALAR ke pemanggil (bukan
+    ditangkap jadi False) — error konektivitas TIDAK BOLEH ditafsirkan
+    sebagai "data tidak lengkap".
+    """
+    from obspy import Stream, UTCDateTime
+
+    cache_key = (station, channel, date_str)
+    if cache_key in _FDSN_AVAILABILITY_CACHE:
+        return _FDSN_AVAILABILITY_CACHE[cache_key]
+
+    day_start = UTCDateTime(date_str + "T00:00:00")
+    day_end = day_start + 24 * 3600
+
+    stream = _get_full_day_stream_with_retry(
+        network, station, location, channel, day_start, day_end
+    )
+
+    if stream is None or len(stream) == 0:
+        result = (False, "FDSN tidak mengembalikan data sama sekali untuk hari ini")
+        _FDSN_AVAILABILITY_CACHE[cache_key] = result
+        return result
+
+    # Gabungkan (merge) dulu supaya get_gaps() menilai SELURUH
+    # segmen/trace sebagai satu deret waktu, bukan trace lepas-lepas.
+    merged = Stream(stream.copy()).merge(method=1)
+
+    gaps = merged.get_gaps()
+    # get_gaps() juga melaporkan overlap sebagai delta negatif —
+    # yang jadi perhatian kita HANYA gap (delta waktu > toleransi),
+    # overlap tidak berarti data hilang.
+    real_gaps = [g for g in gaps if g[6] > COVERAGE_EDGE_TOLERANCE_SEC]
+    if real_gaps:
+        gap_desc = "; ".join(
+            f"{g[4]} -> {g[5]} ({g[6]:.1f}s)" for g in real_gaps[:5]
+        )
+        more = f" (+{len(real_gaps) - 5} gap lain)" if len(real_gaps) > 5 else ""
+        result = (False, f"Ditemukan {len(real_gaps)} gap: {gap_desc}{more}")
+        _FDSN_AVAILABILITY_CACHE[cache_key] = result
+        return result
+
+    # Cakupan ujung: gabungan SEMUA trace (bukan cuma trace pertama)
+    # harus menutup 00:00:00 -> 24:00:00 penuh.
+    earliest_start = min(tr.stats.starttime for tr in merged)
+    latest_end = max(tr.stats.endtime for tr in merged)
+
+    if earliest_start > day_start + COVERAGE_EDGE_TOLERANCE_SEC:
+        result = (False, (
+            f"Data baru mulai {earliest_start} — tidak menutup awal "
+            f"hari ({day_start})"
+        ))
+        _FDSN_AVAILABILITY_CACHE[cache_key] = result
+        return result
+
+    if latest_end < day_end - COVERAGE_EDGE_TOLERANCE_SEC:
+        result = (False, (
+            f"Data berhenti di {latest_end} — tidak menutup akhir hari "
+            f"({day_end}), kemungkinan ada data hilang di sisa hari"
+        ))
+        _FDSN_AVAILABILITY_CACHE[cache_key] = result
+        return result
+
+    result = (True, (
+        f"Cakupan penuh {earliest_start} -> {latest_end} "
+        f"({len(merged)} trace setelah merge, 0 gap > {COVERAGE_EDGE_TOLERANCE_SEC}s)"
+    ))
+    _FDSN_AVAILABILITY_CACHE[cache_key] = result
+    return result
+
+
+def determine_cached_role_date(base_url, fdsn_cfg, station, channels):
+    """
+    Tentukan tanggal yang akan dipakai untuk peran CACHED, murni
+    READ-ONLY (live cache-status check + has_full_day_fdsn_data),
+    TANPA mendownload apa pun — dipakai oleh resolve_cached_window()
+    (untuk tahu tanggal mana yang akan di-prime) dan
+    resolve_uncached_window() (untuk tahu batas mundur, TANPA perlu
+    ikut men-download apa pun dari sini).
+
+    Mulai dari fdsn_cfg["target_date"], mundur satu hari setiap kali
+    tanggal kandidat TIDAK memenuhi syarat CACHED:
+      - kandidat LOLOS kalau SUDAH fully cached (tinggal dipakai), ATAU
+      - kandidat LOLOS kalau BELUM cached tapi has_full_day_fdsn_data()
+        TRUE di semua channel (artinya download akan berhasil membuat
+        window ini fully cached).
+      - kandidat GAGAL (mundur) kalau belum cached DAN datanya sendiri
+        tidak lengkap 24 jam di FDSN — data tidak lengkap TIDAK BOLEH
+        jadi hasil benchmark.
+
+    Return dict: {"date", "start", "end", "already_cached", "reason"}
     """
     max_lookback = fdsn_cfg.get("max_lookback_days", 30)
-    date = datetime.fromisoformat(start_date)
-    reason = f"target date {start_date} belum ter-cache untuk semua channel"
-    cached_before = False
+    date = datetime.fromisoformat(fdsn_cfg["target_date"])
 
     for _ in range(max_lookback):
         date_str = date.strftime("%Y-%m-%d")
         start, end = _day_range(date_str)
+
         status_map = {
             ch: check_waveform_cached(base_url, fdsn_cfg, station, ch, start, end)
             for ch in channels
         }
-        if not any(status_map.values()):
+        if all(status_map.values()):
             return {
                 "date": date_str, "start": start, "end": end,
-                "reason": reason, "cached_before": cached_before,
+                "already_cached": True,
+                "reason": f"{date_str} sudah fully cached",
             }
 
-        cached_before = True
-        cached_chs = [ch for ch, is_cached in status_map.items() if is_cached]
-        reason = (
-            f"{date_str} sudah (sebagian) ter-cache untuk channel "
-            f"{cached_chs} — mundur ke tanggal sebelumnya"
-        )
+        availability = {
+            ch: has_full_day_fdsn_data(
+                fdsn_cfg["network"], station, fdsn_cfg["location"], ch, date_str
+            )
+            for ch in channels
+        }
+        incomplete = {
+            ch: detail for ch, (is_full, detail) in availability.items()
+            if not is_full
+        }
+        if not incomplete:
+            return {
+                "date": date_str, "start": start, "end": end,
+                "already_cached": False,
+                "reason": (
+                    f"{date_str} belum cached, tapi data FDSN lengkap "
+                    "24 jam untuk semua channel — akan di-download"
+                ),
+            }
+
+        detail_str = "; ".join(f"{ch}: {d}" for ch, d in incomplete.items())
+        print(f"      [SKIP] {station} @ {date_str}: data FDSN tidak "
+              f"lengkap 24 jam untuk channel {list(incomplete)} "
+              f"({detail_str}) — mundur ke tanggal sebelumnya")
         date -= timedelta(days=1)
 
     raise RuntimeError(
-        f"Tidak menemukan window uncached untuk station={station} "
-        f"channels={channels} dalam {max_lookback} hari mundur dari "
-        f"{start_date}. Semua tanggal yang dicoba sudah (sebagian) "
-        "ter-cache — perluas fdsn.max_lookback_days di scenarios.json "
-        "kalau ini memang diharapkan."
+        f"Tidak menemukan tanggal yang datanya lengkap 24 jam untuk "
+        f"peran CACHED — station={station} channels={channels} dalam "
+        f"{max_lookback} hari mundur dari {fdsn_cfg['target_date']}. "
+        "Semua tanggal yang dicoba datanya tidak lengkap di FDSN — "
+        "perluas fdsn.max_lookback_days di scenarios.json, atau cek "
+        "scripts/diagnose_fdsn_hourly.py --check-fdsn untuk detail "
+        "per-jam."
+    )
+
+
+def resolve_cached_window(base_url, fdsn_cfg, station, channels):
+    """
+    Window untuk test CACHED. target_date HANYALAH TITIK AWAL
+    pencarian, BUKAN tanggal yang wajib dipakai sampai akhir:
+      1. Tentukan tanggal kandidat via determine_cached_role_date()
+         (read-only — sudah menjamin tanggal ini SUDAH cached, atau
+         datanya lengkap 24 jam sehingga download DIPREDIKSI berhasil).
+      2. Kalau kandidat belum cached -> PRIME (download) di sini.
+      3. Verifikasi ulang fully cached SETELAH download:
+         - berhasil -> tanggal ini dipakai untuk measured CACHED.
+         - MASIH gagal padahal has_full_day_fdsn_data() bilang datanya
+           lengkap -> ini BUKAN soal tanggal (availability sudah
+           dikonfirmasi lengkap), jadi TIDAK mundur — di-raise sebagai
+           kegagalan nyata (kemungkinan bug download/save di backend,
+           lihat scripts/diagnose_fdsn_hourly.py), supaya tidak
+           tertutupi dengan pindah tanggal diam-diam.
+
+    Return dict: {"date", "start", "end", "reason", "needed_priming"}
+    """
+    candidate = determine_cached_role_date(base_url, fdsn_cfg, station, channels)
+    date_str, start, end = candidate["date"], candidate["start"], candidate["end"]
+
+    if candidate["already_cached"]:
+        return {
+            "date": date_str, "start": start, "end": end,
+            "reason": candidate["reason"], "needed_priming": False,
+        }
+
+    print(f"      [DOWNLOAD] {station} @ {date_str}: {candidate['reason']}")
+    prime_window(base_url, fdsn_cfg, station, channels, start, end)
+
+    status_map = {
+        ch: check_waveform_cached(base_url, fdsn_cfg, station, ch, start, end)
+        for ch in channels
+    }
+    still_missing = [ch for ch, ok in status_map.items() if not ok]
+    if still_missing:
+        raise RuntimeError(
+            f"CACHED gagal: station={station} @ {date_str} channel "
+            f"{still_missing} MASIH download_needed=True SETELAH "
+            "download, padahal has_full_day_fdsn_data() sebelumnya "
+            "memastikan data FDSN lengkap 24 jam untuk tanggal ini. "
+            "Ini indikasi masalah nyata di alur download/save backend "
+            "(BUKAN soal pemilihan tanggal) — cek log backend dan "
+            "scripts/diagnose_fdsn_hourly.py --station "
+            f"{station} --date {date_str} --check-fdsn sebelum "
+            "melanjutkan benchmark."
+        )
+
+    return {
+        "date": date_str, "start": start, "end": end,
+        "reason": f"{date_str} berhasil di-download dan fully cached",
+        "needed_priming": True,
+    }
+
+
+def resolve_uncached_window(base_url, fdsn_cfg, station, channels):
+    """
+    Window untuk test UNCACHED: dicari MUNDUR mulai dari SATU HARI
+    SEBELUM tanggal yang dipakai peran CACHED (ditentukan via
+    determine_cached_role_date() — read-only, TIDAK mendownload apa
+    pun dari sini, jadi TIDAK peduli apakah scenario CACHED sudah
+    benar-benar dijalankan lebih dulu atau belum: hasilnya konsisten
+    karena selalu dicek live). Untuk tiap kandidat tanggal, DUA syarat
+    harus lolos SEBELUM diterima:
+      a. live-check /api/waveform/status: TIDAK SATU channel pun
+         boleh sudah cached (kalau ada yang cached -> SKIP, mundur).
+      b. has_full_day_fdsn_data(): SEMUA channel harus punya data FDSN
+         24 jam penuh tanpa gap (kalau tidak lengkap -> SKIP, mundur —
+         data tidak lengkap TIDAK BOLEH dipakai sebagai benchmark
+         1 hari).
+    TIDAK ADA priming di sini — caller memanggil measured request
+    langsung (guaranteed miss), lalu verify_fully_cached() sesudahnya.
+
+    Return dict: {"date", "start", "end", "reason"}
+    """
+    max_lookback = fdsn_cfg.get("max_lookback_days", 30)
+    check_availability = fdsn_cfg.get("check_availability", True)
+
+    cached_role = determine_cached_role_date(base_url, fdsn_cfg, station, channels)
+    date = datetime.fromisoformat(cached_role["date"]) - timedelta(days=1)
+
+    for _ in range(max_lookback):
+        date_str = date.strftime("%Y-%m-%d")
+        start, end = _day_range(date_str)
+
+        status_map = {
+            ch: check_waveform_cached(base_url, fdsn_cfg, station, ch, start, end)
+            for ch in channels
+        }
+        if any(status_map.values()):
+            cached_chs = [ch for ch, is_cached in status_map.items() if is_cached]
+            print(f"      [SKIP] {station} @ {date_str}: sudah "
+                  f"(sebagian) ter-cache untuk channel {cached_chs} — "
+                  "mundur ke tanggal sebelumnya")
+            date -= timedelta(days=1)
+            continue
+
+        if check_availability:
+            availability = {
+                ch: has_full_day_fdsn_data(
+                    fdsn_cfg["network"], station, fdsn_cfg["location"], ch, date_str
+                )
+                for ch in channels
+            }
+            incomplete = {
+                ch: detail for ch, (is_full, detail) in availability.items()
+                if not is_full
+            }
+            if incomplete:
+                detail_str = "; ".join(f"{ch}: {d}" for ch, d in incomplete.items())
+                print(f"      [SKIP] {station} @ {date_str}: belum "
+                      f"cached, TAPI data FDSN tidak lengkap 24 jam "
+                      f"untuk channel {list(incomplete)} ({detail_str}) "
+                      "— mundur ke tanggal sebelumnya")
+                date -= timedelta(days=1)
+                continue
+
+        return {
+            "date": date_str, "start": start, "end": end,
+            "reason": (
+                f"{date_str} belum cached DAN data FDSN lengkap 24 jam "
+                "untuk semua channel"
+            ),
+        }
+
+    raise RuntimeError(
+        f"Tidak menemukan window UNCACHED yang juga lengkap 24 jam "
+        f"untuk station={station} channels={channels} dalam "
+        f"{max_lookback} hari mundur dari tanggal CACHED "
+        f"({cached_role['date']}). Semua tanggal yang dicoba sudah "
+        "(sebagian) ter-cache ATAU datanya sendiri tidak lengkap di "
+        "FDSN — perluas fdsn.max_lookback_days di scenarios.json kalau "
+        "ini memang diharapkan, atau cek "
+        "scripts/diagnose_fdsn_hourly.py --check-fdsn untuk detail "
+        "per-jam."
     )
 
 
@@ -401,21 +793,18 @@ def split_mixed_stations(stations):
 # --------------------------------------------------------------------------
 
 def prepare_fdsn_cached(base_url, fdsn_cfg, stations, scn_id):
-    """SEMUA stasiun terpilih — CACHED: resolve window uncached per
-    stasiun (live-check, mundur tanggal kalau perlu), PRIME (untimed,
-    idempotent), verifikasi FULLY CACHED, baru measured call (harus
-    HIT semua)."""
+    """SEMUA stasiun terpilih — CACHED: window ditentukan
+    resolve_cached_window() (target_date sebagai TITIK AWAL pencarian,
+    mundur otomatis kalau datanya tidak lengkap; download+verifikasi
+    SUDAH dilakukan di dalam resolve_cached_window()), lalu measured
+    call di sini (harus HIT semua, karena sudah dipastikan fully
+    cached oleh resolver)."""
     channels = fdsn_cfg["channels"]
     windows = {}
     for station in stations:
-        res = resolve_uncached_window(
-            base_url, fdsn_cfg, station, channels, fdsn_cfg["target_date"]
-        )
+        res = resolve_cached_window(base_url, fdsn_cfg, station, channels)
         print(f"[INFO] {scn_id}: station={station} channels={channels} "
-              f"date={res['date']} status=akan di-PRIME lalu diukur "
-              f"sebagai CACHED"
-              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
-        prime_window(base_url, fdsn_cfg, station, channels, res["start"], res["end"])
+              f"date={res['date']} ({res['reason']})")
         verify_fully_cached(base_url, fdsn_cfg, station, channels, res["start"],
                              res["end"], f"{scn_id}/{station} (pre-measure)")
         windows[station] = res
@@ -430,18 +819,16 @@ def prepare_fdsn_cached(base_url, fdsn_cfg, stations, scn_id):
 
 
 def prepare_fdsn_uncached(base_url, fdsn_cfg, stations, scn_id):
-    """SEMUA stasiun terpilih — UNCACHED: resolve window yang
-    BENAR-BENAR belum cached per stasiun, measured call TANPA priming
-    (guaranteed miss). Verifikasi semua jadi cached di cleanup_fn."""
+    """SEMUA stasiun terpilih — UNCACHED: window dicari MUNDUR dari
+    target_date - 1 hari (resolve_uncached_window — belum cached DAN
+    data FDSN lengkap 24 jam), measured call TANPA priming (guaranteed
+    miss). Verifikasi semua jadi cached di cleanup_fn."""
     channels = fdsn_cfg["channels"]
     windows = {}
     for station in stations:
-        res = resolve_uncached_window(
-            base_url, fdsn_cfg, station, channels, fdsn_cfg["target_date"]
-        )
+        res = resolve_uncached_window(base_url, fdsn_cfg, station, channels)
         print(f"[INFO] {scn_id}: station={station} channels={channels} "
-              f"date={res['date']} status=UNCACHED"
-              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+              f"date={res['date']} status=UNCACHED ({res['reason']})")
         windows[station] = res
 
     def measure():
@@ -460,9 +847,12 @@ def prepare_fdsn_uncached(base_url, fdsn_cfg, stations, scn_id):
 
 
 def prepare_fdsn_mixed(base_url, fdsn_cfg, stations, scn_id):
-    """Bagi `stations` jadi kelompok CACHED (resolve+prime+verify) dan
-    UNCACHED (resolve saja) via split_mixed_stations(). SATU measured
-    scenario memanggil KEDUA kelompok secara sequential."""
+    """Bagi `stations` jadi kelompok CACHED (resolve_cached_window +
+    prime kalau perlu + verify) dan UNCACHED (resolve_uncached_window,
+    TANPA priming) via split_mixed_stations() — konsep cache yang SAMA
+    persis dengan prepare_fdsn_cached/prepare_fdsn_uncached di atas.
+    SATU measured scenario memanggil KEDUA kelompok secara sequential.
+    """
     if len(stations) < 2:
         raise RuntimeError(
             "fdsn_multi_mixed butuh minimal 2 stasiun (untuk kelompok "
@@ -478,24 +868,17 @@ def prepare_fdsn_mixed(base_url, fdsn_cfg, stations, scn_id):
 
     windows = {}
     for station in cached_stations:
-        res = resolve_uncached_window(
-            base_url, fdsn_cfg, station, channels, fdsn_cfg["target_date"]
-        )
+        res = resolve_cached_window(base_url, fdsn_cfg, station, channels)
         print(f"[INFO] {scn_id}: station={station} role=CACHED "
-              f"channels={channels} date={res['date']}"
-              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
-        prime_window(base_url, fdsn_cfg, station, channels, res["start"], res["end"])
+              f"channels={channels} date={res['date']} ({res['reason']})")
         verify_fully_cached(base_url, fdsn_cfg, station, channels, res["start"],
                              res["end"], f"{scn_id}/{station} CACHED (pre-measure)")
         windows[station] = res
 
     for station in uncached_stations:
-        res = resolve_uncached_window(
-            base_url, fdsn_cfg, station, channels, fdsn_cfg["target_date"]
-        )
+        res = resolve_uncached_window(base_url, fdsn_cfg, station, channels)
         print(f"[INFO] {scn_id}: station={station} role=UNCACHED "
-              f"channels={channels} date={res['date']}"
-              + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
+              f"channels={channels} date={res['date']} ({res['reason']})")
         windows[station] = res
 
     def measure():
@@ -669,6 +1052,17 @@ def main():
             "tetap mundur otomatis kalau tanggal ini sudah cached."
         ),
     )
+    parser.add_argument(
+        "--skip-availability-check", action="store_true",
+        help=(
+            "TIDAK DIREKOMENDASIKAN. Lewati has_full_day_fdsn_data() "
+            "(validasi data FDSN 24 jam penuh via get_gaps()+coverage) "
+            "saat resolve tanggal — resolver kembali hanya mengecek "
+            "'belum cached' seperti sebelumnya, berisiko memilih "
+            "tanggal yang datanya sendiri bolong di FDSN (window "
+            "TIDAK AKAN PERNAH fully cached)."
+        ),
+    )
     args = parser.parse_args()
 
     if not args.spawn and not args.attach_pid:
@@ -694,13 +1088,15 @@ def main():
         "channels": fdsn_json["channels"],
         "max_lookback_days": fdsn_json.get("max_lookback_days", 30),
         "max_points": fdsn_json.get("max_points"),
+        "check_availability": not args.skip_availability_check,
     }
     fdsn_cfg["target_date"] = args.date or default_target_date()
 
     print(f"[CONFIG] FDSN stations={stations} (n={len(stations)}) "
           f"channels={fdsn_cfg['channels']} "
           f"target_date={fdsn_cfg['target_date']} "
-          f"({'override --date' if args.date else 'otomatis: kemarin, lokal'})\n")
+          f"({'override --date' if args.date else 'otomatis: kemarin, lokal'}) "
+          f"availability_check={'ON' if fdsn_cfg['check_availability'] else 'OFF (--skip-availability-check)'}\n")
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     run_id = args.out_prefix or time.strftime("%Y%m%d_%H%M%S")
