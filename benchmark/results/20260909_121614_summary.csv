@@ -1,0 +1,23 @@
+scenario,label,ram_before_mb,ram_average_mb,ram_peak_mb,ram_stable_mb,delta_ram_mb,cpu_average_pct,cpu_peak_pct,duration_sec,status
+base_fdsn_1station_1day,"FDSN Download 2 stasiun, data 1 hari",125.68,124.7,177.5,125.85,0.17,8.92,107.8,109.927,OK
+base_local_upload_1day,"Local Upload AAFM, data 1 hari",125.85,1030.46,2053.97,120.05,-5.79,98.22,107.8,45.022,OK
+op_trim,Trim,120.05,890.33,2144.46,145.99,25.93,98.55,115.5,67.17,OK
+op_bandpass,Bandpass 1-10 Hz,145.99,1125.87,2476.71,229.86,83.88,98.65,114.9,94.692,OK
+op_highpass,Highpass,229.86,1206.23,2643.33,313.68,83.82,98.53,107.8,95.236,OK
+op_lowpass,Lowpass,313.68,1281.8,2502.01,401.77,88.09,98.69,107.8,95.151,OK
+op_ic_displacement,Instrument Correction: Displacement,401.77,1321.42,2399.91,380.47,-21.29,98.78,114.7,104.147,OK
+op_ic_velocity,Instrument Correction: Velocity,380.47,1337.5,2757.36,381.46,0.98,98.68,115.5,104.072,OK
+op_ic_acceleration,Instrument Correction: Acceleration,381.46,1306.16,2815.66,383.81,2.36,98.66,107.8,104.396,OK
+combo_trim_filter,Trim + Filter,383.81,1143.2,2424.61,362.34,-21.47,98.6,107.8,69.754,OK
+combo_trim_ic,Trim + Instrument Correction,362.34,1106.18,2310.77,414.39,52.05,98.74,107.8,73.451,OK
+combo_filter_ic,Filter + Instrument Correction,414.39,1350.88,2866.48,444.39,30.0,99.0,107.8,103.932,OK
+combo_trim_ic_filter,Trim + Instrument Correction + Filter,444.39,1181.79,2317.27,464.31,19.91,98.64,107.8,70.211,OK
+fdsn_1station_cached,FDSN 1 stasiun (cached),352.97,352.97,352.97,352.97,0.0,0.0,0.0,0.0,"FAILED (prepare): [fdsn_1station_cached (pre-measure)] Verifikasi pasca-request GAGAL: AAFM channel ['SHZ', 'SHE', 'SHN'] @ 2026-09-08T00:00:00->2026-09-09T00:00:00 MASIH download_needed=True (kemungkinan ada window/jendela jam yang gagal di-download parsial)."
+fdsn_1station_uncached,FDSN 1 stasiun (uncached),352.98,352.63,366.63,352.02,-0.96,7.85,107.8,73.221,"FAILED (post-verify): [fdsn_1station_uncached (post-measure)] Verifikasi pasca-request GAGAL: AAFM channel ['SHZ', 'SHE', 'SHN'] @ 2026-09-08T00:00:00->2026-09-09T00:00:00 MASIH download_needed=True (kemungkinan ada window/jendela jam yang gagal di-download parsial)."
+fdsn_4station_cached,FDSN 4 stasiun (all cached),138.85,138.85,138.85,138.85,0.0,0.0,0.0,0.0,"FAILED (prepare): [fdsn_multi_cached/AAFM (pre-measure)] Verifikasi pasca-request GAGAL: AAFM channel ['SHZ', 'SHE', 'SHN'] @ 2026-09-08T00:00:00->2026-09-09T00:00:00 MASIH download_needed=True (kemungkinan ada window/jendela jam yang gagal di-download parsial)."
+fdsn_4station_uncached,FDSN 4 stasiun (all uncached),138.85,135.67,188.72,134.32,-4.53,4.66,107.8,300.498,"FAILED (post-verify): [fdsn_multi_uncached/AAFM (post-measure)] Verifikasi pasca-request GAGAL: AAFM channel ['SHZ', 'SHE', 'SHN'] @ 2026-09-08T00:00:00->2026-09-09T00:00:00 MASIH download_needed=True (kemungkinan ada window/jendela jam yang gagal di-download parsial)."
+fdsn_2cached_2uncached,FDSN 2 cached + 2 uncached,138.57,138.57,138.57,138.57,0.0,0.0,0.0,0.0,"FAILED (prepare): [fdsn_mixed/AAFM CACHED (pre-measure)] Verifikasi pasca-request GAGAL: AAFM channel ['SHZ', 'SHE', 'SHN'] @ 2026-09-08T00:00:00->2026-09-09T00:00:00 MASIH download_needed=True (kemungkinan ada window/jendela jam yang gagal di-download parsial)."
+adv_spectrogram,Spectrogram,138.57,993.16,2062.7,362.99,224.42,98.35,115.5,53.093,OK
+adv_psd_cold,PSD cold cache,362.99,1131.85,2308.54,294.75,-68.23,98.43,115.5,47.127,OK
+adv_psd_warm,PSD warm cache,340.46,340.46,340.46,300.83,-39.63,0.0,0.0,0.016,OK
+adv_hvsr,HVSR,300.83,1127.29,2206.52,511.5,210.68,97.66,115.5,53.093,OK

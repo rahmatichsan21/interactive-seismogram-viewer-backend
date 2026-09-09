@@ -312,9 +312,15 @@ class ServerHandle:
 # --------------------------------------------------------------------------
 
 def run_fdsn_load_multi(base_url, cfg, sampler):
+    """FDSN base load — memanggil SEMUA stasiun di fdsn.stations
+    (default 5, subset via --stations), BUKAN hanya stasiun pertama.
+    Sebelumnya di-hardcode `[fdsn["stations"][0]]`, jadi
+    `--stations AAFM AAI` diam-diam cuma menembak AAFM. Sekarang
+    jumlah stasiun yang benar-benar diuji = persis panjang
+    fdsn.stations (hasil override --stations)."""
     fdsn = cfg["fdsn"]
     start, end = _day_range(fdsn["target_date"])
-    _fdsn_call_all(base_url, cfg, [fdsn["stations"][0]], start, end)
+    _fdsn_call_all(base_url, cfg, fdsn["stations"], start, end)
 
 
 def default_target_date():
@@ -675,61 +681,25 @@ def default_prepare(base_url, cfg, scn):
 
 
 def prepare_fdsn_cached(base_url, cfg, scn):
-    """FDSN 1 stasiun — CACHED: resolve window uncached (live-check,
-    mundur tanggal kalau target_date sudah cached), lalu PRIME (untimed
-    — idempotent, aman walau window sudah cached duluan oleh scenario
-    lain), verifikasi FULLY CACHED, baru measured call (harus HIT).
+    """FDSN CACHED — delegate penuh ke prepare_fdsn_multi_cached.
 
-    Window yang dipakai SAMA PERSIS dengan yang dipakai
-    prepare_fdsn_uncached (keduanya resolve ke tanggal live-uncached
-    pertama dari target_date) — regardless urutan scenario di
-    scenarios.json, karena status selalu dicek live ke backend, bukan
-    diasumsikan dari config statis."""
-    fdsn = cfg["fdsn"]
-    station = fdsn["stations"][0]
-    channels = fdsn["channels"]
-
-    res = resolve_uncached_window(base_url, cfg, station, channels)
-    print(f"[INFO] fdsn_1station_cached: station={station} "
-          f"channels={channels} date={res['date']} status=akan di-PRIME "
-          f"lalu diukur sebagai CACHED"
-          + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
-
-    prime_window(base_url, cfg, station, channels, res["start"], res["end"])
-    verify_fully_cached(base_url, cfg, station, channels, res["start"], res["end"],
-                         "fdsn_1station_cached (pre-measure)")
-
-    def measure():
-        _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
-                        channels=channels)
-
-    return measure, (lambda: None)
+    Sebelumnya fungsi ini hardcode `fdsn["stations"][0]` (SELALU
+    stasiun pertama, mis. AAFM, berapa pun jumlah stasiun di
+    --stations). Sekarang kind 'fdsn_cached' dan 'fdsn_multi_cached'
+    berperilaku IDENTIK: keduanya memakai SELURUH fdsn.stations
+    (hasil override --stations, dinamis 1-5 stasiun). Nama kind lama
+    dipertahankan supaya scenario id di scenarios.json (mis.
+    'fdsn_1station_cached') tidak perlu diubah — hanya jumlah stasiun
+    yang benar-benar dites yang berubah mengikuti --stations."""
+    return prepare_fdsn_multi_cached(base_url, cfg, scn)
 
 
 def prepare_fdsn_uncached(base_url, cfg, scn):
-    """FDSN 1 stasiun — UNCACHED: resolve window yang BENAR-BENAR
-    belum cached (live-check per channel, mundur tanggal kalau
-    target_date sudah cached), lalu measured call TANPA priming
-    (guaranteed miss). Setelah request ini, window otomatis menjadi
-    cached — diverifikasi di cleanup_fn (untimed)."""
-    fdsn = cfg["fdsn"]
-    station = fdsn["stations"][0]
-    channels = fdsn["channels"]
-
-    res = resolve_uncached_window(base_url, cfg, station, channels)
-    print(f"[INFO] fdsn_1station_uncached: station={station} "
-          f"channels={channels} date={res['date']} status=UNCACHED"
-          + (f" (alasan: {res['reason']})" if res["cached_before"] else ""))
-
-    def measure():
-        _fdsn_call_all(base_url, cfg, [station], res["start"], res["end"],
-                        channels=channels)
-
-    def cleanup():
-        verify_fully_cached(base_url, cfg, station, channels, res["start"],
-                             res["end"], "fdsn_1station_uncached (post-measure)")
-
-    return measure, cleanup
+    """FDSN UNCACHED — delegate penuh ke prepare_fdsn_multi_uncached.
+    Lihat catatan di prepare_fdsn_cached: sebelumnya hanya
+    fdsn["stations"][0] yang dites; sekarang seluruh daftar
+    --stations dipakai."""
+    return prepare_fdsn_multi_uncached(base_url, cfg, scn)
 
 
 def prepare_fdsn_multi_cached(base_url, cfg, scn):
@@ -794,6 +764,19 @@ def prepare_fdsn_multi_uncached(base_url, cfg, scn):
     return measure, cleanup
 
 
+def _split_mixed_stations(stations):
+    """Bagi `stations` jadi (cached_stations, uncached_stations) untuk
+    scenario fdsn_multi_mixed. SATU sumber logika ini dipakai baik oleh
+    prepare_fdsn_multi_mixed (eksekusi) maupun main() (untuk label
+    [RUN] yang menunjukkan pembagian sebenarnya) — supaya keduanya
+    TIDAK PERNAH tidak-sinkron. Contoh: 2 stasiun -> 1 cached + 1
+    uncached; 3 -> 1 cached + 2 uncached; 5 -> 2 cached + 3 uncached."""
+    half = len(stations) // 2
+    cached_stations = stations[:half] or stations[:1]
+    uncached_stations = stations[half:] if half else stations[1:]
+    return cached_stations, uncached_stations
+
+
 def prepare_fdsn_multi_mixed(base_url, cfg, scn):
     """Separuh stasiun pertama dari fdsn.stations = CACHED (resolve +
     prime + verify), separuh berikutnya = UNCACHED (resolve saja, TANPA
@@ -814,9 +797,7 @@ def prepare_fdsn_multi_mixed(base_url, cfg, scn):
             f"({stations}). Jalankan dengan --stations lebih dari satu."
         )
 
-    half = len(stations) // 2
-    cached_stations = stations[:half] or stations[:1]
-    uncached_stations = stations[half:] if half else stations[1:]
+    cached_stations, uncached_stations = _split_mixed_stations(stations)
 
     windows = {}
     for station in cached_stations:
@@ -1047,6 +1028,37 @@ def main():
     # tanggal tetap; nilai apa pun di sana diabaikan kecuali --date
     # diberikan secara eksplisit.
     cfg["fdsn"]["target_date"] = args.date or default_target_date()
+
+    # Label skenario FDSN statis di scenarios.json (mis. "FDSN 1
+    # stasiun (cached)", "FDSN 4 stasiun (all cached)") jadi
+    # menyesatkan begitu --stations diisi dengan jumlah lain — semua
+    # kind FDSN (load, cached, uncached, mixed) di-format ulang di
+    # sini supaya label yang tercetak di [RUN] & tersimpan di CSV
+    # SELALU mencerminkan jumlah stasiun AKTUAL yang dites (1-5,
+    # sesuai --stations), bukan angka hardcoded di scenarios.json.
+    # Angka di [INFO] (dicetak dari dalam masing2 prepare_fdsn_*)
+    # sudah dinamis dari awal (pakai len(stations) langsung) — ini
+    # cuma menyelaraskan label ringkasan [RUN]/CSV dengan itu.
+    fdsn_stations = cfg["fdsn"]["stations"]
+    n_stations = len(fdsn_stations)
+    if n_stations >= 2:
+        _cached_grp, _uncached_grp = _split_mixed_stations(fdsn_stations)
+        cached_n, uncached_n = len(_cached_grp), len(_uncached_grp)
+    else:
+        cached_n, uncached_n = n_stations, 0
+
+    FDSN_LABELS = {
+        "fdsn_load_multi": f"FDSN Download {n_stations} stasiun, data 1 hari",
+        "fdsn_cached": f"FDSN {n_stations} stasiun (cached)",
+        "fdsn_uncached": f"FDSN {n_stations} stasiun (uncached)",
+        "fdsn_multi_cached": f"FDSN {n_stations} stasiun (all cached)",
+        "fdsn_multi_uncached": f"FDSN {n_stations} stasiun (all uncached)",
+        "fdsn_multi_mixed": f"FDSN {cached_n} cached + {uncached_n} uncached",
+    }
+    for scn in cfg["scenarios"]:
+        if scn["kind"] in FDSN_LABELS:
+            scn["label"] = FDSN_LABELS[scn["kind"]]
+
     print(f"[CONFIG] FDSN stations={cfg['fdsn']['stations']} "
           f"channels={cfg['fdsn']['channels']} "
           f"target_date={cfg['fdsn']['target_date']} "
