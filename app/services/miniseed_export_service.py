@@ -87,7 +87,7 @@ def write_mseed(stream):
     return output
 
 
-def format_filename(request):
+def format_filename(request, stream):
     start = request.trim_start or request.start_time
     end = request.trim_end or request.end_time
 
@@ -95,21 +95,30 @@ def format_filename(request):
         if not value:
             return "unknown"
         return datetime.fromisoformat(value.replace("Z", "+00:00")).strftime(
-            "%Y%m%dT%H%M%S"
+            "%Y-%m-%d_%H-%M"
         )
 
-    if request.source == "local":
-        prefix = "LOCAL"
-    elif len(set(request.stations)) == 1:
-        prefix = f"{request.network}.{request.stations[0]}"
-    else:
-        prefix = f"{request.network}.MULTI"
+    # Build the station portion from the traces that are actually present
+    # in the export stream. This excludes requested stations that returned
+    # no waveform data and avoids inventing a separate metadata source.
+    stations = sorted(
+        {
+            trace.stats.station
+            for trace in stream
+            if getattr(trace.stats, "station", "")
+        },
+        key=str.upper,
+    )
 
-    if len(request.traces) == 1:
-        channel = request.traces[0].channel
-    elif len(request.channels) == 1:
-        channel = request.channels[0]
-    else:
-        channel = "ALL"
+    # A valid export stream should normally contain station metadata. Keep
+    # the request as a defensive fallback for local data whose trace metadata
+    # does not provide a station code.
+    if not stations:
+        stations = sorted(
+            {station for station in request.stations if station},
+            key=str.upper,
+        )
 
-    return f"{prefix}.{channel}.{timestamp(start)}-{timestamp(end)}.mseed"
+    station_part = "_".join(stations) if stations else "UNKNOWN"
+
+    return f"{station_part}_{timestamp(start)}_to_{timestamp(end)}.mseed"

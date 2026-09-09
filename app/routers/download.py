@@ -1,7 +1,7 @@
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -44,7 +44,7 @@ def download_miniseed(
             request.trim_end,
         )
         output = write_mseed(stream)
-        filename = format_filename(request)
+        filename = format_filename(request, stream)
         logger.info("Download MiniSEED done filename=%s", filename)
 
         def iterate_file():
@@ -80,3 +80,36 @@ def download_miniseed(
             getattr(request, "source", "unknown"),
         )
         raise HTTPException(400, str(error))
+
+
+@router.get("/stationxml")
+def download_stationxml(
+    network: str = Query(...),
+    station: str = Query(...),
+):
+    from app.services.persistent_instrument_response_cache import (
+        filename_for,
+        resolve_instrument_response,
+        _path_for,
+    )
+
+    key = filename_for(network, station)
+    path = _path_for(key)
+
+    if not path.exists():
+        inventory = resolve_instrument_response(network, station)
+        if inventory is None or not path.exists():
+            raise HTTPException(404, "StationXML not found for requested station.")
+
+    logger.info(
+        "Download StationXML station=%s.%s filename=%s",
+        network,
+        station,
+        f"{station}.xml",
+    )
+
+    return FileResponse(
+        path=str(path),
+        media_type="application/xml",
+        filename=f"{station}.xml",
+    )
