@@ -75,11 +75,13 @@ class ProcessingCache:
         start_time,
         end_time,
         operations,
+        segment_index=0,
     ):
         raw = "|".join([
             network,
             station,
             channel,
+            str(segment_index),
             start_time,
             end_time,
             "|".join(

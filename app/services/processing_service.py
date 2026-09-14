@@ -1,5 +1,6 @@
 import logging
 
+from numpy import trace
 from obspy import Stream
 
 from app.processing.pipeline import apply_pipeline
@@ -68,13 +69,16 @@ def process_waveform_per_channel(
     multi-channel. Ini murni perubahan orkestrasi, bukan logika.
     """
     from app.services.processing_cache import processing_cache
-    print(
-        "[PER CHANNEL DEBUG]",
-        trace.stats.station,
-        trace.stats.channel,
-        getattr(trace.stats, "segment_index", None),
-    )
+
+    print("[PER CHANNEL DEBUG] stream length =", len(stream))
+
     for trace in stream:
+        print(
+            "[PER CHANNEL DEBUG]",
+            trace.stats.station,
+            trace.stats.channel,
+            getattr(trace.stats, "segment_index", None),
+        )
         channel = trace.stats.channel or ""
 
         # Cek ProcessingCache untuk trace ini.
@@ -102,7 +106,9 @@ def process_waveform_per_channel(
                     channel,
                     [op.type for op in operations],
                 )
-                yield cached.traces[0]
+                cached_trace = cached.traces[0].copy()
+                cached_trace.stats.segment_index = trace.stats.segment_index
+                yield cached_trace
                 continue
 
         single_channel_stream = Stream(traces=[trace])
@@ -120,6 +126,9 @@ def process_waveform_per_channel(
             context=context,
             cache_info=trace_cache_info_for_pipeline,
         )
+
+        processed_trace = processed.traces[0]
+        processed_trace.stats.segment_index = trace.stats.segment_index
 
         # Simpan hasil FINAL pipeline ke ProcessingCache.
         # Ini memungkinkan Undo antar history state
@@ -152,7 +161,7 @@ def process_waveform_per_channel(
                     size_mb,
                 )
 
-        yield processed.traces[0]
+        yield processed_trace
 
         # Baris di bawah ini baru dieksekusi SETELAH caller
         # selesai meng-consume hasil yield di atas (mis. sudah
