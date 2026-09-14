@@ -56,6 +56,7 @@ class ProcessRequest(BaseModel):
     station: str
     location: str
     channel: str
+    segment_index: int = 0
     start_time: str
     end_time: str
 
@@ -91,6 +92,7 @@ class TraceResponse(BaseModel):
     station: str | None = None
     location: str
     channel: str
+    segment_index: int = 0
     sampling_rate: float
 
     # Unit hasil processing (hanya ada setelah Instrument Correction).

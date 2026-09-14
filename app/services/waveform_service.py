@@ -207,6 +207,11 @@ def trace_to_json(trace, max_points=None):
         "station": trace.stats.station,
         "location": trace.stats.location,
         "channel": trace.stats.channel,
+        "segment_index": getattr(
+            trace.stats,
+            "segment_index",
+            0,
+        ),
         "sampling_rate": trace.stats.sampling_rate,
 
         "decimated": should_decimate,
@@ -263,6 +268,12 @@ def trace_to_json(trace, max_points=None):
 
             "amplitude": trace.data.tolist(),
         })
+    print(
+        "[SEGMENT JSON DEBUG]",
+        trace.stats.station,
+        trace.stats.channel,
+        getattr(trace.stats, "segment_index", None),
+    )
 
     return TraceResponse(**trace_fields).model_dump(
         exclude_none=True
@@ -275,6 +286,16 @@ def stream_to_json(stream, station, max_points=None):
     Decimation (kalau `max_points` diisi) diterapkan per trace di
     trace_to_json() - yang selalu berjalan setelah operasi apa pun.
     """
+    print("[STREAM JSON DEBUG] len =", len(stream))
+
+    for trace in stream:
+        print(
+            "[STREAM JSON DEBUG]",
+            trace.stats.station,
+            trace.stats.channel,
+            getattr(trace.stats, "segment_index", None),
+        )
+
     traces = [
         trace_to_json(trace, max_points)
         for trace in stream

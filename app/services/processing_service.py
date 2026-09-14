@@ -68,7 +68,12 @@ def process_waveform_per_channel(
     multi-channel. Ini murni perubahan orkestrasi, bukan logika.
     """
     from app.services.processing_cache import processing_cache
-
+    print(
+        "[PER CHANNEL DEBUG]",
+        trace.stats.station,
+        trace.stats.channel,
+        getattr(trace.stats, "segment_index", None),
+    )
     for trace in stream:
         channel = trace.stats.channel or ""
 
