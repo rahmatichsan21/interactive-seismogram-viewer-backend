@@ -80,6 +80,7 @@ def process_waveform_per_channel(
             getattr(trace.stats, "segment_index", None),
         )
         channel = trace.stats.channel or ""
+        segment_index = getattr(trace.stats, "segment_index", 0)
 
         # Cek ProcessingCache untuk trace ini.
         # Kalau pipeline SUDAH punya snapshot, langsung pakai.
@@ -95,6 +96,7 @@ def process_waveform_per_channel(
                 start_time=trace_cache_info["start_time"],
                 end_time=trace_cache_info["end_time"],
                 operations=operations,
+                segment_index=segment_index,
             )
 
             cached = processing_cache.get(key)
@@ -142,6 +144,7 @@ def process_waveform_per_channel(
                 start_time=trace_cache_info["start_time"],
                 end_time=trace_cache_info["end_time"],
                 operations=operations,
+                segment_index=segment_index,
             )
 
             if not processing_cache.has(final_key):
