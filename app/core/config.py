@@ -139,6 +139,19 @@ SPECTROGRAM_CACHE_MAX_ENTRIES = int(
     os.getenv("SPECTROGRAM_CACHE_MAX_ENTRIES", "20")
 )
 
+# Threshold persentase gap individual (bukan total gap) pada satu
+# trace untuk workflow split → process per segment → merge(fill=0).
+# Saat ini threshold HANYA dipakai untuk observability/logging (mis.
+# menandai gap "signifikan" di log) — bukan untuk menentukan apakah
+# trace masked boleh/tidak boleh diproses. Secara teknis ObsPy tetap
+# butuh split() untuk memproses trace masked apa pun besar gap-nya,
+# jadi split → process → merge(fill_value=0) selalu dijalankan untuk
+# trace yang punya gap. Configurable via .env, jangan hard-code di
+# logic.
+GAP_THRESHOLD_PERCENT = float(
+    os.getenv("GAP_THRESHOLD_PERCENT", "30")
+)
+
 # HVSR (Nakamura H/V) — parameter yang dikonfigurasi operator/developer.
 # Detail metodologi (taper, bandwidth Konno-Ohmachi, jumlah titik grid,
 # kombinasi horizontal, distribusi) menggunakan default reasonable hvsrpy
