@@ -187,12 +187,27 @@ def get_upload_waveform(
             404, "Upload session not found."
         )
 
+    # Sama seperti FDSN (lihat
+    # waveform_provider_service._assemble_and_trim): gabung per channel
+    # dan pertahankan gap sebagai masked trace, supaya satu channel
+    # SELALU tampil sebagai satu trace/viewer, bukan satu trace terpisah
+    # per segmen kontinu. obspy.read() pada file MiniSEED yang punya gap
+    # nyata mengembalikan beberapa Trace terpisah untuk channel yang
+    # sama; tanpa merge ini, stream_to_json() menyerialisasikan tiap
+    # segmen sebagai trace JSON sendiri-sendiri, dan frontend merender
+    # satu viewer per trace. Merge dilakukan pada SALINAN stream — sesi
+    # upload yang tersimpan (dipakai processing/validation/export) tetap
+    # stream asli, tidak berubah.
+    display_stream = stream.copy()
+    display_stream.merge(method=1, fill_value=None)
+
     station = (
-        stream[0].stats.station if len(stream) > 0
+        display_stream[0].stats.station
+        if len(display_stream) > 0
         else ""
     )
     return stream_to_json(
-        stream, station, max_points=max_points,
+        display_stream, station, max_points=max_points,
     )
 
 

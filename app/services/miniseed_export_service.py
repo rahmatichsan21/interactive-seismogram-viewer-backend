@@ -81,8 +81,18 @@ def apply_export_trim(stream, trim_start, trim_end):
 
 
 def write_mseed(stream):
+    # Raw/export stream can contain masked traces when the assembled
+    # waveform has a genuine data gap (see waveform_provider_service,
+    # which merges with fill_value=None to preserve gaps). ObsPy's MSEED
+    # writer does not support masked arrays and raises NotImplementedError
+    # if it receives one. split() converts each masked (gappy) trace into
+    # separate contiguous traces without inventing or dropping any sample,
+    # which MSEED can represent natively. This is a no-op for streams that
+    # have no gaps (including already-processed traces, which are merged
+    # with fill_value=0 upstream and are therefore never masked).
+    exportable_stream = stream.split()
     output = SpooledTemporaryFile(max_size=8 * 1024 * 1024, mode="w+b")
-    stream.write(output, format="MSEED")
+    exportable_stream.write(output, format="MSEED")
     output.seek(0)
     return output
 
