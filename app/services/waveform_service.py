@@ -185,14 +185,24 @@ def trace_to_json(trace, max_points=None):
     detail implementasi internal yang tidak mengubah skema
     response.
     """
-    raw_point_count = len(trace.data)
+    # Assembly mempertahankan gap sebagai masked array supaya operasi
+    # processing dapat split() lebih dulu. Response JSON tidak dapat
+    # membawa masked value, jadi hanya pada batas serialisasi gap
+    # direpresentasikan sebagai nol tanpa mengubah trace sumber.
+    data = (
+        np.asarray(trace.data.filled(0))
+        if np.ma.isMaskedArray(trace.data)
+        else trace.data
+    )
+
+    raw_point_count = len(data)
 
     stats = None
 
     if raw_point_count > 0:
         stats = {
-            "min": float(trace.data.min()),
-            "max": float(trace.data.max()),
+            "min": float(data.min()),
+            "max": float(data.max()),
         }
 
     # Trigger: raw_point_count > MAX_DISPLAY_POINTS.
@@ -207,11 +217,6 @@ def trace_to_json(trace, max_points=None):
         "station": trace.stats.station,
         "location": trace.stats.location,
         "channel": trace.stats.channel,
-        "segment_index": getattr(
-            trace.stats,
-            "segment_index",
-            0,
-        ),
         "sampling_rate": trace.stats.sampling_rate,
 
         "decimated": should_decimate,
@@ -237,12 +242,20 @@ def trace_to_json(trace, max_points=None):
         )
 
         selected_indices = _decimate_temporal(
-            trace.data,
+            data,
             decimation_factor,
             num_buckets,
         )
 
-        all_times = trace.times()
+        # trace.times() pada masked trace ikut membawa mask data gap.
+        # Saat masked value dijumlahkan dengan starttime, ObsPy dapat
+        # menghasilkan NaN pada time[]. Hitung dari indeks sampel agar
+        # timestamp tetap kontigu; gap hanya direpresentasikan oleh
+        # amplitude 0 pada data serialisasi di atas.
+        all_times = (
+            np.arange(raw_point_count, dtype=float)
+            / trace.stats.sampling_rate
+        )
 
         returned_point_count = len(selected_indices)
 
@@ -254,27 +267,23 @@ def trace_to_json(trace, max_points=None):
 
             "returned_point_count": returned_point_count,
 
-            "amplitude": trace.data[selected_indices].tolist(),
+            "amplitude": data[selected_indices].tolist(),
         })
 
     else:
         trace_fields.update({
             "time": [
                 (trace.stats.starttime + t).isoformat()
-                for t in trace.times()
+                for t in (
+                    np.arange(raw_point_count, dtype=float)
+                    / trace.stats.sampling_rate
+                )
             ],
 
             "returned_point_count": raw_point_count,
 
-            "amplitude": trace.data.tolist(),
+            "amplitude": data.tolist(),
         })
-    print(
-        "[SEGMENT JSON DEBUG]",
-        trace.stats.station,
-        trace.stats.channel,
-        getattr(trace.stats, "segment_index", None),
-    )
-
     return TraceResponse(**trace_fields).model_dump(
         exclude_none=True
     )
@@ -286,16 +295,6 @@ def stream_to_json(stream, station, max_points=None):
     Decimation (kalau `max_points` diisi) diterapkan per trace di
     trace_to_json() - yang selalu berjalan setelah operasi apa pun.
     """
-    print("[STREAM JSON DEBUG] len =", len(stream))
-
-    for trace in stream:
-        print(
-            "[STREAM JSON DEBUG]",
-            trace.stats.station,
-            trace.stats.channel,
-            getattr(trace.stats, "segment_index", None),
-        )
-
     traces = [
         trace_to_json(trace, max_points)
         for trace in stream

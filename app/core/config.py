@@ -152,6 +152,11 @@ GAP_THRESHOLD_PERCENT = float(
     os.getenv("GAP_THRESHOLD_PERCENT", "30")
 )
 
+if not 0 <= GAP_THRESHOLD_PERCENT <= 100:
+    raise ValueError(
+        "GAP_THRESHOLD_PERCENT harus berada pada rentang 0 sampai 100."
+    )
+
 # HVSR (Nakamura H/V) — parameter yang dikonfigurasi operator/developer.
 # Detail metodologi (taper, bandwidth Konno-Ohmachi, jumlah titik grid,
 # kombinasi horizontal, distribusi) menggunakan default reasonable hvsrpy

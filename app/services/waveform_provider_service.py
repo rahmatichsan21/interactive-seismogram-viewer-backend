@@ -3,7 +3,6 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 from obspy import Stream, UTCDateTime
-import numpy as np
 from obspy.clients.fdsn.header import FDSNNoDataException
 
 logger = logging.getLogger(__name__)
@@ -288,65 +287,6 @@ def _assemble_or_raise(
 
     return stream
 
-def _split_masked_traces(stream: Stream) -> Stream:
-    """
-    Pecah trace yang memiliki gap masked menjadi beberapa trace
-    kontigu yang masing-masing hanya berisi data valid.
-
-    Tidak melakukan fill 0 / NaN.
-    """
-    result = Stream()
-
-    for trace in stream:
-        data = trace.data
-
-        if not np.ma.isMaskedArray(data):
-            trace.stats.segment_index = 0
-            result += trace
-            continue
-        mask = np.ma.getmaskarray(data)
-
-        if not mask.any():
-            trace.data = np.asarray(data)
-            trace.stats.segment_index = 0
-            result += trace
-            continue
-
-        valid_indices = np.flatnonzero(~mask)
-
-        if len(valid_indices) == 0:
-            continue
-
-        split_points = np.where(
-            np.diff(valid_indices) > 1
-        )[0] + 1
-
-        groups = np.split(valid_indices, split_points)
-
-        for segment_index, indices in enumerate(groups):
-            segment = trace.copy()
-            segment.stats.segment_index = segment_index
-
-            start_idx = indices[0]
-            end_idx = indices[-1] + 1
-
-            segment.data = np.asarray(
-                data[start_idx:end_idx].compressed()
-                if np.ma.isMaskedArray(
-                    data[start_idx:end_idx]
-                )
-                else data[start_idx:end_idx]
-            )
-
-            segment.stats.starttime = (
-                trace.stats.starttime
-                + start_idx / trace.stats.sampling_rate
-            )
-
-            result += segment
-
-    return result
-
 def _assemble_and_trim(
     db,
     network,
@@ -371,28 +311,17 @@ def _assemble_and_trim(
         )
         full_stream += win_stream
 
-    full_stream.merge(method=1)
+    # Pertahankan gap sebagai masked array. Pemecahan menjadi segmen
+    # valid hanya dilakukan sementara di processing_service, agar
+    # response / cache tetap mempunyai satu trace per channel.
+    full_stream.merge(method=1, fill_value=None)
 
     full_stream.trim(
         UTCDateTime(request_start),
         UTCDateTime(request_end),
     )
 
-    result = _split_masked_traces(full_stream)
-
-    print("[ASSEMBLE DEBUG] len =", len(result))
-
-    for trace in result:
-        print(
-            "[ASSEMBLE DEBUG]",
-            trace.stats.station,
-            trace.stats.channel,
-            getattr(trace.stats, "segment_index", None),
-            trace.stats.starttime,
-            trace.stats.endtime,
-        )
-
-    return result
+    return full_stream
 
 
 

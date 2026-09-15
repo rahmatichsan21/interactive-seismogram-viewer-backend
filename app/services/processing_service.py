@@ -1,39 +1,102 @@
 import logging
 
-from numpy import trace
+import numpy as np
 from obspy import Stream
 
-from app.processing.pipeline import apply_pipeline
+from app.core.config import GAP_THRESHOLD_PERCENT
 from app.models.processing import Operation
+from app.processing.pipeline import apply_pipeline
+from app.services.processing_cache import processing_cache
 
 logger = logging.getLogger(__name__)
+
+
+def _log_significant_gaps(trace):
+    """Log gap individual yang melebihi threshold konfigurasi.
+
+    Threshold dihitung untuk SETIAP run gap terhadap jumlah sampel
+    trace, bukan akumulasi semua gap. Ia bersifat observability;
+    semua masked trace tetap harus di-split agar operasi ObsPy aman.
+    """
+    if not np.ma.isMaskedArray(trace.data):
+        return
+
+    mask = np.ma.getmaskarray(trace.data)
+    if not mask.any() or len(mask) == 0:
+        return
+
+    padded = np.concatenate(([False], mask, [False]))
+    edges = np.flatnonzero(np.diff(padded.astype(int)))
+
+    for start, end in zip(edges[::2], edges[1::2]):
+        gap_percent = (end - start) / len(mask) * 100
+        if gap_percent >= GAP_THRESHOLD_PERCENT:
+            logger.info(
+                "GAP SIGNIFIKAN %s: %.2f%% (%d sampel, %s -> %s)",
+                trace.id,
+                gap_percent,
+                end - start,
+                trace.stats.starttime + start / trace.stats.sampling_rate,
+                trace.stats.starttime + end / trace.stats.sampling_rate,
+            )
+
+
+def _merge_channel_segments(processed_segments: Stream) -> Stream:
+    """Gabungkan kembali segmen valid dan isi posisi gap dengan nol."""
+    if len(processed_segments) == 0:
+        return processed_segments
+
+    merged = processed_segments.copy()
+    merged.merge(method=1, fill_value=0)
+    return merged
 
 
 def process_waveform(
     stream: Stream,
     operations: list[Operation],
     context: dict | None = None,
-    cache_info: dict | None = None,
 ) -> Stream:
-    """
-    Process an ObsPy Stream using the processing pipeline.
-    """
+    """Process stream masked dengan split internal lalu merge nol.
 
+    Urutan wajib untuk trace bergap adalah:
+    merge(masked) -> split() -> process setiap segmen -> merge(fill=0).
+    Cache intermediate pipeline sengaja tidak dipakai di sini: cache
+    hanya aman disimpan setelah semua segmen kembali menjadi satu trace
+    channel final.
+    """
     if context is None:
         context = {}
 
-    # Housekeeping
-    working_stream = stream.copy()
-    working_stream.merge()
+    masked_stream = stream.copy()
+    masked_stream.merge(method=1, fill_value=None)
 
-    processed_stream = apply_pipeline(
-        stream=working_stream,
-        operations=operations,
-        context=context,
-        cache_info=cache_info,
-    )
+    for trace in masked_stream:
+        _log_significant_gaps(trace)
 
-    return processed_stream
+    valid_segments = masked_stream.split()
+    processed_segments = Stream()
+
+    for segment in valid_segments:
+        processed_segments += apply_pipeline(
+            stream=Stream(traces=[segment]),
+            operations=operations,
+            context=context,
+        )
+
+    return _merge_channel_segments(processed_segments)
+
+
+def _iter_channels(stream: Stream):
+    """Yield satu Stream masked untuk setiap identity trace/channel."""
+    channels = {}
+
+    for trace in stream:
+        channels.setdefault(trace.id, Stream()).append(trace.copy())
+
+    for channel_stream in channels.values():
+        channel_stream.merge(method=1, fill_value=None)
+        for trace in channel_stream:
+            yield Stream(traces=[trace])
 
 
 def process_waveform_per_channel(
@@ -42,64 +105,41 @@ def process_waveform_per_channel(
     context: dict | None = None,
     cache_info: dict | None = None,
 ):
+    """Proses satu channel final pada satu waktu untuk membatasi RAM.
+
+    Cache menyimpan hasil akhir channel yang sudah di-merge(fill_value=0),
+    bukan segmen internal. Karena itu cache key tidak memakai segment index.
     """
-    Generator - proses satu channel (trace) pada satu waktu,
-    lalu langsung yield hasilnya, SEBELUM lanjut ke channel
-    berikutnya.
+    for channel_stream in _iter_channels(stream):
+        source_trace = channel_stream[0]
+        channel = source_trace.stats.channel or ""
+        station = source_trace.stats.station or ""
+        network = source_trace.stats.network or ""
+        location = source_trace.stats.location or "--"
 
-    Sebelum memproses setiap trace, cek ProcessingCache:
-    kalau snapshot untuk pipeline ini sudah ada, pakai
-    langsung tanpa replay dari Original.
-
-    Alasan pakai `yield` (bukan mengumpulkan semua hasil ke
-    dalam list lalu return sekaligus): supaya cuma SATU channel
-    yang "in flight" di memori pada satu waktu. Caller (router)
-    WAJIB meng-consume tiap hasil (mis. langsung serialize lewat
-    trace_to_json) sebelum generator ini lanjut
-    ke channel berikutnya - ini bukan konvensi yang bisa
-    dilanggar diam-diam, tapi properti struktural dari generator
-    itu sendiri.
-
-    Sengaja TIDAK mengubah process_waveform() di atas maupun
-    apply_pipeline()/operation handler (trim.py, filter.py) -
-    filtering ObsPy sudah per-trace independen di baliknya,
-    jadi memanggil process_waveform() sekali per channel (Stream
-    berisi 1 trace) menghasilkan output yang identik secara
-    matematis dengan memanggilnya sekali untuk seluruh Stream
-    multi-channel. Ini murni perubahan orkestrasi, bukan logika.
-    """
-    from app.services.processing_cache import processing_cache
-
-    print("[PER CHANNEL DEBUG] stream length =", len(stream))
-
-    for trace in stream:
-        print(
-            "[PER CHANNEL DEBUG]",
-            trace.stats.station,
-            trace.stats.channel,
-            getattr(trace.stats, "segment_index", None),
-        )
-        channel = trace.stats.channel or ""
-        segment_index = getattr(trace.stats, "segment_index", 0)
-
-        # Cek ProcessingCache untuk trace ini.
-        # Kalau pipeline SUDAH punya snapshot, langsung pakai.
+        trace_cache_info = None
+        final_key = None
         if cache_info is not None and operations:
             trace_cache_info = {
                 **cache_info,
+                # Local session dapat berisi beberapa station dengan
+                # channel sama. Cache harus memakai identity trace
+                # aktual, bukan station dari request pertama.
+                "network": network or cache_info["network"],
+                "station": station or cache_info["station"],
+                "location": location,
                 "channel": channel,
             }
-            key = processing_cache.make_key(
+            final_key = processing_cache.make_key(
                 network=trace_cache_info["network"],
                 station=trace_cache_info["station"],
+                location=trace_cache_info["location"],
                 channel=channel,
                 start_time=trace_cache_info["start_time"],
                 end_time=trace_cache_info["end_time"],
                 operations=operations,
-                segment_index=segment_index,
             )
-
-            cached = processing_cache.get(key)
+            cached = processing_cache.get(final_key)
             if cached is not None:
                 logger.debug(
                     "PROC CACHE HIT %s.%s.%s ops=%s",
@@ -108,70 +148,30 @@ def process_waveform_per_channel(
                     channel,
                     [op.type for op in operations],
                 )
-                cached_trace = cached.traces[0].copy()
-                cached_trace.stats.segment_index = trace.stats.segment_index
-                yield cached_trace
+                yield cached.traces[0].copy()
                 continue
 
-        single_channel_stream = Stream(traces=[trace])
-
-        trace_cache_info_for_pipeline = None
-        if cache_info is not None:
-            trace_cache_info_for_pipeline = {
-                **cache_info,
-                "channel": channel,
-            }
-
         processed = process_waveform(
-            stream=single_channel_stream,
+            stream=channel_stream,
             operations=operations,
             context=context,
-            cache_info=trace_cache_info_for_pipeline,
         )
 
-        processed_trace = processed.traces[0]
-        processed_trace.stats.segment_index = trace.stats.segment_index
+        if len(processed) == 0:
+            continue
 
-        # Simpan hasil FINAL pipeline ke ProcessingCache.
-        # Ini memungkinkan Undo antar history state
-        # (mis. edit Filter param) langsung HIT tanpa
-        # replay dari Original.
-        if cache_info is not None and operations:
-            final_key = processing_cache.make_key(
-                network=trace_cache_info["network"],
-                station=trace_cache_info["station"],
-                channel=channel,
-                start_time=trace_cache_info["start_time"],
-                end_time=trace_cache_info["end_time"],
-                operations=operations,
-                segment_index=segment_index,
+        processed_trace = processed[0]
+
+        if final_key is not None and not processing_cache.has(final_key):
+            processing_cache.put(final_key, Stream(traces=[processed_trace.copy()]))
+            size_mb = processed_trace.data.nbytes / (1024 * 1024)
+            logger.debug(
+                "PROC FINAL %s.%s.%s ops=%s size=%.1fMB",
+                trace_cache_info["network"],
+                trace_cache_info["station"],
+                channel,
+                [op.type for op in operations],
+                size_mb,
             )
 
-            if not processing_cache.has(final_key):
-                processing_cache.put(
-                    final_key,
-                    Stream.copy(processed),
-                )
-                size_mb = sum(
-                    tr.data.nbytes for tr in processed
-                ) / (1024 * 1024)
-                logger.debug(
-                    "PROC FINAL %s.%s.%s ops=%s size=%.1fMB",
-                    trace_cache_info["network"],
-                    trace_cache_info["station"],
-                    channel,
-                    [op.type for op in operations],
-                    size_mb,
-                )
-
         yield processed_trace
-
-        # Baris di bawah ini baru dieksekusi SETELAH caller
-        # selesai meng-consume hasil yield di atas (mis. sudah
-        # selesai memanggil trace_to_json dan meng-append
-        # hasilnya). CPython pakai reference counting - begitu
-        # kedua variabel ini di-del dan tidak ada referensi lain
-        # yang menggantung ke objeknya, memorinya dibebaskan
-        # SEKETIKA, bukan menunggu siklus garbage collector.
-        del single_channel_stream
-        del processed

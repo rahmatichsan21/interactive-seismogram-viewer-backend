@@ -49,8 +49,7 @@ def _serialize_operation(operation):
 class ProcessingCache:
     """
     Temporary Processing Cache — menyimpan snapshot
-    full-resolution ObsPy Stream SEBELUM operation mahal
-    (Filter, Instrument Correction).
+    full-resolution ObsPy Stream hasil akhir untuk satu trace/channel.
 
     In-process memory (OrderedDict), bukan Redis.
     TTL + LRU + batas ukuran entry.
@@ -71,17 +70,17 @@ class ProcessingCache:
     def make_key(
         network,
         station,
+        location,
         channel,
         start_time,
         end_time,
         operations,
-        segment_index=0,
     ):
         raw = "|".join([
             network,
             station,
+            location,
             channel,
-            str(segment_index),
             start_time,
             end_time,
             "|".join(
