@@ -247,7 +247,6 @@ def get_spectrogram(
             trace,
             wlen,
         )
-        fig.colorbar(image, ax=ax, label="Power [dB]")
     else:
         obspy_spectrogram(
             trace.data,
