@@ -26,6 +26,15 @@ from app.services.psd_service import _PLOT_LOCK
 
 logger = logging.getLogger(__name__)
 
+# hvsrpy.timeseries memancarkan INFO log ("Created TimeSeries ...") untuk
+# SETIAP TimeSeries yang dibuat — sangat verbose pada window HVSR yang
+# banyak dan membanjiri console, menyulitkan debugging backend. Redam
+# HANYA logger ini ke WARNING (bukan logging.disable global), sehingga
+# error/warning penting dari hvsrpy maupun logger lain (mis. logger
+# modul ini sendiri) tetap terlihat. Ini murni konfigurasi level
+# logging — tidak mengubah kalkulasi/behavior HVSR.
+logging.getLogger("hvsrpy.timeseries").setLevel(logging.WARNING)
+
 # Detail metodologi internal (default reasonable hvsrpy, TIDAK di .env).
 _HVSR_DETREND = "linear"
 _HVSR_TAPER = ["tukey", 0.1]

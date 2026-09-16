@@ -56,6 +56,20 @@ def get_psd(
                 raise HTTPException(
                     404, "Upload session not found."
                 )
+            # Sama seperti FDSN (waveform_provider_service._assemble_and_trim)
+            # dan endpoint display upload (upload.get_upload_waveform):
+            # gabung per channel dan pertahankan gap sebagai masked trace,
+            # supaya satu station+channel SELALU 1 logical waveform (1
+            # trace), bukan beberapa trace terpisah per segmen kontinu.
+            # obspy.read() pada MiniSEED yang punya gap nyata mengembalikan
+            # banyak Trace terpisah untuk channel yang sama; tanpa merge
+            # ini, seleksi trace di bawah hanya mengambil segmen PERTAMA
+            # (sering terlalu pendek untuk PPSD -> 400), dan gap tidak
+            # pernah terlihat oleh PPSD sebagai satu waveform utuh.
+            # Merge dilakukan pada SALINAN stream — sesi upload asli
+            # (dipakai processing/validation/export) tidak berubah.
+            stream = stream.copy()
+            stream.merge(method=1, fill_value=None)
             inventory = get_upload_inventory(session_id)
             if inventory is None:
                 raise ValueError(

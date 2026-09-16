@@ -50,11 +50,18 @@ def compute_psd_image(
             f"(durasi {duration:.1f}s < ppsd_length {ppsd_length}s)."
         )
 
+    # skip_on_gaps=True: ObsPy PPSD secara default (False) mengisi gap
+    # pada masked trace dengan NOL sebelum memotongnya jadi segmen
+    # ppsd_length ([McNamara2004] behavior) — ini melanggar aturan gap
+    # tidak boleh diisi/dihilangkan. Dengan True, segmen yang beririsan
+    # dengan gap dilewati sepenuhnya; hanya segmen data valid penuh yang
+    # dipakai untuk PSD, persis seperti spectrogram gap-aware Local/FDSN.
     ppsd = PPSD(
         stats=trace.stats,
         metadata=inventory,
         ppsd_length=float(ppsd_length),
         overlap=overlap,
+        skip_on_gaps=True,
     )
 
     ppsd.add(trace)
