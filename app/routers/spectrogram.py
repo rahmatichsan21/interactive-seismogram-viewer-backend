@@ -142,18 +142,6 @@ def get_spectrogram(
             raise HTTPException(
                 404, "Upload session not found."
             )
-        # Sama seperti FDSN (waveform_provider_service._assemble_and_trim)
-        # dan endpoint display upload (upload.get_upload_waveform): gabung
-        # per channel dan pertahankan gap sebagai masked trace, supaya
-        # satu station+channel SELALU 1 logical waveform (1 trace), bukan
-        # beberapa trace terpisah per segmen kontinu. Tanpa merge ini,
-        # seleksi trace di bawah hanya mengambil segmen PERTAMA (tidak
-        # masked), sehingga _has_masked_gap() selalu False dan gap tidak
-        # pernah dirender untuk Local Upload walau waveform-nya bergap.
-        # Merge dilakukan pada SALINAN stream — sesi upload asli (dipakai
-        # processing/validation/export) tidak berubah.
-        stream = stream.copy()
-        stream.merge(method=1, fill_value=None)
     elif network and station and start_time and end_time:
         stream = get_waveform(
             db=db,
@@ -242,7 +230,7 @@ def get_spectrogram(
     ax = fig.add_subplot(111)
 
     if _has_masked_gap(trace):
-        image = _render_gap_aware_spectrogram(
+        _render_gap_aware_spectrogram(
             ax,
             trace,
             wlen,
@@ -267,11 +255,22 @@ def get_spectrogram(
     # lebih awal dan TIDAK mengatur label sumbu/title. Set ulang
     # di sini supaya output identik dengan perilaku sebelumnya
     # (tanpa `axes`), selain ukuran figure yang kini horizontal.
-    ax.set_xlabel("Time [s]")
-    ax.set_ylabel("Frequency [Hz]")
+    #
+    # fontsize/labelpad tick & label sumbu-Y diperkecil supaya
+    # footprint horizontal kolom label frequency (angka + teks
+    # "Frequency [Hz]") lebih sempit. bbox_inches="tight" di
+    # savefig() memotong PNG sesuai bounding box aktual seluruh
+    # elemen, jadi kolom label yang lebih sempit ini langsung
+    # memperbesar proporsi lebar yang dipakai area plot aktual
+    # terhadap total lebar PNG — bukan mengubah data/algoritma
+    # spectrogram sama sekali, murni tipografi label.
+    ax.tick_params(axis="both", labelsize=6.5, pad=1.5)
+    ax.set_xlabel("Time [s]", fontsize=7.5)
+    ax.set_ylabel("Frequency [Hz]", fontsize=7.5, labelpad=0.5)
     ax.set_title(
         f"{trace.stats.network}.{trace.stats.station}."
-        f"{trace.stats.channel}"
+        f"{trace.stats.channel}",
+        fontsize=9,
     )
 
     # 5. Render ke PNG → base64
