@@ -1,73 +1,52 @@
 # `scripts`
 
-Folder ini berisi tools manual yang dijalankan langsung dengan Python. Script
-di folder ini **bukan bagian dari runtime FastAPI** dan tidak dijalankan otomatis
+Folder ini berisi utility manual yang dijalankan langsung dengan Python.
+Script di sini bukan bagian dari FastAPI runtime dan tidak dijalankan otomatis
 oleh aplikasi.
 
-Kegunaannya meliputi:
+## Cara menjalankan
 
-- setup database awal;
-- maintenance dan pembersihan cache waveform;
-- diagnosis database, cache, dan FDSN;
-- validasi manual processing/decimation;
-- eksperimen dan reproduksi masalah tertentu.
-
-Jalankan script dari **root repository backend**, yaitu folder yang berisi
-`app/`, `scripts/`, `alembic/`, dan file konfigurasi backend.
-
-Contoh umum di Windows:
+Jalankan dari root backend:
 
 ```powershell
 .venv\Scripts\python.exe scripts\<nama_script>.py
 ```
 
-Untuk script yang menyediakan opsi CLI:
+Jika script menyediakan CLI:
 
 ```powershell
 .venv\Scripts\python.exe scripts\<nama_script>.py --help
 ```
 
-> Catatan: sebagian besar script menggunakan modul dari `app/`, tetapi tidak
-> semuanya. `test_obspy_aafm_gap_processing.py` menggunakan client FDSN dari
-> ObsPy secara langsung.
+Sebagian besar script menggunakan modul `app/`, tetapi
+`test_obspy_aafm_gap_processing.py` memakai ObsPy FDSN client secara langsung.
 
 ---
 
-## Legenda risiko
+## Risiko
 
 | Label | Arti |
 | --- | --- |
-| **READ-ONLY** | Hanya membaca data; tidak sengaja mengubah state database/cache. |
-| **NETWORK** | Melakukan request ke FDSN/BMKG atau layanan jaringan lain. |
-| **LIVE DATABASE** | Berinteraksi dengan database yang dikonfigurasi pada environment saat script dijalankan. |
-| **FILE WRITE** | Membuat atau menulis file di filesystem lokal. |
-| **DESTRUCTIVE** | Dapat menghapus data database dan/atau file cache secara permanen. |
+| **READ-ONLY** | Hanya membaca data. |
+| **NETWORK** | Melakukan request FDSN/BMKG. |
+| **LIVE DATABASE** | Berinteraksi dengan database environment aktif. |
+| **FILE WRITE** | Menulis file lokal. |
+| **DESTRUCTIVE** | Dapat menghapus data cache/database. |
 
-> Sebelum menjalankan script dengan **LIVE DATABASE** atau **DESTRUCTIVE**,
-> pastikan `.env` menunjuk ke database/environment yang benar.
-
----
-
-## Peringatan: script yang dapat mengubah atau menghapus cache/database
-
-Script berikut **bukan read-only**:
-
-- `cleanup_cache.py` — menjalankan rutin cleanup cache secara manual;
-- `clear_all_cache.py` — menghapus seluruh cache waveform;
-- `test_hourly_cache.py` — membersihkan cache sebagai bagian dari skenario test;
-- `test_seen_channels.py` — membersihkan cache sebagai bagian dari skenario test.
-
-Jangan jalankan script tersebut pada environment yang datanya masih
-diperlukan tanpa memastikan dampaknya terlebih dahulu.
+Sebelum memakai script `LIVE DATABASE` atau `DESTRUCTIVE`, pastikan `.env`
+menunjuk ke environment yang benar.
 
 ---
 
-# Setup
+## Setup
 
-## `create_tables.py`
+### `create_tables.py`
 
-Membuat tabel SQLAlchemy dengan `Base.metadata.create_all()` pada database
-yang dikonfigurasi oleh backend.
+Membuat tabel SQLAlchemy melalui:
+
+```text
+Base.metadata.create_all(bind=engine)
+```
 
 **Risiko:** `LIVE DATABASE`
 
@@ -75,10 +54,9 @@ yang dikonfigurasi oleh backend.
 .venv\Scripts\python.exe scripts\create_tables.py
 ```
 
-## `check_database.py`
+### `check_database.py`
 
-Memeriksa koneksi database dan menampilkan informasi database yang sedang
-digunakan. Script ini bersifat read-only.
+Memeriksa koneksi database dan database yang sedang digunakan.
 
 **Risiko:** `READ-ONLY`, `LIVE DATABASE`
 
@@ -88,100 +66,66 @@ digunakan. Script ini bersifat read-only.
 
 ---
 
-# Station CSV
+## Station CSV
 
-## `add_station_csv.py`
+### `add_station_csv.py`
 
-Digunakan untuk **menambahkan station baru** ke `stations.csv` yang sudah ada.
+Menambahkan satu atau beberapa station ke `stations.csv` existing tanpa
+regenerate atau overwrite seluruh file.
 
-Script ini **tidak melakukan regenerate seluruh CSV** dan **tidak menimpa
-station yang sudah ada**.
-
-### Cara pakai
-
-Satu station:
+Contoh:
 
 ```powershell
 .venv\Scripts\python.exe scripts\add_station_csv.py --station GTOI
 ```
 
-Beberapa station sekaligus:
-
 ```powershell
 .venv\Scripts\python.exe scripts\add_station_csv.py --station GTOI AAII PAGA KUKI
 ```
 
-### Perilaku aktual script
+Behavior:
 
-`--station` wajib diisi dan menerima satu atau lebih kode station.
+- membaca station existing;
+- skip duplicate;
+- mengambil metadata FDSN level station;
+- membaca `start_date`;
+- menggunakan window historis satu hari setelah `start_date`;
+- mengecek akses waveform pada window 60 detik;
+- `NoData` dianggap credential diterima;
+- `401/403` dianggap akses ditolak;
+- error teknis tidak dianggap Unauthorized;
+- station yang lolos ditambahkan dengan mode append.
 
-Sebelum menambahkan data, script:
-
-1. membaca `STATION_CSV` yang sudah ada;
-2. membentuk set `(network, kode_stasiun)` untuk mendeteksi duplikasi;
-3. melewati station yang sudah tercatat;
-4. mengambil metadata station dari FDSN dengan `level="station"`;
-5. mengambil `start_date` dari metadata station;
-6. membentuk window pengecekan historis:
-   - mulai **1 hari setelah `start_date`**;
-   - panjang window **60 detik**;
-7. memanggil `get_waveforms()` untuk station tersebut;
-8. hanya menambahkan station apabila hasil pengecekan menyatakan akses
-   diterima.
-
-### Arti hasil pengecekan FDSN
-
-Script membedakan tiga kondisi:
-
-| Hasil internal | Arti | Tindakan |
-| --- | --- | --- |
-| `True` | Credential diterima; termasuk kondisi `FDSNNoDataException` | Station ditambahkan |
-| `False` | Server secara eksplisit mengembalikan `401 Unauthorized` atau `403 Forbidden` | Station tidak ditambahkan |
-| `None` | Error teknis seperti timeout/koneksi/parsing | Station tidak ditambahkan; perlu dicek ulang |
-
-`FDSNNoDataException` tidak dianggap sebagai penolakan akses karena server
-sudah menerima request, tetapi tidak memberikan data pada window yang diminta.
-
-### Penulisan CSV
-
-Jika `stations.csv` belum ada, script membuat header:
+Jika file belum ada, header dibuat:
 
 ```text
 net,kode_stasiun
 ```
-
-Kemudian station baru ditulis dengan mode append.
-
-Contoh:
-
-```text
-net,kode_stasiun
-IA,AAFM
-IA,GTOI
-```
-
-Station yang sudah ada tidak ditulis ulang. Setelah satu station berhasil
-ditambahkan, station tersebut juga dicatat di set internal agar duplikasi
-dalam satu pemanggilan CLI tidak terjadi.
 
 **Risiko:** `NETWORK`, `FILE WRITE`
 
-### Catatan
+### Catatan legacy
 
-Script ini menggunakan konfigurasi FDSN backend melalui `app.core.config` dan
-client FDSN dari `app.core.fdsn_client`. Oleh karena itu konfigurasi URL dan
-credential FDSN pada `.env` harus valid.
+Nama lama:
+
+```text
+generate_station_csv.py
+```
+
+bukan file aktif pada tree `main` saat ini. Utility aktif untuk penambahan
+station adalah:
+
+```text
+add_station_csv.py
+```
 
 ---
 
-# Maintenance
+## Maintenance
 
-## `cleanup_cache.py`
+### `cleanup_cache.py`
 
-Menjalankan `run_waveform_cache_cleanup()` secara manual, yaitu rutin cleanup
-cache waveform yang juga digunakan oleh scheduler aplikasi.
-
-Script ini berguna ketika cleanup ingin dipicu segera tanpa menunggu scheduler.
+Menjalankan cleanup cache waveform secara manual.
 
 **Risiko:** `DESTRUCTIVE`, `LIVE DATABASE`
 
@@ -189,15 +133,9 @@ Script ini berguna ketika cleanup ingin dipicu segera tanpa menunggu scheduler.
 .venv\Scripts\python.exe scripts\cleanup_cache.py
 ```
 
-## `clear_all_cache.py`
+### `clear_all_cache.py`
 
-Menghapus seluruh cache waveform:
-
-- row `WaveformRecord` pada database;
-- file MiniSEED pada `storage/waveforms/`;
-- termasuk file cache yang tidak lagi memiliki row terkait di database.
-
-Script ini bersifat destruktif.
+Menghapus seluruh cache waveform pada database dan file cache.
 
 **Risiko:** `DESTRUCTIVE`, `LIVE DATABASE`
 
@@ -207,23 +145,11 @@ Script ini bersifat destruktif.
 
 ---
 
-# Diagnostic
+## Diagnostic
 
-Script pada bagian ini digunakan untuk melihat kondisi database/cache secara
-manual. Kecuali disebutkan lain, script diagnostic tidak dimaksudkan untuk
-mengubah data.
+### `diagnose_cache.py`
 
-## `diagnose_cache.py`
-
-Menampilkan row `WaveformRecord` yang cocok dengan window hardcode:
-
-- network: `IA`
-- station: `AAI`
-- start: `2025-07-01 00:00:00`
-- end: `2025-07-02 00:00:00`
-
-Output menampilkan jumlah row dan informasi seperti location, channel,
-`created_at`, dan path file cache.
+Inspeksi row `WaveformRecord` untuk window hardcode yang ditentukan script.
 
 **Risiko:** `READ-ONLY`, `LIVE DATABASE`
 
@@ -231,25 +157,10 @@ Output menampilkan jumlah row dan informasi seperti location, channel,
 .venv\Scripts\python.exe scripts\diagnose_cache.py
 ```
 
-## `diagnose_aafm_gap.py`
+### `diagnose_aafm_gap.py`
 
-Mendiagnosis gap pada cache lokal untuk:
-
-- network/station: `IA.AAFM`
-- channel: `SH*`
-- window: `2026-09-03 00:00:00` sampai `2026-09-03 04:00:00`
-
-Script memeriksa setiap hourly window dari cache, lalu menampilkan:
-
-- trace count;
-- start/end time;
-- sampling rate;
-- jumlah sample;
-- apakah data merupakan masked array;
-- jumlah sample masked;
-- finite/non-finite data;
-- gap sebelum `merge()`;
-- gap setelah `merge()`.
+Inspeksi gap cache `IA.AAFM` pada window hardcode dan menampilkan trace/gap
+sebelum dan sesudah merge.
 
 **Risiko:** `READ-ONLY`, `LIVE DATABASE`
 
@@ -257,19 +168,11 @@ Script memeriksa setiap hourly window dari cache, lalu menampilkan:
 .venv\Scripts\python.exe scripts\diagnose_aafm_gap.py
 ```
 
-## `diagnose_fdsn_hourly.py`
+### `diagnose_fdsn_hourly.py`
 
-Mendiagnosis cache per jam untuk station, tanggal, dan channel tertentu.
-
-Script membandingkan:
-
-- row cache yang ada di database;
-- keberadaan file MiniSEED yang dirujuk row cache;
-- kondisi cache yang tidak lengkap/broken.
-
-Dengan `--check-fdsn`, script juga dapat melakukan pengecekan langsung ke
-FDSN/BMKG untuk jam yang cache-nya tidak lengkap. Hasil pengecekan FDSN tidak
-disimpan oleh script ini.
+Diagnosa kelengkapan cache per jam untuk station/tanggal/channel tertentu.
+Dengan `--check-fdsn`, script juga memeriksa FDSN/BMKG untuk window yang tidak
+lengkap.
 
 Contoh:
 
@@ -277,29 +180,17 @@ Contoh:
 .venv\Scripts\python.exe scripts\diagnose_fdsn_hourly.py --station AAFM --date 2026-09-08
 ```
 
-Dengan network dan channel eksplisit:
-
-```powershell
-.venv\Scripts\python.exe scripts\diagnose_fdsn_hourly.py --network IA --station AAFM --date 2026-09-08 --channels SHZ SHE SHN --check-fdsn
-```
-
-Tanpa `--check-fdsn`, script tidak perlu melakukan request FDSN tambahan.
-
 **Risiko tanpa `--check-fdsn`:** `READ-ONLY`, `LIVE DATABASE`
 
 **Risiko dengan `--check-fdsn`:** `READ-ONLY`, `LIVE DATABASE`, `NETWORK`
 
 ---
 
-# Validation
+## Validation
 
-Script pada bagian ini digunakan untuk validasi manual perilaku backend.
-Script-script tersebut **bukan automated test suite `pytest`**.
+### `verify_temporal.py`
 
-## `verify_temporal.py`
-
-Memverifikasi perilaku decimation temporal-order pada waveform `IA.AAFM`,
-termasuk kondisi di bawah dan di atas `MAX_DISPLAY_POINTS`.
+Memverifikasi decimation temporal-order pada waveform FDSN.
 
 **Risiko:** `NETWORK`
 
@@ -307,12 +198,9 @@ termasuk kondisi di bawah dan di atas `MAX_DISPLAY_POINTS`.
 .venv\Scripts\python.exe scripts\verify_temporal.py
 ```
 
-## `smoke_test_processing.py`
+### `smoke_test_processing.py`
 
-Smoke test untuk operation `trim` melalui `apply_pipeline` menggunakan
-waveform FDSN `IA.AAFM`.
-
-Script menampilkan kondisi stream sebelum dan sesudah processing.
+Smoke test operation `trim` melalui processing service.
 
 **Risiko:** `NETWORK`
 
@@ -322,23 +210,14 @@ Script menampilkan kondisi stream sebelum dan sesudah processing.
 
 ---
 
-# Experimental / Manual Test
+## Development / Manual Test
 
-Bagian ini berisi script yang dibuat untuk pengujian atau investigasi pada
-titik tertentu selama pengembangan.
+Script berikut digunakan untuk testing, reproduksi issue, atau eksperimen
+manual. Tidak ada yang dijalankan otomatis oleh FastAPI runtime.
 
-Script di bagian ini:
+### `test_hourly_cache.py`
 
-- tidak dijalankan otomatis oleh aplikasi;
-- tidak dijalankan sebagai CI regression test;
-- dapat memiliki station/date/channel hardcode;
-- hasilnya tidak otomatis menjamin seluruh backend benar.
-
-## `test_hourly_cache.py`
-
-Skenario manual untuk perilaku hourly cache, termasuk exact window dan cleanup.
-
-Script melakukan pembersihan cache sebagai bagian dari setup/skenario test.
+Skenario manual hourly cache.
 
 **Status:** `C — DEVELOPMENT / TESTING`
 
@@ -348,20 +227,15 @@ Script melakukan pembersihan cache sebagai bagian dari setup/skenario test.
 .venv\Scripts\python.exe scripts\test_hourly_cache.py
 ```
 
-## `test_processing_cache.py`
+### `test_processing_cache.py`
 
-Skenario manual untuk `ProcessingCache`, termasuk snapshot prefix processing,
-undo/redo processing, dan perbedaan cache berdasarkan channel.
-
-Script ini menggunakan data waveform dan database session untuk menjalankan
-skenario cache secara manual.
+Skenario `ProcessingCache` versi awal.
 
 **Status:** `D — POSSIBLY LEGACY / SUPERSEDED`
 
-Artinya script masih dapat dijalankan, tetapi ada varian
-`test_processing_cache_v2.py` yang berisi skenario `ProcessingCache` yang lebih
-baru/berbeda. Tidak ada bukti bahwa script ini dipanggil oleh runtime,
-CI, Docker, atau benchmark otomatis.
+Masih dapat dijalankan, tetapi ada `test_processing_cache_v2.py` sebagai varian
+yang lebih baru/berbeda. Tidak ditemukan pemanggilan runtime terhadap script
+ini.
 
 **Risiko:** `NETWORK`, `LIVE DATABASE`
 
@@ -369,13 +243,9 @@ CI, Docker, atau benchmark otomatis.
 .venv\Scripts\python.exe scripts\test_processing_cache.py
 ```
 
-## `test_processing_cache_v2.py`
+### `test_processing_cache_v2.py`
 
-Varian manual `ProcessingCache` dengan skenario yang disebut pada script sebagai
-`Hybrid A+D`.
-
-Script ini digunakan sebagai test/reproduksi manual dan tidak dipanggil oleh
-runtime aplikasi.
+Skenario manual `ProcessingCache` varian Hybrid A+D.
 
 **Status:** `C — DEVELOPMENT / TESTING`
 
@@ -385,13 +255,11 @@ runtime aplikasi.
 .venv\Scripts\python.exe scripts\test_processing_cache_v2.py
 ```
 
-## `test_seen_channels.py`
+### `test_seen_channels.py`
 
-Skenario manual untuk perilaku `get_seen_channels()` sebagai sumber informasi
-channel yang telah terlihat pada cache.
+Test manual `get_seen_channels()`.
 
-Script membersihkan cache pada beberapa tahap sebagai bagian dari skenario
-pengujian.
+Script membersihkan cache sebagai bagian dari skenario.
 
 **Status:** `C — DEVELOPMENT / TESTING`
 
@@ -401,40 +269,10 @@ pengujian.
 .venv\Scripts\python.exe scripts\test_seen_channels.py
 ```
 
----
+### `test_obspy_aafm_gap_processing.py`
 
-# Gap / ObsPy Experiment
-
-## `test_obspy_aafm_gap_processing.py`
-
-Eksperimen langsung menggunakan `obspy.clients.fdsn.Client`, bukan service
-waveform backend.
-
-Tujuan script adalah menyelidiki workflow:
-
-```text
-FDSN download
-    ↓
-merge dengan gap dipertahankan
-    ↓
-analisis gap
-    ↓
-split
-    ↓
-filter / instrument correction
-    ↓
-merge
-```
-
-Konfigurasi eksperimen saat ini menggunakan:
-
-- network: `IA`
-- station: `AAFM`
-- channel: `SH*`
-- window: `2026-09-03 00:00:00` sampai `2026-09-03 04:00:00`
-- threshold gap: `30%`
-
-Script membaca credential FDSN langsung dari `.env`.
+Eksperimen langsung dengan `obspy.clients.fdsn.Client` untuk gap/processing
+pada `IA.AAFM`.
 
 **Status:** `C — DEVELOPMENT / EXPERIMENTAL`
 
@@ -444,26 +282,10 @@ Script membaca credential FDSN langsung dari `.env`.
 .venv\Scripts\python.exe scripts\test_obspy_aafm_gap_processing.py
 ```
 
----
+### `visual_compare.py`
 
-# Visual Comparison
-
-## `visual_compare.py`
-
-Membandingkan tiga pendekatan representasi waveform terhadap data raw:
-
-1. envelope min/max;
-2. temporal-order min/max;
-3. bucket mean.
-
-Script:
-
-- mengunduh waveform `IA.AAFM.SHZ`;
-- memakai window `2025-07-01T00:00:00` sampai `2025-07-01T01:41:00`;
-- menghitung decimation berdasarkan `DECIMATION_DURATION_SECONDS`;
-- menghitung bucket;
-- membuat plot perbandingan;
-- menyimpan hasil sebagai `visual_compare.png` di root backend.
+Eksperimen visual perbandingan raw, envelope min/max, temporal-order, dan
+bucket mean. Output `visual_compare.png` ditulis ke root backend.
 
 **Status:** `C — DEVELOPMENT / EXPERIMENTAL`
 
@@ -473,112 +295,25 @@ Script:
 .venv\Scripts\python.exe scripts\visual_compare.py
 ```
 
-Output file:
-
-```text
-visual_compare.png
-```
-
 ---
 
-# Ringkasan status script
-
-| Script | Status | Fungsi utama |
-| --- | --- | --- |
-| `add_station_csv.py` | **B — MANUAL UTILITY** | Menambahkan station baru ke `stations.csv` secara append |
-| `check_database.py` | **B — MANUAL UTILITY** | Cek koneksi database |
-| `cleanup_cache.py` | **B — MANUAL UTILITY** | Menjalankan cleanup cache secara manual |
-| `clear_all_cache.py` | **B — MANUAL UTILITY** | Mengosongkan seluruh cache |
-| `create_tables.py` | **B — MANUAL UTILITY** | Membuat tabel database |
-| `diagnose_cache.py` | **B — MANUAL UTILITY** | Inspeksi row cache tertentu |
-| `diagnose_aafm_gap.py` | **B — MANUAL UTILITY** | Inspeksi gap pada cache `IA.AAFM` |
-| `diagnose_fdsn_hourly.py` | **B — MANUAL UTILITY** | Diagnosa cache per jam dan opsi verifikasi FDSN |
-| `smoke_test_processing.py` | **C — DEVELOPMENT / TESTING** | Smoke test processing `trim` |
-| `test_hourly_cache.py` | **C — DEVELOPMENT / TESTING** | Skenario hourly cache |
-| `test_processing_cache.py` | **D — POSSIBLY LEGACY / SUPERSEDED** | Skenario `ProcessingCache` versi awal |
-| `test_processing_cache_v2.py` | **C — DEVELOPMENT / TESTING** | Skenario `ProcessingCache` varian Hybrid A+D |
-| `test_seen_channels.py` | **C — DEVELOPMENT / TESTING** | Skenario `get_seen_channels()` |
-| `test_obspy_aafm_gap_processing.py` | **C — DEVELOPMENT / EXPERIMENTAL** | Eksperimen gap/processing langsung dengan ObsPy |
-| `verify_temporal.py` | **C — DEVELOPMENT / TESTING** | Verifikasi decimation temporal-order |
-| `visual_compare.py` | **C — DEVELOPMENT / EXPERIMENTAL** | Visual comparison beberapa algoritma decimation |
-
-### Arti status
+## Status classification
 
 | Status | Arti |
 | --- | --- |
-| **A — ACTIVE** | Dipanggil sebagai bagian dari runtime/application flow otomatis. |
-| **B — MANUAL UTILITY** | Script manual yang masih punya fungsi operasional/setup/diagnostic yang jelas. |
-| **C — DEVELOPMENT / TESTING / EXPERIMENTAL** | Script untuk testing, validasi, reproduksi issue, atau eksperimen pengembangan. |
-| **D — POSSIBLY LEGACY / SUPERSEDED** | Masih ada dan dapat dijalankan, tetapi ada indikasi kuat bahwa penggunaannya sudah digantikan/ditinggalkan oleh varian atau implementasi yang lebih baru. |
-| **E — CONFIRMED UNUSED** | Tidak ditemukan penggunaan yang tersisa dan tidak ada fungsi manual yang terdokumentasi untuk dipertahankan. |
+| **B — MANUAL UTILITY** | Setup, maintenance, atau diagnostic yang masih punya fungsi operasional. |
+| **C — DEVELOPMENT / TESTING / EXPERIMENTAL** | Testing, validasi, reproduksi issue, atau eksperimen. |
+| **D — POSSIBLY LEGACY / SUPERSEDED** | Masih ada dan runnable tetapi ada indikasi kuat bahwa varian/implementasi lebih baru mengambil alih. |
+| **E — CONFIRMED UNUSED** | Tidak ditemukan penggunaan tersisa dan tidak ada fungsi manual yang terdokumentasi untuk dipertahankan. |
 
-> **Catatan:** klasifikasi di atas adalah klasifikasi fungsi script saat ini.
-> Status `D` tidak berarti file harus langsung dihapus. Kandidat archive/delete
-> sebaiknya diputuskan terpisah setelah kebutuhan historis script tersebut
-> dikonfirmasi.
+Tidak ada script pada tree `main` yang dapat dipastikan **E** hanya dari audit
+repository ini.
 
 ---
 
-# Prasyarat umum
+## General notes
 
-## 1. Root backend
-
-Jalankan command dari root repository backend:
-
-```text
-interactive-seismogram-viewer-backend/
-├── app/
-├── scripts/
-├── alembic/
-├── benchmark/
-└── ...
-```
-
-## 2. Virtual environment
-
-Aktifkan virtual environment atau gunakan executable Python langsung:
-
-```powershell
-.venv\Scripts\python.exe
-```
-
-## 3. `.env`
-
-Isi `.env` sesuai kebutuhan backend.
-
-Script yang memakai database membutuhkan konfigurasi database yang benar,
-sedangkan script yang melakukan request FDSN membutuhkan konfigurasi endpoint
-dan credential FDSN yang sesuai.
-
-Konfigurasi backend utama dijelaskan di `README.md` root repository.
-
-## 4. Data hardcode
-
-Beberapa script menggunakan station/channel/tanggal hardcode, misalnya:
-
-```text
-IA.AAFM
-2025-07-01
-2026-09-03
-```
-
-Karena itu, hasil script tersebut bergantung pada ketersediaan data pada window
-yang dipakai. Jangan menganggap `PASS` atau output tertentu sebagai jaminan
-bahwa seluruh station, tanggal, atau kondisi lain memiliki perilaku yang sama.
-
----
-
-# Catatan Maintenance Dokumentasi
-
-Saat mengubah, mengganti nama, atau menghapus script di folder ini:
-
-1. cari referensi nama file lama di seluruh repository;
-2. perbarui command pada dokumentasi;
-3. perbarui tabel status/fungsi di file ini;
-4. periksa README dan dokumentasi terkait;
-5. pastikan nama script yang ditulis benar-benar sama dengan file yang ada di
-   repository.
-
-Dokumentasi ini sengaja membedakan **script runtime**, **manual utility**,
-**testing/experimental**, dan **possible legacy** agar script lama tidak
-diasumsikan sebagai bagian dari execution flow aplikasi tanpa bukti pemanggilan.
+- Script hardcode tertentu dapat bergantung pada station/channel/date tertentu.
+- Script bukan pengganti automated test suite.
+- Script destructive harus diperlakukan sebagai operasi terhadap live data.
+- `scripts/README.md` adalah sumber detail untuk utility pada folder `scripts`.
